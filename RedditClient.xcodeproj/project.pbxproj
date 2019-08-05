@@ -12,6 +12,7 @@
 		14E17E3222F8A94600961F25 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E17E3122F8A94600961F25 /* Assets.xcassets */; };
 		14E17E3522F8A94600961F25 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E17E3322F8A94600961F25 /* LaunchScreen.storyboard */; };
 		14E17E4022F8A94600961F25 /* RedditClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E17E3F22F8A94600961F25 /* RedditClientTests.swift */; };
+		DD56C02649ED83E8E68E78B9 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DD56C9FE40A411412CF77EE9 /* .gitignore */; };
 		DD56C13562E5FE36583C68A0 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56C18C7DB1474A6DB6C7D9 /* MenuController.swift */; };
 		DD56C150F51C82E2B07D84A3 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56CF67282791880804E1CA /* HomeController.swift */; };
 		DD56C4C6CAAEAC8646AF29B5 /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56CAB9E7D7E35AE64AFD7A /* ContainerController.swift */; };
@@ -38,6 +39,7 @@
 		14E17E3F22F8A94600961F25 /* RedditClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditClientTests.swift; sourceTree = "<group>"; };
 		14E17E4122F8A94600961F25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD56C18C7DB1474A6DB6C7D9 /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
+		DD56C9FE40A411412CF77EE9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
 		DD56CAB9E7D7E35AE64AFD7A /* ContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
 		DD56CF67282791880804E1CA /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,6 +68,7 @@
 				14E17E2922F8A94400961F25 /* RedditClient */,
 				14E17E3E22F8A94600961F25 /* RedditClientTests */,
 				14E17E2822F8A94400961F25 /* Products */,
+				DD56C9FE40A411412CF77EE9 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -210,6 +213,7 @@
 				14E17E3522F8A94600961F25 /* LaunchScreen.storyboard in Resources */,
 				14E17E3222F8A94600961F25 /* Assets.xcassets in Resources */,
 				14E17E3022F8A94400961F25 /* Main.storyboard in Resources */,
+				DD56C02649ED83E8E68E78B9 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
