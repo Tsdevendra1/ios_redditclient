@@ -18,6 +18,7 @@ class ContainerController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         configureHomeController()
+        configureMenuController()
     }
 
     func configureHomeController() {
@@ -40,7 +41,17 @@ class ContainerController: UIViewController {
 
 extension ContainerController: HomeControllerDelegate {
     func handleMenuToggle() {
-        print("Hi")
+        let bounds = UIScreen.main.bounds
+        isEnabled = !isEnabled
+        if isEnabled {
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.menuController.view.frame.origin.x = -bounds.width + 150
+            }, completion: nil)
+        } else {
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.menuController.view.frame.origin.x = -bounds.width
+            }, completion: nil)
+        }
     }
 }
 
