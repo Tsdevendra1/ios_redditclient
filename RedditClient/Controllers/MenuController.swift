@@ -11,7 +11,10 @@ class MenuController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = .yellow
+        let bounds = UIScreen.main.bounds
+        view.frame = CGRect(x:-bounds.width, y: 0, width: bounds.width, height: bounds.height)
     }
+
 
 
 }
