@@ -16,6 +16,7 @@
 		DD56C13562E5FE36583C68A0 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56C18C7DB1474A6DB6C7D9 /* MenuController.swift */; };
 		DD56C150F51C82E2B07D84A3 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56CF67282791880804E1CA /* HomeController.swift */; };
 		DD56C4C6CAAEAC8646AF29B5 /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56CAB9E7D7E35AE64AFD7A /* ContainerController.swift */; };
+		DD56CE4DA4988D9BE6C95B55 /* protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD56CA73FC903D7B5ADDF049 /* protocols.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		14E17E4122F8A94600961F25 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD56C18C7DB1474A6DB6C7D9 /* MenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		DD56C9FE40A411412CF77EE9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
+		DD56CA73FC903D7B5ADDF049 /* protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = protocols.swift; sourceTree = "<group>"; };
 		DD56CAB9E7D7E35AE64AFD7A /* ContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
 		DD56CF67282791880804E1CA /* HomeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -92,6 +94,7 @@
 				DD56CE88769DEDB89A62CF3D /* Controllers */,
 				DD56CB77C5BABC88DD07F990 /* Views */,
 				DD56C3385B3A444C0C10AD97 /* Models */,
+				DD56CD882BF5C33F5C6726CD /* Utils */,
 			);
 			path = RedditClient;
 			sourceTree = "<group>";
@@ -117,6 +120,14 @@
 			children = (
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		DD56CD882BF5C33F5C6726CD /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				DD56CA73FC903D7B5ADDF049 /* protocols.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		DD56CE88769DEDB89A62CF3D /* Controllers */ = {
@@ -235,6 +246,7 @@
 				DD56C4C6CAAEAC8646AF29B5 /* ContainerController.swift in Sources */,
 				DD56C150F51C82E2B07D84A3 /* HomeController.swift in Sources */,
 				DD56C13562E5FE36583C68A0 /* MenuController.swift in Sources */,
+				DD56CE4DA4988D9BE6C95B55 /* protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

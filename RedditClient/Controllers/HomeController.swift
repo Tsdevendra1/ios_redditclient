@@ -7,6 +7,8 @@ import UIKit
 
 class HomeController: UIViewController {
 
+    var delegate: HomeControllerDelegate?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -26,7 +28,7 @@ class HomeController: UIViewController {
     }
 
     @objc func handleMenuToggle(){
-
+        delegate?.handleMenuToggle()
     }
 
 
