@@ -3,8 +3,8 @@
 // Copyright (c) 2019 Tharuka Devendra. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 protocol HomeControllerDelegate {
-    func handleMenuToggle()
+    func handlePanGesture(recognizer:UIPanGestureRecognizer)
 }

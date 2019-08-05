@@ -14,9 +14,15 @@ class HomeController: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .blue
         configureToggleMenuButton()
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        view.addGestureRecognizer(panGestureRecognizer)
     }
 
-    func configureToggleMenuButton(){
+    @objc func handlePan(recognizer: UIPanGestureRecognizer) {
+        delegate?.handlePanGesture(recognizer:recognizer)
+    }
+
+    func configureToggleMenuButton() {
         let button = UIButton()
         button.titleLabel?.text = "Toggle"
         button.backgroundColor = .red
@@ -24,12 +30,8 @@ class HomeController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        button.addTarget(self, action: #selector(handleMenuToggle), for: .touchUpInside)
     }
 
-    @objc func handleMenuToggle(){
-        delegate?.handleMenuToggle()
-    }
 
 
 }
