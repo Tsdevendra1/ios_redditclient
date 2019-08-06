@@ -13,7 +13,7 @@ class ContainerController: UIViewController {
     var menuController: MenuController!
     var homeController: HomeController!
     var isEnabled = false
-    var panDistance = CGFloat(0)
+    var menuXDistance = CGFloat(0)
 
 
     override func viewDidLoad() {
@@ -44,14 +44,13 @@ class ContainerController: UIViewController {
 extension ContainerController: HomeControllerDelegate {
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: view)
+        let menuMoveDistance = (self.menuXDistance + translation.x)
         if recognizer.state == UIGestureRecognizer.State.ended {
-            self.panDistance = self.panDistance + translation.x
+            self.menuXDistance = self.menuXDistance + translation.x
         } else {
-            print(self.panDistance)
-            print(translation.x)
-            let bounds = UIScreen.main.bounds
+            print(menuMoveDistance)
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.menuController.view.frame.origin.x = -self.menuController.menuWidth + (self.panDistance + translation.x)
+                self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
             }, completion: nil)
         }
     }
