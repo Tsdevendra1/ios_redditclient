@@ -19,13 +19,14 @@ class ContainerController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        view.addGestureRecognizer(panGestureRecognizer)
         configureHomeController()
         configureMenuController()
     }
 
     func configureHomeController() {
         homeController = HomeController()
-        homeController.delegate = self
         view.addSubview(homeController.view)
         addChild(homeController)
         homeController.didMove(toParent: self)
@@ -38,15 +39,7 @@ class ContainerController: UIViewController {
         menuController.didMove(toParent: self)
     }
 
-    func handleMenuClose() {
-
-    }
-
-}
-
-
-extension ContainerController: HomeControllerDelegate {
-    func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = self.menuXDistance + translation.x
 
@@ -69,5 +62,7 @@ extension ContainerController: HomeControllerDelegate {
             }, completion: nil)
         }
     }
+
 }
+
 
