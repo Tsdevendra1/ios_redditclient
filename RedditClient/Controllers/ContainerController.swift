@@ -14,6 +14,7 @@ class ContainerController: UIViewController {
     var homeController: HomeController!
     var menuVisible = false
     var menuXDistance = CGFloat(0)
+    let menuAnimationLength = 0.4
 
 
     override func viewDidLoad() {
@@ -47,17 +48,17 @@ class ContainerController: UIViewController {
         if recognizer.state == UIGestureRecognizer.State.ended {
             if translation.x < 80 {
                 self.menuXDistance = 0
-                UIView.animate(withDuration: 0.3, animations: {
+                UIView.animate(withDuration: menuAnimationLength, animations: {
                     self.menuController.view.frame.origin.x = -self.menuController.menuWidth
                 }, completion: nil)
             } else {
                 self.menuXDistance = self.menuController.menuWidth
-                UIView.animate(withDuration: 0.3, animations: {
+                UIView.animate(withDuration: menuAnimationLength, animations: {
                     self.menuController.view.frame.origin.x = 0
                 }, completion: nil)
             }
         } else if menuMoveDistance <= self.menuController.menuWidth {
-            UIView.animate(withDuration: 0.3, animations: {
+            UIView.animate(withDuration: menuAnimationLength, animations: {
                 self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
             }, completion: nil)
         }
