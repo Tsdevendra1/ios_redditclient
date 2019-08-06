@@ -48,24 +48,23 @@ class ContainerController: UIViewController {
 extension ContainerController: HomeControllerDelegate {
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: view)
-        let menuMoveDistance = (self.menuXDistance + translation.x)
-        print(menuMoveDistance)
+        let menuMoveDistance = self.menuXDistance + translation.x
+
+        print(translation.x)
         if recognizer.state == UIGestureRecognizer.State.ended {
-            print("ended")
-            if (menuMoveDistance > self.menuController.menuWidth) {
-                print("max")
-                self.menuXDistance = self.menuController.menuWidth
-            } else if (menuMoveDistance < 0) {
-                print("min")
+            if translation.x < 80 {
                 self.menuXDistance = 0
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.menuController.view.frame.origin.x = -self.menuController.menuWidth
+                }, completion: nil)
             } else {
-                print("else")
-                self.menuXDistance = menuMoveDistance
+                self.menuXDistance = self.menuController.menuWidth
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.menuController.view.frame.origin.x = 0
+                }, completion: nil)
             }
-//        } else if translation.x < 0 {
-//            self.handleMenuClose()
         } else if menuMoveDistance <= self.menuController.menuWidth {
-            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
             }, completion: nil)
         }

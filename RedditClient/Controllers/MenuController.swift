@@ -7,7 +7,7 @@ import UIKit
 
 class MenuController: UIViewController {
 
-    let menuWidth = CGFloat(89)
+    let menuWidth = CGFloat(150)
 
     override func viewDidLoad() {
         super.viewDidLoad()
