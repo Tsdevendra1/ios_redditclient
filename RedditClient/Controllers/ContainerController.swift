@@ -51,7 +51,7 @@ extension ContainerController: HomeControllerDelegate {
             print(translation.x)
             let bounds = UIScreen.main.bounds
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.menuController.view.frame.origin.x = -bounds.width + (self.panDistance+translation.x)
+                self.menuController.view.frame.origin.x = -self.menuController.menuWidth + (self.panDistance + translation.x)
             }, completion: nil)
         }
     }
