@@ -12,7 +12,7 @@ class ContainerController: UIViewController {
 
     var menuController: MenuController!
     var homeController: HomeController!
-    var isEnabled = false
+    var menuVisible = false
     var menuXDistance = CGFloat(0)
 
 
@@ -38,6 +38,10 @@ class ContainerController: UIViewController {
         menuController.didMove(toParent: self)
     }
 
+    func handleMenuClose() {
+
+    }
+
 }
 
 
@@ -47,13 +51,19 @@ extension ContainerController: HomeControllerDelegate {
         let menuMoveDistance = (self.menuXDistance + translation.x)
         print(menuMoveDistance)
         if recognizer.state == UIGestureRecognizer.State.ended {
-            if (menuMoveDistance < self.menuController.menuWidth) {
-                self.menuXDistance = menuMoveDistance
-            } else {
+            print("ended")
+            if (menuMoveDistance > self.menuController.menuWidth) {
+                print("max")
                 self.menuXDistance = self.menuController.menuWidth
+            } else if (menuMoveDistance < 0) {
+                print("min")
+                self.menuXDistance = 0
+            } else {
+                print("else")
+                self.menuXDistance = menuMoveDistance
             }
-        } else if translation.x < 0 {
-            print("Negative")
+//        } else if translation.x < 0 {
+//            self.handleMenuClose()
         } else if menuMoveDistance <= self.menuController.menuWidth {
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
                 self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
