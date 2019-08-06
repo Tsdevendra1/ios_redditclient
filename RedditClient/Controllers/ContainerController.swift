@@ -45,10 +45,16 @@ extension ContainerController: HomeControllerDelegate {
     func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = (self.menuXDistance + translation.x)
+        print(menuMoveDistance)
         if recognizer.state == UIGestureRecognizer.State.ended {
-            self.menuXDistance = self.menuXDistance + translation.x
-        } else {
-            print(menuMoveDistance)
+            if (menuMoveDistance < self.menuController.menuWidth) {
+                self.menuXDistance = menuMoveDistance
+            } else {
+                self.menuXDistance = self.menuController.menuWidth
+            }
+        } else if translation.x < 0 {
+            print("Negative")
+        } else if menuMoveDistance <= self.menuController.menuWidth {
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
                 self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
             }, completion: nil)
