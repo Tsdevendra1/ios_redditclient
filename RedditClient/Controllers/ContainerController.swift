@@ -41,10 +41,14 @@ class ContainerController: UIViewController {
     }
 
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
+        let menuControllerViewIndex = view.subviews.firstIndex(of: self.menuController.view)
+        if recognizer.state == UIGestureRecognizer.State.began && menuControllerViewIndex != nil && menuControllerViewIndex != 1 {
+            print("bring to front")
+            view.bringSubviewToFront(menuController.view)
+        }
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = self.menuXDistance + translation.x
 
-        print(translation.x)
         if recognizer.state == UIGestureRecognizer.State.ended {
             if translation.x < 80 {
                 self.menuXDistance = 0
