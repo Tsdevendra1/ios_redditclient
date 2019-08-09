@@ -15,6 +15,8 @@ class ContainerController: UIViewController {
     var menuVisible = false
     var menuXDistance = CGFloat(0)
     let menuAnimationLength = 0.4
+    let maxAlpha = CGFloat(0.55)
+    let maxPanToOpen = CGFloat(80)
 
 
     override func viewDidLoad() {
@@ -40,31 +42,42 @@ class ContainerController: UIViewController {
         menuController.didMove(toParent: self)
     }
 
+    func animateMenu(xPosition: CGFloat, alpha: CGFloat) {
+        UIView.animate(withDuration: menuAnimationLength, animations: {
+            self.menuController.view.frame.origin.x = xPosition
+            self.homeController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
+            self.view.backgroundColor = UIColor(white: 1, alpha: alpha)
+        }, completion: nil)
+    }
+
+    func calculateAlpha(menuMoveDistance: CGFloat) -> CGFloat {
+        var percentageOfWidthMoved = menuMoveDistance / (self.menuController.menuWidth / self.maxAlpha)
+        if percentageOfWidthMoved > self.maxAlpha {
+            percentageOfWidthMoved = self.maxAlpha
+        } else if percentageOfWidthMoved < 0 {
+            percentageOfWidthMoved = 0
+        }
+        return (1 - percentageOfWidthMoved)
+    }
+
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         let menuControllerViewIndex = view.subviews.firstIndex(of: self.menuController.view)
         if recognizer.state == UIGestureRecognizer.State.began && menuControllerViewIndex != nil && menuControllerViewIndex != 1 {
-            print("bring to front")
             view.bringSubviewToFront(menuController.view)
         }
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = self.menuXDistance + translation.x
 
         if recognizer.state == UIGestureRecognizer.State.ended {
-            if translation.x < 80 {
+            if translation.x < self.maxPanToOpen {
                 self.menuXDistance = 0
-                UIView.animate(withDuration: menuAnimationLength, animations: {
-                    self.menuController.view.frame.origin.x = -self.menuController.menuWidth
-                }, completion: nil)
+                self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1)
             } else {
                 self.menuXDistance = self.menuController.menuWidth
-                UIView.animate(withDuration: menuAnimationLength, animations: {
-                    self.menuController.view.frame.origin.x = 0
-                }, completion: nil)
+                self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
             }
         } else if menuMoveDistance <= self.menuController.menuWidth {
-            UIView.animate(withDuration: menuAnimationLength, animations: {
-                self.menuController.view.frame.origin.x = -self.menuController.menuWidth + menuMoveDistance
-            }, completion: nil)
+            self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
         }
     }
 
