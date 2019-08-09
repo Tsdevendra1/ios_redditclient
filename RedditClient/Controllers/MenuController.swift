@@ -33,9 +33,9 @@ class MenuController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Fetch a cell of the appropriate type.
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-
+        let menuOption = MenuOptions(rawValue: indexPath.row)
         // Configure the cell’s contents.
-        cell.textLabel!.text = "Cell text"
+        cell.textLabel!.text = menuOption?.description
 
         return cell
     }
