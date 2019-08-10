@@ -18,6 +18,7 @@ class ContainerController: UIViewController {
     let menuAnimationLength = 0.4
     let maxAlpha: CGFloat = 0.55
     let maxPanToOpen: CGFloat = 80
+    var moved = false
 
 
     override func viewDidLoad() {
@@ -69,7 +70,7 @@ class ContainerController: UIViewController {
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = self.menuXDistance + translation.x
 
-        if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended {
+        if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended || moved {
             if recognizer.state == UIGestureRecognizer.State.ended {
                 if translation.x < self.maxPanToOpen {
                     self.menuXDistance = 0
@@ -78,8 +79,10 @@ class ContainerController: UIViewController {
                     self.menuXDistance = self.menuController.menuWidth
                     self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
                 }
+                moved = false
             } else if menuMoveDistance <= self.menuController.menuWidth {
                 self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
+                moved = true
             }
         }
     }
