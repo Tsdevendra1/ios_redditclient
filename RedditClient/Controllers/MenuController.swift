@@ -18,34 +18,36 @@ class MenuController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        self.tableView.backgroundColor = .white
         let bounds = UIScreen.main.bounds
-        view.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
+        self.tableView.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
+
+
+        setViewSettingWithBgShade(view: self.tableView)
         self.tableView.register(MenuCellView.self, forCellReuseIdentifier: "MenuCellView")
         self.tableView.separatorStyle = .none
-        self.tableView.bounces = false
+        self.tableView.showsVerticalScrollIndicator = false
+
     }
 
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        let currentY = scrollView.contentOffset.y
-        let currentBottomY = scrollView.frame.size.height + currentY
-        if currentY > lastY {
-            //"scrolling down"
-            tableView.bounces = true
-        } else {
-            //"scrolling up"
-            // Check that we are not in bottom bounce
-            if currentBottomY < scrollView.contentSize.height + scrollView.contentInset.bottom {
-                tableView.bounces = false
-            }
-        }
-        lastY = scrollView.contentOffset.y
+    public func setViewSettingWithBgShade(view: UIView) {
+        //MARK:- Shade a view
+        view.layer.shadowOpacity = 0.5
+        view.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
+        view.layer.shadowRadius = 3.0
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.masksToBounds = false
+    }
+
+//
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollView.alwaysBounceVertical = false
     }
 
 
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 20
     }
 
     // Provide a cell object for each row.

@@ -14,6 +14,7 @@ class ContainerController: UIViewController {
     var homeController: HomeController!
     var menuVisible = false
     var menuXDistance: CGFloat = 0
+    let maxYForPan: CGFloat = 20
     let menuAnimationLength = 0.4
     let maxAlpha: CGFloat = 0.55
     let maxPanToOpen: CGFloat = 80
@@ -68,18 +69,18 @@ class ContainerController: UIViewController {
         let translation = recognizer.translation(in: view)
         let menuMoveDistance = self.menuXDistance + translation.x
 
-        if recognizer.state == UIGestureRecognizer.State.ended {
-            if translation.x < self.maxPanToOpen {
-                self.menuXDistance = 0
-                self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1)
-            } else {
-                self.menuXDistance = self.menuController.menuWidth
-                self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
+        if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended {
+            if recognizer.state == UIGestureRecognizer.State.ended {
+                if translation.x < self.maxPanToOpen {
+                    self.menuXDistance = 0
+                    self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1)
+                } else {
+                    self.menuXDistance = self.menuController.menuWidth
+                    self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
+                }
+            } else if menuMoveDistance <= self.menuController.menuWidth {
+                self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
             }
-        } else if menuMoveDistance <= self.menuController.menuWidth {
-            let alpha = calculateAlpha(menuMoveDistance: menuMoveDistance)
-            print(alpha)
-            self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
         }
     }
 
