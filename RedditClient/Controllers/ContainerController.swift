@@ -13,10 +13,10 @@ class ContainerController: UIViewController {
     var menuController: MenuController!
     var homeController: HomeController!
     var menuVisible = false
-    var menuXDistance = CGFloat(0)
+    var menuXDistance: CGFloat = 0
     let menuAnimationLength = 0.4
-    let maxAlpha = CGFloat(0.55)
-    let maxPanToOpen = CGFloat(80)
+    let maxAlpha: CGFloat = 0.55
+    let maxPanToOpen: CGFloat = 80
 
 
     override func viewDidLoad() {
@@ -77,6 +77,8 @@ class ContainerController: UIViewController {
                 self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
             }
         } else if menuMoveDistance <= self.menuController.menuWidth {
+            let alpha = calculateAlpha(menuMoveDistance: menuMoveDistance)
+            print(alpha)
             self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
         }
     }

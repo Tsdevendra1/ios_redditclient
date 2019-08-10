@@ -7,6 +7,7 @@ import UIKit
 
 class MenuController: UITableViewController {
     let reuseIdentifier = "MenuCellView"
+    var lastY: CGFloat = 0
 
     let menuWidth: CGFloat = {
         let bounds = UIScreen.main.bounds
@@ -21,6 +22,24 @@ class MenuController: UITableViewController {
         let bounds = UIScreen.main.bounds
         view.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
         self.tableView.register(MenuCellView.self, forCellReuseIdentifier: "MenuCellView")
+        self.tableView.separatorStyle = .none
+        self.tableView.bounces = false
+    }
+
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let currentY = scrollView.contentOffset.y
+        let currentBottomY = scrollView.frame.size.height + currentY
+        if currentY > lastY {
+            //"scrolling down"
+            tableView.bounces = true
+        } else {
+            //"scrolling up"
+            // Check that we are not in bottom bounce
+            if currentBottomY < scrollView.contentSize.height + scrollView.contentInset.bottom {
+                tableView.bounces = false
+            }
+        }
+        lastY = scrollView.contentOffset.y
     }
 
 
