@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum MenuOptions: Int, CustomStringConvertible {
     case UserName
@@ -25,5 +26,6 @@ enum MenuOptions: Int, CustomStringConvertible {
             return "Username"
         }
     }
+
 }
 

@@ -10,13 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RedditClient/Controllers/MenuController.swift"
-            timestampString = "587151576.821561"
+            timestampString = "587224449.883018"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "46"
             endingLineNumber = "46"
-            landmarkName = "MenuController"
-            landmarkType = "3">
+            landmarkName = "scrollViewDidScroll(_:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -26,13 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RedditClient/Controllers/MenuController.swift"
-            timestampString = "587151576.822283"
+            timestampString = "587224449.885167"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "47"
             endingLineNumber = "47"
-            landmarkName = "MenuController"
-            landmarkType = "3">
+            landmarkName = "scrollViewDidScroll(_:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RedditClient/Controllers/MenuController.swift"
-            timestampString = "587151576.82257"
+            timestampString = "587224449.8855"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
