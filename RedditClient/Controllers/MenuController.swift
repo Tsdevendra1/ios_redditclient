@@ -8,7 +8,7 @@ import UIKit
 class MenuController: UITableViewController {
     let reuseIdentifier = "MenuCellView"
     var lastY: CGFloat = 0
-    var usernameHeight: CGFloat = 160
+    var usernameHeight: CGFloat = 130
     var defaultHeight: CGFloat = 55
 
     let menuWidth: CGFloat = {
