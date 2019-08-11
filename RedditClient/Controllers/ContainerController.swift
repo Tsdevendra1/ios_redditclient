@@ -39,6 +39,7 @@ class ContainerController: UIViewController {
 
     func configureMenuController() {
         menuController = MenuController()
+        menuController.delegate = self
         view.addSubview(menuController.view)
         addChild(menuController)
         menuController.didMove(toParent: self)
@@ -60,6 +61,9 @@ class ContainerController: UIViewController {
             percentageOfWidthMoved = 0
         }
         return (1 - percentageOfWidthMoved)
+    }
+    func closeMenu(){
+
     }
 
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
@@ -86,6 +90,27 @@ class ContainerController: UIViewController {
             }
         }
     }
+
+    func presentMenuOptionController(menuOptionSelected: MenuOptions){
+        var controller: UIViewController
+        switch menuOptionSelected {
+        case .Profile:
+            controller = ProfileController()
+        default:
+            controller = ProfileController()
+        }
+        present(controller, animated: true, completion: nil)
+    }
+
+
+}
+
+extension ContainerController: MenuControllerDelegate {
+    func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
+        presentMenuOptionController(menuOptionSelected: menuOptionSelected)
+        self.closeMenu()
+    }
+
 
 }
 

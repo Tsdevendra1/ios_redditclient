@@ -8,3 +8,9 @@ import UIKit
 protocol HomeControllerDelegate {
     func handlePanGesture(recognizer:UIPanGestureRecognizer)
 }
+
+protocol MenuControllerDelegate {
+    func handleMenuSelectOption(menuOptionSelected:MenuOptions){
+
+    }
+}

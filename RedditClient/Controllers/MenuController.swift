@@ -10,6 +10,7 @@ class MenuController: UITableViewController {
     var lastY: CGFloat = 0
     var usernameHeight: CGFloat = 130
     var defaultHeight: CGFloat = 55
+    var delegate: MenuControllerDelegate!
 
     let menuWidth: CGFloat = {
         let bounds = UIScreen.main.bounds
