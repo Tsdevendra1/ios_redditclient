@@ -24,6 +24,7 @@ class ContainerController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        // Todo: Use screen  edge pan recognizer
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         view.addGestureRecognizer(panGestureRecognizer)
         configureHomeController()
@@ -45,12 +46,16 @@ class ContainerController: UIViewController {
         menuController.didMove(toParent: self)
     }
 
-    func animateMenu(xPosition: CGFloat, alpha: CGFloat) {
+    func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
             self.homeController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
             self.view.backgroundColor = UIColor(white: 1, alpha: alpha)
-        }, completion: nil)
+        }, completion: { (_) in
+            if let function = finishedFunction {
+                function()
+            }
+        })
     }
 
     func calculateAlpha(menuMoveDistance: CGFloat) -> CGFloat {
@@ -62,8 +67,15 @@ class ContainerController: UIViewController {
         }
         return (1 - percentageOfWidthMoved)
     }
-    func closeMenu(){
 
+    func closeMenu(finishedAnimationFunction: (() -> Void)?) {
+        self.menuXDistance = 0
+        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1, finishedFunction: finishedAnimationFunction)
+    }
+
+    func openMenu() {
+        self.menuXDistance = self.menuController.menuWidth
+        self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha), finishedFunction: nil)
     }
 
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
@@ -72,34 +84,34 @@ class ContainerController: UIViewController {
             view.bringSubviewToFront(menuController.view)
         }
         let translation = recognizer.translation(in: view)
+        print("panning", translation.x)
         let menuMoveDistance = self.menuXDistance + translation.x
 
         if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended || moved {
             if recognizer.state == UIGestureRecognizer.State.ended {
                 if translation.x < self.maxPanToOpen {
-                    self.menuXDistance = 0
-                    self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1)
+                    self.closeMenu(finishedAnimationFunction: nil)
                 } else {
-                    self.menuXDistance = self.menuController.menuWidth
-                    self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha))
+                    self.openMenu()
                 }
                 moved = false
             } else if menuMoveDistance <= self.menuController.menuWidth {
-                self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance))
+                self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance), finishedFunction: nil)
                 moved = true
             }
         }
     }
 
-    func presentMenuOptionController(menuOptionSelected: MenuOptions){
+    func presentMenuOptionController(menuOptionSelected: MenuOptions) {
         var controller: UIViewController
         switch menuOptionSelected {
         case .Profile:
             controller = ProfileController()
+            controller.modalPresentationStyle = .overCurrentContext
+            AppDelegate.shared.rootViewController.switchToProfile()
         default:
             controller = ProfileController()
         }
-        present(controller, animated: true, completion: nil)
     }
 
 
@@ -107,8 +119,9 @@ class ContainerController: UIViewController {
 
 extension ContainerController: MenuControllerDelegate {
     func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
-        presentMenuOptionController(menuOptionSelected: menuOptionSelected)
-        self.closeMenu()
+        self.closeMenu(finishedAnimationFunction: { () in
+            self.presentMenuOptionController(menuOptionSelected: menuOptionSelected)
+        })
     }
 
 

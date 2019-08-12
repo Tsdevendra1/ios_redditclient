@@ -10,7 +10,5 @@ protocol HomeControllerDelegate {
 }
 
 protocol MenuControllerDelegate {
-    func handleMenuSelectOption(menuOptionSelected:MenuOptions){
-
-    }
+    func handleMenuSelectOption(menuOptionSelected:MenuOptions)
 }

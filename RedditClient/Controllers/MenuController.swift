@@ -87,4 +87,11 @@ class MenuController: UITableViewController {
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let menuOption = MenuOptions(rawValue: indexPath.row)
+        if let menuOptionSelected = menuOption {
+            delegate.handleMenuSelectOption(menuOptionSelected: menuOptionSelected)
+        }
+    }
+
 }
