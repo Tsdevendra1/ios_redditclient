@@ -108,7 +108,7 @@ class ContainerController: UIViewController {
         case .Profile:
             controller = ProfileController()
             controller.modalPresentationStyle = .overCurrentContext
-            AppDelegate.shared.rootViewController.switchToProfile()
+            present(controller, animated: true)
         default:
             controller = ProfileController()
         }
