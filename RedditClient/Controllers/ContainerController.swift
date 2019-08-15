@@ -84,7 +84,6 @@ class ContainerController: UIViewController {
             view.bringSubviewToFront(menuController.view)
         }
         let translation = recognizer.translation(in: view)
-        print("panning", translation.x)
         let menuMoveDistance = self.menuXDistance + translation.x
 
         if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended || moved {

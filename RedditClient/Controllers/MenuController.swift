@@ -6,7 +6,6 @@
 import UIKit
 
 class MenuController: UITableViewController {
-    let reuseIdentifier = "MenuCellView"
     var lastY: CGFloat = 0
     var usernameHeight: CGFloat = 130
     var defaultHeight: CGFloat = 55
@@ -27,7 +26,8 @@ class MenuController: UITableViewController {
 
 
         setViewSettingWithBgShade(view: self.tableView)
-        self.tableView.register(MenuCellView.self, forCellReuseIdentifier: "MenuCellView")
+        self.tableView.register(MenuCellView.self, forCellReuseIdentifier: MenuCellView.identifier)
+        self.tableView.register(HeaderMenuCellView.self, forCellReuseIdentifier: HeaderMenuCellView.identifier)
         self.tableView.separatorStyle = .none
         self.tableView.showsVerticalScrollIndicator = false
 
@@ -65,26 +65,19 @@ class MenuController: UITableViewController {
     // Provide a cell object for each row.
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Fetch a cell of the appropriate type.
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! MenuCellView
         let menuOption = MenuOptions(rawValue: indexPath.row)
 
+
         // Configure the cell’s contents.
-        cell.descriptionLabel.text = menuOption?.description
-
-        var constant: CGFloat
-        if menuOption != .UserName {
-            cell.descriptionLabel.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor).isActive = true
-            constant = 0
+        if menuOption == .UserName {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HeaderMenuCellView.identifier, for: indexPath) as! HeaderMenuCellView
+            cell.descriptionLabel.text = menuOption?.description
+            return cell
         } else {
-            constant = 20
-            let bottomBorder = CALayer()
-            bottomBorder.frame = CGRect(x: 0.0, y: cell.frame.size.height-1, width: cell.frame.width, height: 1.0)
-            bottomBorder.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-            cell.layer.addSublayer(bottomBorder)
+            let cell = tableView.dequeueReusableCell(withIdentifier: MenuCellView.identifier, for: indexPath) as! MenuCellView
+            cell.descriptionLabel.text = menuOption?.description
+            return cell
         }
-        cell.descriptionLabel.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: -constant).isActive = true
-
-        return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
