@@ -72,6 +72,10 @@ class MenuController: UITableViewController {
         if menuOption == .UserName {
             let cell = tableView.dequeueReusableCell(withIdentifier: HeaderMenuCellView.identifier, for: indexPath) as! HeaderMenuCellView
             cell.descriptionLabel.text = menuOption?.description
+            let bottomBorder = CALayer()
+            bottomBorder.frame = CGRect(x: 0.0, y: cell.frame.maxY-1, width: cell.frame.width, height: 1.0)
+            bottomBorder.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+            cell.layer.addSublayer(bottomBorder)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCellView.identifier, for: indexPath) as! MenuCellView
