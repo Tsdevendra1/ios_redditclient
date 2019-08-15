@@ -21,7 +21,7 @@ class MenuCellView: UITableViewCell {
         addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
-        descriptionLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
 }
 
