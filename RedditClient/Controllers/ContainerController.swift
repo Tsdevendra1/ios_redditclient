@@ -33,7 +33,6 @@ class ContainerController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     func configureHomeController() {
@@ -110,14 +109,13 @@ class ContainerController: UIViewController {
         var controller: UIViewController
         switch menuOptionSelected {
         case .Profile:
-            controller = UINavigationController(rootViewController:ProfileController())
+            controller = ProfileController()
             controller.modalPresentationStyle = .overCurrentContext
-//            navigationController?.setNavigationBarHidden(false, animated: false)
-            present(controller, animated:true)
-//            navigationController?.pushViewController(UINavigationController(rootViewController: controller), animated: true)
         default:
             controller = ProfileController()
         }
+        controller = UINavigationController(rootViewController:ProfileController())
+        present(controller, animated:true)
     }
 
 
