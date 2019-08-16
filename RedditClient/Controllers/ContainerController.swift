@@ -31,6 +31,11 @@ class ContainerController: UIViewController {
         configureMenuController()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
     func configureHomeController() {
         homeController = HomeController()
         view.addSubview(homeController.view)
