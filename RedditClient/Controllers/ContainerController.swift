@@ -112,7 +112,8 @@ class ContainerController: UIViewController {
         case .Profile:
             controller = ProfileController()
             controller.modalPresentationStyle = .overCurrentContext
-            present(controller, animated: true)
+            navigationController?.setNavigationBarHidden(false, animated: false)
+            navigationController?.pushViewController(controller, animated: true)
         default:
             controller = ProfileController()
         }
