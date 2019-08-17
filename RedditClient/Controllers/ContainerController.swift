@@ -24,15 +24,8 @@ class ContainerController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        // Todo: Use screen  edge pan recognizer
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        view.addGestureRecognizer(panGestureRecognizer)
         configureHomeController()
         configureMenuController()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
 
     func configureHomeController() {
@@ -45,9 +38,11 @@ class ContainerController: UIViewController {
     func configureMenuController() {
         menuController = MenuController()
         menuController.delegate = self
-        view.addSubview(menuController.view)
-        addChild(menuController)
-        menuController.didMove(toParent: self)
+        let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+        currentWindow?.addSubview(menuController.view)
+        // Todo: Use screen  edge pan recognizer
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        currentWindow?.addGestureRecognizer(panGestureRecognizer)
     }
 
     func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
@@ -72,7 +67,7 @@ class ContainerController: UIViewController {
         return (1 - percentageOfWidthMoved)
     }
 
-    func closeMenu(finishedAnimationFunction: (() -> Void)?) {
+    func closeMenu(finishedAnimationFunction: (() -> Void)? = nil) {
         self.menuXDistance = 0
         self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1, finishedFunction: finishedAnimationFunction)
     }
@@ -105,7 +100,7 @@ class ContainerController: UIViewController {
         }
     }
 
-    func presentMenuOptionController(menuOptionSelected: MenuOptions) {
+    func presentMenuOption(menuOptionSelected: MenuOptions) {
         var controller: UIViewController
         switch menuOptionSelected {
         case .Profile:
@@ -114,8 +109,7 @@ class ContainerController: UIViewController {
         default:
             controller = ProfileController()
         }
-        controller = UINavigationController(rootViewController:ProfileController())
-        present(controller, animated:true)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
 
@@ -124,7 +118,7 @@ class ContainerController: UIViewController {
 extension ContainerController: MenuControllerDelegate {
     func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
         self.closeMenu(finishedAnimationFunction: { () in
-            self.presentMenuOptionController(menuOptionSelected: menuOptionSelected)
+            self.presentMenuOption(menuOptionSelected: menuOptionSelected)
         })
     }
 
