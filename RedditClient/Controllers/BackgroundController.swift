@@ -12,4 +12,5 @@ class BackgroundController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(white: 1, alpha: 0)
     }
+
 }

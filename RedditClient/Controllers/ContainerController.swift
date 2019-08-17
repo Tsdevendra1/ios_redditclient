@@ -61,7 +61,6 @@ class ContainerController: UIViewController {
     // MARK: Menu
 
     func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
-        print(alpha)
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
             self.backgroundController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
@@ -79,17 +78,17 @@ class ContainerController: UIViewController {
         } else if percentageOfWidthMoved < 0 {
             percentageOfWidthMoved = 0
         }
-        return (1 - percentageOfWidthMoved)
+        return percentageOfWidthMoved
     }
 
     func closeMenu(finishedAnimationFunction: (() -> Void)? = nil) {
         self.menuXDistance = 0
-        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 1, finishedFunction: finishedAnimationFunction)
+        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, finishedFunction: finishedAnimationFunction)
     }
 
     func openMenu() {
         self.menuXDistance = self.menuController.menuWidth
-        self.animateMenu(xPosition: 0, alpha: (1 - self.maxAlpha), finishedFunction: nil)
+        self.animateMenu(xPosition: 0, alpha: self.maxAlpha, finishedFunction: nil)
     }
 
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
