@@ -12,6 +12,7 @@ class ContainerController: UIViewController {
 
     var menuController: MenuController!
     var homeController: HomeController!
+    var backgroundController: BackgroundController!
     var menuVisible = false
     var menuXDistance: CGFloat = 0
     let maxYForPan: CGFloat = 20
@@ -26,7 +27,10 @@ class ContainerController: UIViewController {
         // Do any additional setup after loading the view.
         configureHomeController()
         configureMenuController()
+        setupMenuStyling()
     }
+
+    // MARK: Setup
 
     func configureHomeController() {
         homeController = HomeController()
@@ -36,20 +40,31 @@ class ContainerController: UIViewController {
     }
 
     func configureMenuController() {
+        let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+        backgroundController = BackgroundController()
+        currentWindow?.addSubview(backgroundController.view)
+
         menuController = MenuController()
         menuController.delegate = self
-        let currentWindow: UIWindow? = UIApplication.shared.keyWindow
         currentWindow?.addSubview(menuController.view)
+
         // Todo: Use screen  edge pan recognizer
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         currentWindow?.addGestureRecognizer(panGestureRecognizer)
     }
 
+    func setupMenuStyling() {
+        self.navigationController!.navigationBar.isTranslucent = false
+        self.navigationController!.navigationBar.tintColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+    }
+
+    // MARK: Menu
+
     func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
+        print(alpha)
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
-            self.homeController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
-            self.view.backgroundColor = UIColor(white: 1, alpha: alpha)
+            self.backgroundController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
         }, completion: { (_) in
             if let function = finishedFunction {
                 function()
