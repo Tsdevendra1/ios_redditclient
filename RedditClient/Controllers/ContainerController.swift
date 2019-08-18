@@ -63,7 +63,6 @@ class ContainerController: UIViewController {
 
     func addBackgroundController(){
         if backgroundController == nil {
-            print("added")
             let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             backgroundController = BackgroundController()
             currentWindow?.insertSubview(backgroundController!.view!, belowSubview: menuController.view)
@@ -74,7 +73,6 @@ class ContainerController: UIViewController {
 
     func removeBackgroundController(){
         if backgroundController != nil {
-            print("removed")
             backgroundController!.willMove(toParent: nil)
             backgroundController!.view.removeFromSuperview()
             backgroundController!.removeFromParent()
@@ -85,7 +83,7 @@ class ContainerController: UIViewController {
     func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
-            self.backgroundController!.view.backgroundColor = UIColor(white: 1, alpha: alpha)
+            self.backgroundController!.view.backgroundColor = UIColor(white: 0.3, alpha: alpha)
         }, completion: { (_) in
             if let function = finishedFunction {
                 function()
