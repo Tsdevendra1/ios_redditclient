@@ -12,7 +12,7 @@ class ContainerController: UIViewController {
 
     var menuController: MenuController!
     var homeController: HomeController!
-    var backgroundController: BackgroundController!
+    var backgroundController: BackgroundController?
     var menuVisible = false
     var menuXDistance: CGFloat = 0
     let maxYForPan: CGFloat = 20
@@ -27,7 +27,8 @@ class ContainerController: UIViewController {
         // Do any additional setup after loading the view.
         configureHomeController()
         configureMenuController()
-        setupMenuStyling()
+        // todo: look into hidebaronswipe for swiping up to hide the nav bar
+//        setupMenuStyling()
     }
 
     // MARK: Setup
@@ -41,8 +42,8 @@ class ContainerController: UIViewController {
 
     func configureMenuController() {
         let currentWindow: UIWindow? = UIApplication.shared.keyWindow
-        backgroundController = BackgroundController()
-        currentWindow?.addSubview(backgroundController.view)
+//        backgroundController = BackgroundController()
+//        currentWindow?.addSubview(backgroundController.view)
 
         menuController = MenuController()
         menuController.delegate = self
@@ -60,10 +61,31 @@ class ContainerController: UIViewController {
 
     // MARK: Menu
 
+    func addBackgroundController(){
+        if backgroundController == nil {
+            print("added")
+            let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+            backgroundController = BackgroundController()
+            currentWindow?.insertSubview(backgroundController!.view!, belowSubview: menuController.view)
+            addChild(backgroundController!)
+            backgroundController?.didMove(toParent: self)
+        }
+    }
+
+    func removeBackgroundController(){
+        if backgroundController != nil {
+            print("removed")
+            backgroundController!.willMove(toParent: nil)
+            backgroundController!.view.removeFromSuperview()
+            backgroundController!.removeFromParent()
+            backgroundController = nil
+        }
+    }
+
     func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
-            self.backgroundController.view.backgroundColor = UIColor(white: 1, alpha: alpha)
+            self.backgroundController!.view.backgroundColor = UIColor(white: 1, alpha: alpha)
         }, completion: { (_) in
             if let function = finishedFunction {
                 function()
@@ -84,6 +106,8 @@ class ContainerController: UIViewController {
     func closeMenu(finishedAnimationFunction: (() -> Void)? = nil) {
         self.menuXDistance = 0
         self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, finishedFunction: finishedAnimationFunction)
+        // This has to be after the animateMenu function call because it uses the controller
+        self.removeBackgroundController()
     }
 
     func openMenu() {
@@ -108,6 +132,7 @@ class ContainerController: UIViewController {
                 }
                 moved = false
             } else if menuMoveDistance <= self.menuController.menuWidth {
+                self.addBackgroundController()
                 self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance), finishedFunction: nil)
                 moved = true
             }
@@ -115,15 +140,15 @@ class ContainerController: UIViewController {
     }
 
     func presentMenuOption(menuOptionSelected: MenuOptions) {
-        var controller: UIViewController
         switch menuOptionSelected {
         case .Profile:
-            controller = ProfileController()
+            let controller = ProfileController()
             controller.modalPresentationStyle = .overCurrentContext
+            navigationController?.pushViewController(controller, animated: true)
         default:
-            controller = ProfileController()
+            let controller = ProfileController()
+            navigationController?.pushViewController(controller, animated: true)
         }
-        navigationController?.pushViewController(controller, animated: true)
     }
 
 
@@ -135,8 +160,6 @@ extension ContainerController: MenuControllerDelegate {
             self.presentMenuOption(menuOptionSelected: menuOptionSelected)
         })
     }
-
-
 }
 
 
