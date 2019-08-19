@@ -33,7 +33,8 @@ class ProfileController: UIViewController {
         let item = UINavigationItem()
         item.title = "HI"
         let button = UIButton()
-        button.titleLabel?.text = "Back"
+        button.setTitle("ThiS iS  test", for: .normal)
+        button.setTitleColor(.red, for: .normal)
         button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
         let backBarButtton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButtton]
