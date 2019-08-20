@@ -5,7 +5,7 @@
 
 import UIKit
 
-class HomeController: UIViewController {
+class HomeController: BaseViewController {
 
 
     override func viewDidLoad() {
@@ -15,4 +15,7 @@ class HomeController: UIViewController {
 
     }
 
+    override func setupNavBar() {
+
+    }
 }
