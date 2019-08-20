@@ -107,7 +107,8 @@ class ContainerController: UIViewController {
                 finishedAnimationFunction!()
             }
             self.homeController.view.addGestureRecognizer(self.panGestureRecognizer)
-            self.menuController.view.removeGestureRecognizer(self.panGestureRecognizer)
+            let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+            currentWindow?.removeGestureRecognizer(self.panGestureRecognizer)
         })
         // This has to be after the animateMenu function call because it uses the controller
         self.removeBackgroundController()
@@ -117,7 +118,8 @@ class ContainerController: UIViewController {
         self.menuXDistance = self.menuController.menuWidth
         self.animateMenu(xPosition: 0, alpha: self.maxAlpha, finishedFunction: { () in
             self.homeController.view.removeGestureRecognizer(self.panGestureRecognizer)
-            self.menuController.view.addGestureRecognizer(self.panGestureRecognizer)
+            let currentWindow: UIWindow? = UIApplication.shared.keyWindow
+            currentWindow?.addGestureRecognizer(self.panGestureRecognizer)
         })
     }
 
