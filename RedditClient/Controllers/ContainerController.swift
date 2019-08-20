@@ -28,6 +28,7 @@ class ContainerController: UIViewController {
         // todo: also you should try and make it so the background view controller works so that its just the background of the menucontroller you're changing the colour of
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        navigationController?.navigationBar.isHidden = true
         configureHomeController()
         configureMenuController()
         // todo: look into hidebaronswipe for swiping up to hide the nav bar
