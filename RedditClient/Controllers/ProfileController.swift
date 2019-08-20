@@ -11,8 +11,7 @@ class ProfileController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        navigationController?.navigationBar.isHidden = true
         placeNavigationBar()
     }
 
