@@ -20,6 +20,7 @@ class ContainerController: UIViewController {
     let maxAlpha: CGFloat = 0.55
     let maxPanToOpen: CGFloat = 80
     var moved = false
+    var panGestureRecognizer: UIPanGestureRecognizer!
 
 
     override func viewDidLoad() {
@@ -40,6 +41,9 @@ class ContainerController: UIViewController {
         view.addSubview(homeController.view)
         addChild(homeController)
         homeController.didMove(toParent: self)
+        // Todo: Use screen  edge pan recognizer
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        homeController.view.addGestureRecognizer(panGestureRecognizer)
     }
 
     func configureMenuController() {
@@ -47,9 +51,6 @@ class ContainerController: UIViewController {
         menuController = MenuController()
         menuController.delegate = self
         currentWindow?.addSubview(menuController.view)
-        // Todo: Use screen  edge pan recognizer
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        currentWindow?.addGestureRecognizer(panGestureRecognizer)
     }
 
     func setupMenuStyling() {
@@ -59,7 +60,7 @@ class ContainerController: UIViewController {
 
     // MARK: Menu
 
-    func addBackgroundController(){
+    func addBackgroundController() {
         if backgroundController == nil {
             let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             backgroundController = BackgroundController()
@@ -69,7 +70,7 @@ class ContainerController: UIViewController {
         }
     }
 
-    func removeBackgroundController(){
+    func removeBackgroundController() {
         if backgroundController != nil {
             backgroundController!.willMove(toParent: nil)
             backgroundController!.view.removeFromSuperview()
@@ -101,14 +102,23 @@ class ContainerController: UIViewController {
 
     func closeMenu(finishedAnimationFunction: (() -> Void)? = nil) {
         self.menuXDistance = 0
-        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, finishedFunction: finishedAnimationFunction)
+        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, finishedFunction: { () in
+            if finishedAnimationFunction != nil {
+                finishedAnimationFunction!()
+            }
+            self.homeController.view.addGestureRecognizer(self.panGestureRecognizer)
+            self.menuController.view.removeGestureRecognizer(self.panGestureRecognizer)
+        })
         // This has to be after the animateMenu function call because it uses the controller
         self.removeBackgroundController()
     }
 
     func openMenu() {
         self.menuXDistance = self.menuController.menuWidth
-        self.animateMenu(xPosition: 0, alpha: self.maxAlpha, finishedFunction: nil)
+        self.animateMenu(xPosition: 0, alpha: self.maxAlpha, finishedFunction: { () in
+            self.homeController.view.removeGestureRecognizer(self.panGestureRecognizer)
+            self.menuController.view.addGestureRecognizer(self.panGestureRecognizer)
+        })
     }
 
     @objc func handlePanGesture(recognizer: UIPanGestureRecognizer) {
