@@ -36,13 +36,12 @@ class ProfileController: UIViewController {
         button.setTitle("ThiS iS  test", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
-        let backBarButtton = UIBarButtonItem(customView: button)
-        item.leftBarButtonItems = [backBarButtton]
+        let backBarButton = UIBarButtonItem(customView: button)
+        item.leftBarButtonItems = [backBarButton]
         navBar.items = [item]
     }
 
     @objc func dismissView(for navBar: UINavigationItem){
-        print("hiii√")
         self.navigationController?.popViewController(animated: true)
     }
 

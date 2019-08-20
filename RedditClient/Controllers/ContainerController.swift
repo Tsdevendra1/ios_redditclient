@@ -23,12 +23,14 @@ class ContainerController: UIViewController {
 
 
     override func viewDidLoad() {
+        // todo: the syoer will call the parebt view did load so you can implment and abstract method for this
+        // todo: also you should try and make it so the background view controller works so that its just the background of the menucontroller you're changing the colour of
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         configureHomeController()
         configureMenuController()
         // todo: look into hidebaronswipe for swiping up to hide the nav bar
-//        setupMenuStyling()
+        setupMenuStyling()
     }
 
     // MARK: Setup
@@ -42,13 +44,9 @@ class ContainerController: UIViewController {
 
     func configureMenuController() {
         let currentWindow: UIWindow? = UIApplication.shared.keyWindow
-//        backgroundController = BackgroundController()
-//        currentWindow?.addSubview(backgroundController.view)
-
         menuController = MenuController()
         menuController.delegate = self
         currentWindow?.addSubview(menuController.view)
-
         // Todo: Use screen  edge pan recognizer
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
         currentWindow?.addGestureRecognizer(panGestureRecognizer)
