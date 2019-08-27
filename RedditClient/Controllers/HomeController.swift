@@ -25,5 +25,6 @@ class HomeController: BaseViewController {
         let backBarButton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButton]
         return item
+
    }
 }
