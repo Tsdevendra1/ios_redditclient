@@ -12,7 +12,7 @@ class HomeController: BaseViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = .yellow
-
+        RedditApiHelper.getPosts(subreddit: "all")
     }
 
     override func createBasicNavItem() -> UINavigationItem {
@@ -25,6 +25,10 @@ class HomeController: BaseViewController {
         let backBarButton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButton]
         return item
-
    }
+
+
+
 }
+
+
