@@ -5,6 +5,20 @@
 
 import Foundation
 
+func decodeData<T>(model: T.Type, data: Data) -> T?
+        where T: Decodable {
+    do {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let responseResult = try decoder.decode(model.self, from: data)
+        return responseResult
+    } catch {
+        print("ERRoR", error)
+    }
+    return nil
+}
+
+
 func getUrl(url: URL, completionHandler: @escaping (Data) -> Void) {
     let task = URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
         if error != nil {
