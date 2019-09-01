@@ -9,25 +9,16 @@ class RedditApiHelper {
 
     static func getPosts(subreddit: String) {
         let url = URL(string: "https://reddit.com/r/\(subreddit).json")!
-        print(url)
-
-        let task = URLSession.shared.dataTask(with: url) { (result) in
-            switch result {
-            case .success(let response, let data):
-                // Handle Data and Response
-                do {
-                    let responseResult = try JSONDecoder().decode(RedditGenericResponse.self, from: data)
-                    print(responseResult.kind)
-                } catch {
-                    print("ERRoR", error)
-                }
-                break
-            case .failure(let error):
-                // Handle Error
-                break
+        getUrl(url: url, completionHandler: { data in
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let responseResult = try decoder.decode(RedditResponse.self, from: data)
+                print(responseResult.data.children[0].data.title)
+            } catch {
+                print("ERRoR", error)
             }
-        }
-        task.resume()
+        })
     }
 
 }
