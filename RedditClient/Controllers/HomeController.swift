@@ -11,7 +11,7 @@ class HomeController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .yellow
+        view.backgroundColor = getUIColor(hex: "#A9A9A9")
         RedditApiHelper.getPosts(subreddit: "all")
     }
 

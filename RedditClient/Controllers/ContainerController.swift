@@ -24,8 +24,6 @@ class ContainerController: UIViewController {
 
 
     override func viewDidLoad() {
-        // todo: the syoer will call the parebt view did load so you can implment and abstract method for this
-        // todo: also you should try and make it so the background view controller works so that its just the background of the menucontroller you're changing the colour of
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
