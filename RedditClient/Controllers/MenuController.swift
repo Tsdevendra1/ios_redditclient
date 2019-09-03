@@ -23,8 +23,6 @@ class MenuController: UITableViewController {
         self.tableView.backgroundColor = .white
         let bounds = UIScreen.main.bounds
         self.tableView.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
-
-
         setViewSettingWithBgShade(view: self.tableView)
         self.tableView.register(MenuCellView.self, forCellReuseIdentifier: MenuCellView.identifier)
         self.tableView.register(HeaderMenuCellView.self, forCellReuseIdentifier: HeaderMenuCellView.identifier)

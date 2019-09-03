@@ -7,13 +7,15 @@ import Foundation
 
 class RedditApiHelper {
 
-    static func getPosts(subreddit: String) {
+    static func getPosts(subreddit: String, completionHandler: @escaping ([PostAttributes])->Void) {
         let url = URL(string: "https://reddit.com/r/\(subreddit).json")!
         getUrl(url: url, completionHandler: { data in
             let responseData = decodeData(model: RedditResponse.self, data: data)
-            if responseData != nil {
-                print(responseData!.data.children[0].data.title)
+            var cleanedData: [PostAttributes] = []
+            for post in responseData!.data.children {
+                cleanedData.append(post.data)
             }
+            completionHandler(cleanedData)
         })
     }
 

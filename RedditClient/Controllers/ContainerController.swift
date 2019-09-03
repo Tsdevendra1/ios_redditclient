@@ -30,7 +30,6 @@ class ContainerController: UIViewController {
         configureHomeController()
         configureMenuController()
         // todo: look into hidebaronswipe for swiping up to hide the nav bar
-        setupMenuStyling()
     }
 
     // MARK: Setup
@@ -52,10 +51,6 @@ class ContainerController: UIViewController {
         currentWindow?.addSubview(menuController.view)
     }
 
-    func setupMenuStyling() {
-        self.navigationController!.navigationBar.isTranslucent = false
-        self.navigationController!.navigationBar.tintColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
-    }
 
     // MARK: Menu
 
