@@ -37,8 +37,12 @@ class HomeController: BaseViewController {
         view.addSubview(tableView)
 
         // table row height
-        tableView.rowHeight = 150
-//        tableView.estimatedRowHeight = 600
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 140
+
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
