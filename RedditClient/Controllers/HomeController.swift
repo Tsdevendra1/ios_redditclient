@@ -11,6 +11,7 @@ class HomeController: BaseViewController {
     var tableViewData: [PostAttributes] = []
     var seen = 0
     var currentAfter: String!
+    var isLoading: Bool = false
 
 
     override func viewDidLoad() {
@@ -79,7 +80,8 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
         let userDidReachBottom = contentOffset > maximumOffset
 
-        if (userDidReachBottom) {
+        if (userDidReachBottom && !isLoading) {
+            isLoading = true;
             RedditApiHelper.getPosts(subreddit: "all", completionHandler: { (newData, seen, after) in
                 self.tableViewData += newData
                 self.seen += seen
@@ -87,6 +89,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
                 // Update the UI on the main thread
                 DispatchQueue.main.async() {
                     self.tableView.reloadData()
+                    self.isLoading = false;
                 }
             }, after: currentAfter, count: self.seen)
         }
