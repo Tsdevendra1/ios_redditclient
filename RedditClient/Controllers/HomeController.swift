@@ -21,6 +21,7 @@ class HomeController: BaseViewController {
         // Do any additional setup after loading the view.
         setupTableView()
 
+        view.backgroundColor = getUIColor(hex: "#A9A9A9")
         getRedditPostsAndReload()
     }
 
@@ -28,16 +29,19 @@ class HomeController: BaseViewController {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = getUIColor(hex: "#A9A9A9")
+        tableView.backgroundColor = UIColor(white: 1, alpha: 0)
         tableView.register(RedditPostCell.self, forCellReuseIdentifier: RedditPostCell.identifier)
+        tableView.separatorStyle = .none
         view.addSubview(tableView)
+
+
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor),
-            tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor)
+            tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10),
+            tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10)
         ])
     }
 
@@ -78,6 +82,10 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         cell.descriptionLabel.text = tableViewData[indexPath.row].title
         return cell
+    }
+
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 140
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
