@@ -25,25 +25,29 @@ class RedditPostCell: UITableViewCell {
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = UIColor(white: 1, alpha: 0)
-//        addSubview(descriptionLabel)
-//        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-//        descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
-//        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         let view = UIView()
         addSubview(view)
         view.backgroundColor = .red
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = 10
         view.layer.masksToBounds = true
 
         NSLayoutConstraint.activate([
             view.leftAnchor.constraint(equalTo: leftAnchor),
             view.rightAnchor.constraint(equalTo: rightAnchor),
-            view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
-            view.topAnchor.constraint(equalTo: topAnchor, constant: 10)
+            // remember downward is positive and right is positive. need to divide by two because otherwise we are
+            // padding each cell twice (one from the cell and then another from the cell below)
+            view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding)/2),
+            view.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding)/2)
         ])
+
+        view.addSubview(descriptionLabel)
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
+        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
+
 
 
 }

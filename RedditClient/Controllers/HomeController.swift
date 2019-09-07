@@ -14,6 +14,8 @@ class HomeController: BaseViewController {
     // when it loads it will be loading data
     var isLoading: Bool = true
     var currentSubreddit = "all"
+    static let cellPadding: CGFloat = 15
+    let cellHeight: CGFloat = 200
 
 
     override func viewDidLoad() {
@@ -34,14 +36,16 @@ class HomeController: BaseViewController {
         tableView.separatorStyle = .none
         view.addSubview(tableView)
 
-
+        // table row height
+        tableView.rowHeight = 150
+//        tableView.estimatedRowHeight = 600
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10),
-            tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10)
+            tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -HomeController.cellPadding),
+            tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: HomeController.cellPadding)
         ])
     }
 
@@ -57,7 +61,7 @@ class HomeController: BaseViewController {
         return item
     }
 
-    func getRedditPostsAndReload(){
+    func getRedditPostsAndReload() {
 
         RedditApiHelper.getPosts(subreddit: currentSubreddit, completionHandler: { (newData, seen, after) in
             self.tableViewData += newData
@@ -84,9 +88,6 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 140
-    }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset.y
