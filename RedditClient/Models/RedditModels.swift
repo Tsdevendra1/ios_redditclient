@@ -13,6 +13,8 @@ struct RedditResponse: Codable {
 
 struct RedditPostData: Codable {
     let children: [PostData]
+    let after: String
+    let dist: Int
 }
 
 struct PostData: Codable {

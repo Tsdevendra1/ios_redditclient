@@ -9,6 +9,8 @@ class HomeController: BaseViewController {
 
     var tableView: UITableView!
     var tableViewData: [PostAttributes] = []
+    var seen = 0
+    var currentAfter: String!
 
 
     override func viewDidLoad() {
@@ -18,8 +20,10 @@ class HomeController: BaseViewController {
 
         setupTableView()
 
-        RedditApiHelper.getPosts(subreddit: "all", completionHandler: { newData in
+        RedditApiHelper.getPosts(subreddit: "all", completionHandler: { (newData, seen, after) in
             self.tableViewData = newData
+            self.seen += seen
+            self.currentAfter = after
             // Update the UI on the main thread
             DispatchQueue.main.async() {
                 self.tableView.reloadData()
@@ -27,7 +31,7 @@ class HomeController: BaseViewController {
         })
     }
 
-    func setupTableView(){
+    func setupTableView() {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -69,6 +73,23 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset.y
+        // contentsize is the entire thing and frame is the space on the screen, so the actual scrollable part is the stuff offscreen which is what this calculates
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+        let userDidReachBottom = contentOffset > maximumOffset
 
+        if (userDidReachBottom) {
+            RedditApiHelper.getPosts(subreddit: "all", completionHandler: { (newData, seen, after) in
+                self.tableViewData += newData
+                self.seen += seen
+                self.currentAfter = after
+                // Update the UI on the main thread
+                DispatchQueue.main.async() {
+                    self.tableView.reloadData()
+                }
+            }, after: currentAfter, count: self.seen)
+        }
+    }
 }
 
