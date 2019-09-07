@@ -11,33 +11,25 @@ class HomeController: BaseViewController {
     var tableViewData: [PostAttributes] = []
     var seen = 0
     var currentAfter: String!
-    var isLoading: Bool = false
+    // when it loads it will be loading data
+    var isLoading: Bool = true
+    var currentSubreddit = "all"
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = getUIColor(hex: "#A9A9A9")
-
         setupTableView()
 
-        RedditApiHelper.getPosts(subreddit: "all", completionHandler: { (newData, seen, after) in
-            self.tableViewData = newData
-            self.seen += seen
-            self.currentAfter = after
-            // Update the UI on the main thread
-            DispatchQueue.main.async() {
-                self.tableView.reloadData()
-            }
-        })
+        getRedditPostsAndReload()
     }
 
     func setupTableView() {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .red
-        tableView.register(MenuCellView.self, forCellReuseIdentifier: MenuCellView.identifier)
+        tableView.backgroundColor = getUIColor(hex: "#A9A9A9")
+        tableView.register(RedditPostCell.self, forCellReuseIdentifier: RedditPostCell.identifier)
         view.addSubview(tableView)
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -61,6 +53,20 @@ class HomeController: BaseViewController {
         return item
     }
 
+    func getRedditPostsAndReload(){
+
+        RedditApiHelper.getPosts(subreddit: currentSubreddit, completionHandler: { (newData, seen, after) in
+            self.tableViewData += newData
+            self.seen += seen
+            self.currentAfter = after
+            // Update the UI on the main thread
+            DispatchQueue.main.async() {
+                self.tableView.reloadData()
+                self.isLoading = false;
+            }
+        }, after: currentAfter, count: self.seen)
+    }
+
 }
 
 extension HomeController: UITableViewDataSource, UITableViewDelegate {
@@ -69,7 +75,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MenuCellView.identifier, for: indexPath) as! MenuCellView
+        let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         cell.descriptionLabel.text = tableViewData[indexPath.row].title
         return cell
     }
@@ -82,16 +88,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
         if (userDidReachBottom && !isLoading) {
             isLoading = true;
-            RedditApiHelper.getPosts(subreddit: "all", completionHandler: { (newData, seen, after) in
-                self.tableViewData += newData
-                self.seen += seen
-                self.currentAfter = after
-                // Update the UI on the main thread
-                DispatchQueue.main.async() {
-                    self.tableView.reloadData()
-                    self.isLoading = false;
-                }
-            }, after: currentAfter, count: self.seen)
+            getRedditPostsAndReload()
         }
     }
 }
