@@ -28,21 +28,21 @@ class RedditPostCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = UIColor(white: 1, alpha: 0)
 //
-//        let view = UIView()
-//        addSubview(view)
-//        view.backgroundColor = .red
-//        view.layer.cornerRadius = 10
-//        view.layer.masksToBounds = true
+        let view = UIView()
+        addSubview(view)
+        view.backgroundColor = .red
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
 //
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            view.leftAnchor.constraint(equalTo: leftAnchor),
-//            view.rightAnchor.constraint(equalTo: rightAnchor),
-//            // remember downward is positive and right is positive. need to divide by two because otherwise we are
-//            // padding each cell twice (one from the cell and then another from the cell below)
-//            view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding)/2),
-//            view.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding)/2)
-//        ])
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.leftAnchor.constraint(equalTo: leftAnchor),
+            view.rightAnchor.constraint(equalTo: rightAnchor),
+            // remember downward is positive and right is positive. need to divide by two because otherwise we are
+            // padding each cell twice (one from the cell and then another from the cell below)
+            view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding)/2),
+            view.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding)/2)
+        ])
 //        if let superview = superview {
 //            topAnchor.constraint(equalTo: superview.topAnchor)
 //            bottomAnchor.constraint(equalTo: superview.bottomAnchor)
@@ -50,12 +50,12 @@ class RedditPostCell: UITableViewCell {
 //            rightAnchor.constraint(equalTo: superview.rightAnchor)
 //        }
 //
-        addSubview(descriptionLabel)
+        view.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        descriptionLabel.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        descriptionLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        descriptionLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
 
     }
 
