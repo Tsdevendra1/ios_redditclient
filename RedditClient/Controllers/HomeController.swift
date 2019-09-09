@@ -29,6 +29,7 @@ class HomeController: BaseViewController {
 
     func setupTableView() {
         tableView = UITableView()
+        tableView.showsVerticalScrollIndicator = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor(white: 1, alpha: 0)
@@ -40,13 +41,9 @@ class HomeController: BaseViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 140
 
-        tableView.reloadData()
-        tableView.layoutIfNeeded()
-
-
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -HomeController.cellPadding),
             tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: HomeController.cellPadding)

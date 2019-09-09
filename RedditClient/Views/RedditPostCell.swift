@@ -43,13 +43,7 @@ class RedditPostCell: UITableViewCell {
             view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding)/2),
             view.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding)/2)
         ])
-//        if let superview = superview {
-//            topAnchor.constraint(equalTo: superview.topAnchor)
-//            bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-//            leftAnchor.constraint(equalTo: superview.leftAnchor)
-//            rightAnchor.constraint(equalTo: superview.rightAnchor)
-//        }
-//
+
         view.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true

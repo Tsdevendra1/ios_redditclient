@@ -10,6 +10,8 @@ import UIKit
 
 class BaseViewController: UIViewController {
 
+    var navBar: UINavigationBar!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.createBasicNavBar()
@@ -18,7 +20,7 @@ class BaseViewController: UIViewController {
 
     func createBasicNavBar() {
         // create navigation bar
-        let navBar = UINavigationBar()
+        navBar = UINavigationBar()
         navBar.delegate = self
         navBar.barTintColor = .white
         navBar.isTranslucent = false
