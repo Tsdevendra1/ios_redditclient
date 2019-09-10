@@ -65,14 +65,17 @@ class RedditPostCell: UITableViewCell {
         let view = UIView()
         view.backgroundColor = .red
         let label = UILabel()
+        view.addSubview(label)
         label.textColor = .black
         label.font = .systemFont(ofSize: 16)
         label.text = "Testing"
         label.backgroundColor = .red
         label.numberOfLines = 0
-        view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+//        view.heightAnchor.constraint(equalToConstant: 100).isActive = true
         return view
 
     }
@@ -85,7 +88,7 @@ class RedditPostCell: UITableViewCell {
 
         let stackView = UIStackView(arrangedSubviews: stackedViews)
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fill
 
         view.addSubview(stackView)
 
