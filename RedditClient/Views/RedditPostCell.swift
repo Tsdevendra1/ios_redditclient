@@ -75,6 +75,18 @@ class RedditPostCell: UITableViewCell {
         label.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         label.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+        let label1 = UILabel()
+        view.addSubview(label1)
+        label1.textColor = .black
+        label1.font = .systemFont(ofSize: 16)
+        label1.text = "Testing"
+        label1.backgroundColor = .red
+        label1.numberOfLines = 0
+        label1.translatesAutoresizingMaskIntoConstraints = false
+        label1.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        label1.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        label1.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 //        view.heightAnchor.constraint(equalToConstant: 100).isActive = true
         return view
 
