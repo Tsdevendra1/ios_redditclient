@@ -52,7 +52,7 @@ class HomeController: BaseViewController {
 
     override func createBasicNavItem() -> UINavigationItem {
         let item = UINavigationItem()
-        item.title = "HI"
+        item.title = currentSubreddit.capitalizingFirstLetter()
         let button = UIButton()
         button.setTitle("ThiS iS  test", for: .normal)
         button.setTitleColor(.red, for: .normal)
@@ -85,7 +85,9 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
-        cell.descriptionLabel.text = tableViewData[indexPath.row].title
+        let infoForCell = tableViewData[indexPath.row]
+        cell.titleLabel.text = infoForCell.title
+        cell.postInfoLabel.text = infoForCell.author
         return cell
     }
 

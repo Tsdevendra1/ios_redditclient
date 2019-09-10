@@ -22,3 +22,4 @@ func getUIColor(hex: String, alpha: Double = 1.0) -> UIColor? {
             alpha: CGFloat(1.0)
     )
 }
+

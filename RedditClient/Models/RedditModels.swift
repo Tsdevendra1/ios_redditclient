@@ -29,7 +29,7 @@ struct PostAttributes: Codable {
 //    let score: Int
 //    let ups: Int
 //    let downs: Int
-//    let author: String
+    let author: String
 //    let numComments: Int
 //    let subredditId: String
 //    let createdUtc: Int
