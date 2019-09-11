@@ -87,7 +87,9 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
         cell.titleLabel.text = infoForCell.title
-        cell.postInfoLabel.text = infoForCell.author
+        cell.authorLabel.text = infoForCell.author
+        cell.scoreLabel.text = String(infoForCell.score)
+        cell.commentsTotalLabel.text = String(infoForCell.numComments)
         return cell
     }
 
