@@ -92,9 +92,7 @@ class RedditPostCell: UITableViewCell {
         scoreAndCommentsStack.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scoreAndCommentsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 
-        var image = UIImage(named: "star")!
-//        image = UIImage.resize(image: image, targetSize: CGSize(width: 30, height: 30))
-        let imageView = UIImageView(image: image)
+        let imageView = UIImageView(image: UIImage(named: "star")!)
         imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
         view.addSubview(imageView)
