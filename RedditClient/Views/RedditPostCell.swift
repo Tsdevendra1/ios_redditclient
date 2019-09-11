@@ -76,16 +76,37 @@ class RedditPostCell: UITableViewCell {
 
     }
 
+    @objc func handleUpvoteClick(sender: UIButton){
+        if (scoreLabel.textColor == .orange){
+            scoreLabel.textColor = .black
+        } else {
+            scoreLabel.textColor = .orange
+        }
+    }
 
     func createPostButtonsArray() -> [UIView] {
 
-        var buttonArray: [UIView] = []
-        for _ in 0..<4 {
-            let imageView = UIImageView(image: UIImage(named: "star")!)
-            imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            buttonArray.append(imageView)
-        }
-        print(buttonArray.count)
+        let image = UIImage(named: "star")!
+
+        let upvoteButton = UIButton()
+        upvoteButton.setImage(image, for: .normal)
+        upvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        upvoteButton.addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
+
+        let downvoteButton = UIButton()
+        downvoteButton.setImage(image, for: .normal)
+        downvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+
+        let favouriteButton = UIButton()
+        favouriteButton.setImage(image, for: .normal)
+        favouriteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+
+        let moreButton = UIButton()
+        moreButton.setImage(image, for: .normal)
+        moreButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+
+        let buttonArray = [upvoteButton, downvoteButton, favouriteButton, moreButton]
+
         return buttonArray
 
     }
@@ -93,7 +114,7 @@ class RedditPostCell: UITableViewCell {
     func configureBottomRow() -> UIView {
 
         let view = UIView()
-        view.backgroundColor = .red
+        view.backgroundColor = .white
         let scoreAndCommentsStack = UIStackView(arrangedSubviews: [scoreLabel, commentsTotalLabel])
         scoreAndCommentsStack.axis = .vertical
         view.addSubview(scoreAndCommentsStack)
