@@ -52,8 +52,6 @@ class RedditPostCell: UITableViewCell {
     }
 
 
-
-
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = UIColor(white: 1, alpha: 0)
@@ -70,15 +68,27 @@ class RedditPostCell: UITableViewCell {
             backgroundView.rightAnchor.constraint(equalTo: rightAnchor),
             // remember downward is positive and right is positive. need to divide by two because otherwise we are
             // padding each cell twice (one from the cell and then another from the cell below)
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding)/2),
-            backgroundView.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding)/2)
+            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
+            backgroundView.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
         ])
-
 
         configureStack(view: backgroundView)
 
     }
 
+
+    func createPostButtonsArray() -> [UIView] {
+
+        var buttonArray: [UIView] = []
+        for _ in 0..<4 {
+            let imageView = UIImageView(image: UIImage(named: "star")!)
+            imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            buttonArray.append(imageView)
+        }
+        print(buttonArray.count)
+        return buttonArray
+
+    }
 
     func configureBottomRow() -> UIView {
 
@@ -92,18 +102,22 @@ class RedditPostCell: UITableViewCell {
         scoreAndCommentsStack.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scoreAndCommentsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 
-        let imageView = UIImageView(image: UIImage(named: "star")!)
-        imageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        view.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+
+        let buttonStack = UIStackView(arrangedSubviews: createPostButtonsArray())
+        buttonStack.spacing = 7
+        buttonStack.axis = .horizontal
+
+        buttonStack.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        view.addSubview(buttonStack)
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        buttonStack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+
         return view
 
     }
 
-    func configureStack(view: UIView){
+    func configureStack(view: UIView) {
 
         let bottomRow = configureBottomRow()
         let stackedViews: [UIView] = [titleLabel, authorLabel, bottomRow]
@@ -121,7 +135,6 @@ class RedditPostCell: UITableViewCell {
         stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding).isActive = true
         stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding).isActive = true
     }
-
 
 
 }
