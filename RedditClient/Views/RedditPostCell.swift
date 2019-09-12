@@ -76,8 +76,9 @@ class RedditPostCell: UITableViewCell {
 
     }
 
-    @objc func handleUpvoteClick(sender: UIButton){
-        if (scoreLabel.textColor == .orange){
+    @objc func handleUpvoteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if (scoreLabel.textColor == .orange) {
             scoreLabel.textColor = .black
         } else {
             scoreLabel.textColor = .orange
@@ -90,6 +91,8 @@ class RedditPostCell: UITableViewCell {
 
         let upvoteButton = UIButton()
         upvoteButton.setImage(image, for: .normal)
+        let imageSelected = UIImage(named: "star_upvote")!
+        upvoteButton.setImage(imageSelected, for: .selected)
         upvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         upvoteButton.addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
 
