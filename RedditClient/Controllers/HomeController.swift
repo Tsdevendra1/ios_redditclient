@@ -35,6 +35,7 @@ class HomeController: BaseViewController {
         tableView.backgroundColor = UIColor(white: 1, alpha: 0)
         tableView.register(RedditPostCell.self, forCellReuseIdentifier: RedditPostCell.identifier)
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
         view.addSubview(tableView)
 
         // table row height
