@@ -22,23 +22,6 @@ class RedditPostCell: UITableViewCell {
         return label
     }()
 
-    let subredditLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .blue
-        label.text = ""
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        return label
-    }()
-
-    let timeLabel: UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 14)
-        return label
-    }()
-
-
     let authorLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -200,20 +183,11 @@ class RedditPostCell: UITableViewCell {
         return label
     }
 
-    func configureAuthorRow() -> UIStackView {
-        let interPunct1 = createInterPunctLabel()
-        let interPunct2 = createInterPunctLabel()
-        let rowStack = UIStackView(arrangedSubviews: [authorLabel, interPunct1, timeLabel, interPunct2, subredditLabel])
-        rowStack.axis = .horizontal
-        return rowStack
-
-    }
 
     func configureContentStack(view: UIView) {
 
         let bottomRow = configureBottomRow()
-        let authorRow = configureAuthorRow()
-        let stackedViews: [UIView] = [titleLabel, authorRow, bottomRow]
+        let stackedViews: [UIView] = [titleLabel, authorLabel, bottomRow]
 
         let contentStack = UIStackView(arrangedSubviews: stackedViews)
         contentStack.axis = .vertical

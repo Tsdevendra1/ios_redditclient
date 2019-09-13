@@ -93,13 +93,19 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let currentTime = Date().timeIntervalSince1970 // in seconds
         let timeOfPost = Double(infoForCell.createdUtc) // in seconds
         // 3600 seconds, see how many hours have passed
-        let differenceInHours = Int((currentTime - timeOfPost)/3600)
+        let differenceInHours = Int((currentTime - timeOfPost) / 3600)
         cell.authorLabel.text = infoForCell.author
         if differenceInHours > 24 {
             return cell
         }
-        cell.subredditLabel.text = infoForCell.subreddit
-        cell.timeLabel.text = String(differenceInHours) + " hours ago"
+        let timeSincePost = NSAttributedString(string: " · \(differenceInHours) hours ago ·")
+        let boldSubreddit = NSMutableAttributedString(string: " \(infoForCell.subreddit)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor.blue])
+        let authorLabelText = NSMutableAttributedString(string: infoForCell.author)
+        authorLabelText.append(timeSincePost)
+        authorLabelText.append(boldSubreddit)
+        cell.authorLabel.attributedText = authorLabelText
+//        cell.subredditLabel.text = infoForCell.subreddit
+//        cell.timeLabel.text = String(differenceInHours) + " hours ago"
         return cell
     }
 
