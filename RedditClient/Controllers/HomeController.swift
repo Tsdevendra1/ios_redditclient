@@ -88,9 +88,18 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
         cell.titleLabel.text = infoForCell.title
-        cell.authorLabel.text = infoForCell.author
         cell.scoreLabel.text = String(infoForCell.score)
         cell.commentsTotalLabel.text = String(infoForCell.numComments)
+        let currentTime = Date().timeIntervalSince1970 // in seconds
+        let timeOfPost = Double(infoForCell.createdUtc) // in seconds
+        // 3600 seconds, see how many hours have passed
+        let differenceInHours = Int((currentTime - timeOfPost)/3600)
+        cell.authorLabel.text = infoForCell.author
+        if differenceInHours > 24 {
+            return cell
+        }
+        cell.subredditLabel.text = infoForCell.subreddit
+        cell.timeLabel.text = String(differenceInHours) + " hours ago"
         return cell
     }
 

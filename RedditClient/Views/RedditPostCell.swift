@@ -16,16 +16,33 @@ class RedditPostCell: UITableViewCell {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 20)
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         return label
     }()
 
+    let subredditLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .blue
+        label.text = ""
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        return label
+    }()
+
+    let timeLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 14)
+        return label
+    }()
+
+
     let authorLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         return label
     }()
 
@@ -54,59 +71,91 @@ class RedditPostCell: UITableViewCell {
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        // make the base layer transparent
         backgroundColor = UIColor(white: 1, alpha: 0)
 
-        let backgroundView = UIView()
-        addSubview(backgroundView)
-        backgroundView.backgroundColor = .white
-        backgroundView.layer.cornerRadius = 10
-        backgroundView.layer.masksToBounds = true
+        // This is the white background of the cell
+        let basePanel = UIView()
+        addSubview(basePanel)
+        basePanel.backgroundColor = .white
+        basePanel.layer.cornerRadius = 10
+        basePanel.layer.masksToBounds = true
 
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        basePanel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            backgroundView.leftAnchor.constraint(equalTo: leftAnchor),
-            backgroundView.rightAnchor.constraint(equalTo: rightAnchor),
+            basePanel.leftAnchor.constraint(equalTo: leftAnchor),
+            basePanel.rightAnchor.constraint(equalTo: rightAnchor),
             // remember downward is positive and right is positive. need to divide by two because otherwise we are
-            // padding each cell twice (one from the cell and then another from the cell below)
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
-            backgroundView.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
+            // padding each cell twice (one from the cell and then another from the cell below and above)
+            basePanel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
+            basePanel.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
         ])
 
-        configureStack(view: backgroundView)
+        configureContentStack(view: basePanel)
 
     }
 
     @objc func handleUpvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if (scoreLabel.textColor == .orange) {
+        if (scoreLabel.textColor != .black) {
             scoreLabel.textColor = .black
         } else {
             scoreLabel.textColor = .orange
         }
     }
 
-    func createPostButtonsArray() -> [UIView] {
+    @objc func handleDownvoteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if (scoreLabel.textColor != .black) {
+            scoreLabel.textColor = .black
+        } else {
+            scoreLabel.textColor = .blue
+        }
+    }
 
-        let image = UIImage(named: "star")!
+    @objc func handleFavouriteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+    }
+
+    @objc func handleMoreClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+    }
+
+    func createButtonsArray() -> [UIView] {
+
 
         let upvoteButton = UIButton()
-        upvoteButton.setImage(image, for: .normal)
-        let imageSelected = UIImage(named: "star_upvote")!
-        upvoteButton.setImage(imageSelected, for: .selected)
+        let upvoteDefaultImage = UIImage(named: "star")!
+        let upvoteSelectedImage = UIImage(named: "star_upvote")!
+        upvoteButton.setImage(upvoteDefaultImage, for: .normal)
+        upvoteButton.setImage(upvoteSelectedImage, for: .selected)
         upvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         upvoteButton.addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
 
         let downvoteButton = UIButton()
-        downvoteButton.setImage(image, for: .normal)
+        let downvoteDefaultImage = UIImage(named: "star")!
+        let downvoteSelectedImage = UIImage(named: "star_upvote")!
+        downvoteButton.setImage(downvoteDefaultImage, for: .normal)
+        downvoteButton.setImage(downvoteSelectedImage, for: .selected)
         downvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        downvoteButton.addTarget(self, action: #selector(handleDownvoteClick), for: .touchUpInside)
 
         let favouriteButton = UIButton()
-        favouriteButton.setImage(image, for: .normal)
+        let favouriteDefaultImage = UIImage(named: "star")!
+        let favouriteSelectedImage = UIImage(named: "star_upvote")!
+        favouriteButton.setImage(favouriteDefaultImage, for: .normal)
+        favouriteButton.setImage(favouriteSelectedImage, for: .selected)
         favouriteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        favouriteButton.addTarget(self, action: #selector(handleFavouriteClick), for: .touchUpInside)
 
         let moreButton = UIButton()
-        moreButton.setImage(image, for: .normal)
+        let moreDefaultImage = UIImage(named: "star")!
+        let moreSelectedImage = UIImage(named: "star_upvote")!
+        moreButton.setImage(moreDefaultImage, for: .normal)
+        moreButton.setImage(moreSelectedImage, for: .selected)
         moreButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        moreButton.addTarget(self, action: #selector(handleMoreClick), for: .touchUpInside)
 
         let buttonArray = [upvoteButton, downvoteButton, favouriteButton, moreButton]
 
@@ -127,7 +176,9 @@ class RedditPostCell: UITableViewCell {
         scoreAndCommentsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 
 
-        let buttonStack = UIStackView(arrangedSubviews: createPostButtonsArray())
+        let cellButtons = createButtonsArray()
+        let buttonStack = UIStackView(arrangedSubviews: cellButtons)
+        // just an arbitrary number
         buttonStack.spacing = 7
         buttonStack.axis = .horizontal
 
@@ -141,23 +192,40 @@ class RedditPostCell: UITableViewCell {
 
     }
 
-    func configureStack(view: UIView) {
+    func createInterPunctLabel() -> UILabel {
+        let label = UILabel()
+        label.text = " · "
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textColor = .black
+        return label
+    }
+
+    func configureAuthorRow() -> UIStackView {
+        let interPunct1 = createInterPunctLabel()
+        let interPunct2 = createInterPunctLabel()
+        let rowStack = UIStackView(arrangedSubviews: [authorLabel, interPunct1, timeLabel, interPunct2, subredditLabel])
+        rowStack.axis = .horizontal
+        return rowStack
+
+    }
+
+    func configureContentStack(view: UIView) {
 
         let bottomRow = configureBottomRow()
-        let stackedViews: [UIView] = [titleLabel, authorLabel, bottomRow]
+        let authorRow = configureAuthorRow()
+        let stackedViews: [UIView] = [titleLabel, authorRow, bottomRow]
 
+        let contentStack = UIStackView(arrangedSubviews: stackedViews)
+        contentStack.axis = .vertical
 
-        let stackView = UIStackView(arrangedSubviews: stackedViews)
-        stackView.axis = .vertical
+        view.addSubview(contentStack)
 
-        view.addSubview(stackView)
-
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
         let padding: CGFloat = 12
-        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: padding).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -padding).isActive = true
-        stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding).isActive = true
-        stackView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding).isActive = true
+        contentStack.topAnchor.constraint(equalTo: view.topAnchor, constant: padding).isActive = true
+        contentStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -padding).isActive = true
+        contentStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding).isActive = true
+        contentStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding).isActive = true
     }
 
 
