@@ -87,6 +87,7 @@ class RedditPostCell: UITableViewCell {
         if (scoreLabel.textColor == .orange) {
             scoreLabel.textColor = .black
         } else {
+            downvoteButton.isSelected = false
             scoreLabel.textColor = .orange
         }
     }
@@ -144,9 +145,9 @@ class RedditPostCell: UITableViewCell {
         moreButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         moreButton.addTarget(self, action: #selector(handleMoreClick), for: .touchUpInside)
 
-        let buttonArray = [upvoteButton, downvoteButton, favouriteButton, moreButton]
+        let buttonArray: [UIView] = [upvoteButton, downvoteButton, favouriteButton, moreButton]
 
-        return buttonArray as! [UIView]
+        return buttonArray
 
     }
 
