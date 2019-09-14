@@ -77,6 +77,7 @@ class HomeController: BaseViewController {
         }, after: currentAfter, count: self.seen)
     }
 
+
 }
 
 extension HomeController: UITableViewDataSource, UITableViewDelegate {
@@ -84,10 +85,11 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         return tableViewData.count
     }
 
+
     func cleanNumber(_ number: Int) -> String {
-        """
+        /*
         Function turns 12300 to 12.3 (i.e. for any number over 10000)
-        """
+        */
         if number < 10000 {
             return String(number)
         }
@@ -95,6 +97,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         number = number / 1000
         return String(format: "%.1f", number) + "k"
     }
+
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell

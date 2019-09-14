@@ -54,6 +54,8 @@ class RedditPostCell: UITableViewCell {
         return label
     }
 
+    var contentOverlay: UIView!
+
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -62,24 +64,31 @@ class RedditPostCell: UITableViewCell {
         backgroundColor = UIColor(white: 1, alpha: 0)
 
         // This is the white background of the cell
-        let basePanel = UIView()
-        addSubview(basePanel)
-        basePanel.backgroundColor = .white
-        basePanel.layer.cornerRadius = 10
-        basePanel.layer.masksToBounds = true
+        contentOverlay = UIView()
+        addSubview(contentOverlay)
+        contentOverlay.backgroundColor = .white
+        contentOverlay.layer.cornerRadius = 10
+        contentOverlay.layer.masksToBounds = true
 
-        basePanel.translatesAutoresizingMaskIntoConstraints = false
+        contentOverlay.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            basePanel.leftAnchor.constraint(equalTo: leftAnchor),
-            basePanel.rightAnchor.constraint(equalTo: rightAnchor),
+            contentOverlay.leftAnchor.constraint(equalTo: leftAnchor),
+            contentOverlay.rightAnchor.constraint(equalTo: rightAnchor),
             // remember downward is positive and right is positive. need to divide by two because otherwise we are
             // padding each cell twice (one from the cell and then another from the cell below and above)
-            basePanel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
-            basePanel.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
+            contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
+            contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
         ])
 
-        configureContentStack(view: basePanel)
+        configureContentStack(view: contentOverlay)
 
+        // This handles if the cell is selected
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleRedditCellTap))
+        contentOverlay.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func handleRedditCellTap(sender: UITapGestureRecognizer){
+        let cell = sender.view
     }
 
     @objc func handleUpvoteClick(sender: UIButton) {
