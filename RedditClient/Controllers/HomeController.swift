@@ -84,12 +84,21 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         return tableViewData.count
     }
 
+    func cleanNumber(_ number: Int) -> String {
+        if number < 10000 {
+            return String(number)
+        }
+        var number: Double = Double(number)
+        number = number / 1000
+        return String(format: "%.1f", number) + "k"
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
         cell.titleLabel.text = infoForCell.title
-        cell.scoreLabel.text = String(infoForCell.score)
-        cell.commentsTotalLabel.text = String(infoForCell.numComments)
+        cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
+        cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
         let currentTime = Date().timeIntervalSince1970 // in seconds
         let timeOfPost = Double(infoForCell.createdUtc) // in seconds
         // 3600 seconds, see how many hours have passed

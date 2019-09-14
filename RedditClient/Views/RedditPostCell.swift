@@ -32,14 +32,14 @@ class RedditPostCell: UITableViewCell {
     let scoreLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         return label
     }()
 
     let commentsTotalLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         return label
     }()
 
