@@ -85,6 +85,9 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func cleanNumber(_ number: Int) -> String {
+        """
+        Function turns 12300 to 12.3 (i.e. for any number over 10000)
+        """
         if number < 10000 {
             return String(number)
         }
@@ -96,25 +99,30 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
+
         cell.titleLabel.text = infoForCell.title
         cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
         cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
+
         let currentTime = Date().timeIntervalSince1970 // in seconds
         let timeOfPost = Double(infoForCell.createdUtc) // in seconds
         // 3600 seconds, see how many hours have passed
-        let differenceInHours = Int((currentTime - timeOfPost) / 3600)
+        let hoursSincePost = Int((currentTime - timeOfPost) / 3600)
         cell.authorLabel.text = infoForCell.author
-        if differenceInHours > 24 {
+
+        if hoursSincePost > 24 {
             return cell
         }
-        let timeSincePost = NSAttributedString(string: " · \(differenceInHours) hours ago ·")
+
+        // Bolds the subreddit and makes it blue but keeps the rest of the text consistent
+        let timeSincePost = NSAttributedString(string: " · \(hoursSincePost) hours ago ·")
         let boldSubreddit = NSMutableAttributedString(string: " \(infoForCell.subreddit)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor.blue])
         let authorLabelText = NSMutableAttributedString(string: infoForCell.author)
         authorLabelText.append(timeSincePost)
         authorLabelText.append(boldSubreddit)
+
         cell.authorLabel.attributedText = authorLabelText
-//        cell.subredditLabel.text = infoForCell.subreddit
-//        cell.timeLabel.text = String(differenceInHours) + " hours ago"
+
         return cell
     }
 

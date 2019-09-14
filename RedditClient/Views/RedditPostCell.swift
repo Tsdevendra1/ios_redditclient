@@ -13,6 +13,9 @@ class RedditPostCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    var upvoteButton: UIButton!
+    var downvoteButton: UIButton!
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
@@ -81,7 +84,7 @@ class RedditPostCell: UITableViewCell {
 
     @objc func handleUpvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if (scoreLabel.textColor != .black) {
+        if (scoreLabel.textColor == .orange) {
             scoreLabel.textColor = .black
         } else {
             scoreLabel.textColor = .orange
@@ -90,9 +93,10 @@ class RedditPostCell: UITableViewCell {
 
     @objc func handleDownvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if (scoreLabel.textColor != .black) {
+        if (scoreLabel.textColor == .blue) {
             scoreLabel.textColor = .black
         } else {
+            upvoteButton.isSelected = false
             scoreLabel.textColor = .blue
         }
     }
@@ -108,7 +112,7 @@ class RedditPostCell: UITableViewCell {
     func createButtonsArray() -> [UIView] {
 
 
-        let upvoteButton = UIButton()
+        upvoteButton = UIButton()
         let upvoteDefaultImage = UIImage(named: "star")!
         let upvoteSelectedImage = UIImage(named: "star_upvote")!
         upvoteButton.setImage(upvoteDefaultImage, for: .normal)
@@ -116,7 +120,7 @@ class RedditPostCell: UITableViewCell {
         upvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         upvoteButton.addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
 
-        let downvoteButton = UIButton()
+        downvoteButton = UIButton()
         let downvoteDefaultImage = UIImage(named: "star")!
         let downvoteSelectedImage = UIImage(named: "star_upvote")!
         downvoteButton.setImage(downvoteDefaultImage, for: .normal)
@@ -142,7 +146,7 @@ class RedditPostCell: UITableViewCell {
 
         let buttonArray = [upvoteButton, downvoteButton, favouriteButton, moreButton]
 
-        return buttonArray
+        return buttonArray as! [UIView]
 
     }
 

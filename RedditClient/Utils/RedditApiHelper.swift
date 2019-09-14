@@ -23,5 +23,9 @@ class RedditApiHelper {
         })
     }
 
+    static func upvotePost(){
+
+    }
+
 }
 
