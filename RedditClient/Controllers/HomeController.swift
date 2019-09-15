@@ -99,6 +99,12 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     }
 
 
+    @objc func handleCellTap(sender: UITapGestureRecognizer){
+        let cell = sender.view?.superview as! RedditPostCell
+
+        present(ProfileController(), animated: true)
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
@@ -106,6 +112,9 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = infoForCell.title
         cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
         cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
+
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
+        cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
 
         let currentTime = Date().timeIntervalSince1970 // in seconds
         let timeOfPost = Double(infoForCell.createdUtc) // in seconds
@@ -132,7 +141,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset.y
-        // contentsize is the entire thing and frame is the space on the screen, so the actual scrollable part is the stuff offscreen which is what this calculates
+        // contentSize is the entire thing and frame is the space on the screen, so the actual scrollable part is the stuff offscreen which is what this calculates
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
         let userDidReachBottom = contentOffset > maximumOffset
 

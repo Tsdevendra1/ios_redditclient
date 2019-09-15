@@ -82,13 +82,6 @@ class RedditPostCell: UITableViewCell {
 
         configureContentStack(view: contentOverlay)
 
-        // This handles if the cell is selected
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleRedditCellTap))
-        contentOverlay.addGestureRecognizer(tapGesture)
-    }
-
-    @objc func handleRedditCellTap(sender: UITapGestureRecognizer){
-        let cell = sender.view
     }
 
     @objc func handleUpvoteClick(sender: UIButton) {
