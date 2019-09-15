@@ -86,26 +86,11 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     }
 
 
-    func cleanNumber(_ number: Int) -> String {
-        /*
-        Function turns 12300 to 12.3 (i.e. for any number over 10000)
-        */
-        if number < 10000 {
-            return String(number)
-        }
-        var number: Double = Double(number)
-        number = number / 1000
-        return String(format: "%.1f", number) + "k"
-    }
 
 
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
         let redditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
-        redditPostController.titleLabel = cell.titleLabel
-        redditPostController.authorLabel = cell.authorLabel
-        redditPostController.commentsTotalLabel = cell.commentsTotalLabel
-        redditPostController.scoreLabel = cell.scoreLabel
         navigationController?.pushViewController(redditPostController, animated: true)
     }
 
@@ -116,31 +101,21 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
         cell.subreddit = subreddit
         cell.titleLabel.text = infoForCell.title
-        cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
-        cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
+        cell.scoreLabel.text = createPostPointsText(score: infoForCell.score)
+        cell.commentsTotalLabel.text = createPostCommentsText(numComments: infoForCell.numComments)
         cell.rowNumber = indexPath.row
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
 
-        let currentTime = Date().timeIntervalSince1970 // in seconds
-        let timeOfPost = Double(infoForCell.createdUtc) // in seconds
-        // 3600 seconds, see how many hours have passed
-        let hoursSincePost = Int((currentTime - timeOfPost) / 3600)
+        let hoursSincePost = getTimeSincePostInHours(infoForCell.createdUtc)
         cell.authorLabel.text = infoForCell.author
 
         if hoursSincePost > 24 {
             return cell
         }
 
-        // Bolds the subreddit and makes it blue but keeps the rest of the text consistent
-        let timeSincePost = NSAttributedString(string: " · \(hoursSincePost) hours ago ·")
-        let boldSubreddit = NSMutableAttributedString(string: " \(subreddit)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor.blue])
-        let authorLabelText = NSMutableAttributedString(string: infoForCell.author)
-        authorLabelText.append(timeSincePost)
-        authorLabelText.append(boldSubreddit)
-
-        cell.authorLabel.attributedText = authorLabelText
+        cell.authorLabel.attributedText = createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost, subreddit: subreddit, author: infoForCell.author)
 
         return cell
     }
