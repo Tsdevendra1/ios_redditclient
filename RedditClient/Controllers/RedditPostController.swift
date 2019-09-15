@@ -9,15 +9,37 @@ import UIKit
 
 class RedditPostController: BaseViewController {
 
-    var subreddit: String
+    var postInfo: PostAttributes
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .clear
+        setupMainPostStack()
     }
 
-    init(subreddit: String) {
-        self.subreddit = subreddit
+    var titleLabel: UILabel!
+    var authorLabel: UILabel!
+    var scoreLabel: UILabel!
+    var commentsTotalLabel: UILabel!
+
+    func setupMainPostStack(){
+        let contentOverlay = UIView()
+        contentOverlay.backgroundColor = .orange
+
+        let contentStack = UIStackView(arrangedSubviews: [contentOverlay])
+
+        view.addSubview(contentStack)
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentStack.topAnchor.constraint(equalTo: navBar.bottomAnchor),
+//            contentStack.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            contentStack.rightAnchor.constraint(equalTo: view.rightAnchor),
+            contentStack.leftAnchor.constraint(equalTo: view.leftAnchor)
+        ])
+    }
+
+    init(infoForPost: PostAttributes) {
+        self.postInfo = infoForPost
         super.init(nibName: nil, bundle: nil)
 
     }
@@ -28,7 +50,7 @@ class RedditPostController: BaseViewController {
     
     override func createNavbarItem() -> UINavigationItem {
         let item = UINavigationItem()
-        item.title = subreddit
+        item.title = postInfo.subreddit
         let button = UIButton()
         button.setTitle("backbutton", for: .normal)
         button.setTitleColor(.red, for: .normal)

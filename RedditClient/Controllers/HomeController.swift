@@ -45,9 +45,9 @@ class HomeController: BaseViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
-            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -HomeController.cellPadding),
-            tableView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: HomeController.cellPadding)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -HomeController.cellPadding),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: HomeController.cellPadding)
         ])
     }
 
@@ -101,7 +101,11 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
-        let redditPostController = RedditPostController(subreddit: cell.subreddit)
+        let redditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        redditPostController.titleLabel = cell.titleLabel
+        redditPostController.authorLabel = cell.authorLabel
+        redditPostController.commentsTotalLabel = cell.commentsTotalLabel
+        redditPostController.scoreLabel = cell.scoreLabel
         navigationController?.pushViewController(redditPostController, animated: true)
     }
 
@@ -114,6 +118,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         cell.titleLabel.text = infoForCell.title
         cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
         cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
+        cell.rowNumber = indexPath.row
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)

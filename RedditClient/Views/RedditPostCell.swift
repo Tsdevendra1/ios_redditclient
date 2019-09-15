@@ -8,6 +8,7 @@ import Foundation
 
 class RedditPostCell: UITableViewCell {
 
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -17,6 +18,7 @@ class RedditPostCell: UITableViewCell {
     var downvoteButton: UIButton!
     var contentOverlay: UIView!
     var subreddit: String!
+    var rowNumber: Int!
 
     let titleLabel: UILabel = {
         let label = UILabel()
