@@ -16,6 +16,8 @@ class RedditPostCell: UITableViewCell {
     static let identifier = "RedditPostCell"
     var upvoteButton: UIButton!
     var downvoteButton: UIButton!
+    var favouriteButton: UIButton!
+    var moreButton: UIButton!
     var contentOverlay: UIView!
     var subreddit: String!
     var rowNumber: Int!
@@ -94,7 +96,6 @@ class RedditPostCell: UITableViewCell {
             stateController.postState[postId] = PostState.none
             scoreLabel.textColor = .black
         }
-        print(stateController.postState)
 
     }
     @objc func handleDownvoteClick(sender: UIButton) {
@@ -109,7 +110,6 @@ class RedditPostCell: UITableViewCell {
             stateController.postState[postId] = PostState.none
             scoreLabel.textColor = .black
         }
-        print(stateController.postState)
     }
 
     @objc func handleFavouriteClick(sender: UIButton) {
@@ -144,14 +144,14 @@ class RedditPostCell: UITableViewCell {
         downvoteButton.setImage(downvoteSelectedImage, for: .selected)
         downvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
 
-        let favouriteButton = UIButton()
+        favouriteButton = UIButton()
         let favouriteDefaultImage = UIImage(named: "star")!
         let favouriteSelectedImage = UIImage(named: "star_upvote")!
         favouriteButton.setImage(favouriteDefaultImage, for: .normal)
         favouriteButton.setImage(favouriteSelectedImage, for: .selected)
         favouriteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
 
-        let moreButton = UIButton()
+        moreButton = UIButton()
         let moreDefaultImage = UIImage(named: "star")!
         let moreSelectedImage = UIImage(named: "star_upvote")!
         moreButton.setImage(moreDefaultImage, for: .normal)

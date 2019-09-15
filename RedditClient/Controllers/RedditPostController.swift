@@ -10,6 +10,10 @@ import UIKit
 class RedditPostController: BaseViewController {
 
     var postInfo: PostAttributes
+    var upvoteButton: UIButton!
+    var downvoteButton: UIButton!
+    var moreButton: UIButton!
+    var favouriteButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()

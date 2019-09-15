@@ -93,6 +93,10 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
         let redditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        redditPostController.downvoteButton = cell.downvoteButton
+        redditPostController.upvoteButton = cell.upvoteButton
+        redditPostController.favouriteButton = cell.favouriteButton
+        redditPostController.moreButton = cell.moreButton
         // can pass the labels here and manually set them orange and green etc...
         navigationController?.pushViewController(redditPostController, animated: true)
     }
@@ -102,7 +106,6 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let infoForCell = tableViewData[indexPath.row]
         let subreddit = infoForCell.subreddit.lowercased()
 
-        print(stateController.postState)
         cell.stateController = stateController
         cell.subreddit = subreddit
         cell.titleLabel.text = infoForCell.title
