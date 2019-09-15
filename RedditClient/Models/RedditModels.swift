@@ -24,7 +24,7 @@ struct PostData: Codable {
 
 struct PostAttributes: Codable {
     let title: String
-//    let selftext: String
+    let selftext: String
     let subreddit: String
     let score: Int
 //    let ups: Int
@@ -34,4 +34,5 @@ struct PostAttributes: Codable {
 //    let subredditId: String
     let createdUtc: Int
 //    let thumbnail: String
+    let id: String
 }

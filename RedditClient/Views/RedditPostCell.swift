@@ -19,6 +19,8 @@ class RedditPostCell: UITableViewCell {
     var contentOverlay: UIView!
     var subreddit: String!
     var rowNumber: Int!
+    var postId: String!
+    var stateController: StateController!
 
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -83,21 +85,31 @@ class RedditPostCell: UITableViewCell {
 
     @objc func handleUpvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if (scoreLabel.textColor == .orange) {
-            scoreLabel.textColor = .black
-        } else {
+
+        if sender.isSelected {
+            stateController.postState[postId] = PostState.upvoted
             downvoteButton.isSelected = false
             scoreLabel.textColor = .orange
+        } else {
+            stateController.postState[postId] = PostState.none
+            scoreLabel.textColor = .black
         }
+        print(stateController.postState)
+
     }
     @objc func handleDownvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if (scoreLabel.textColor == .blue) {
-            scoreLabel.textColor = .black
-        } else {
+
+
+        if sender.isSelected {
+            stateController.postState[postId] = PostState.downvoted
             upvoteButton.isSelected = false
             scoreLabel.textColor = .blue
+        } else {
+            stateController.postState[postId] = PostState.none
+            scoreLabel.textColor = .black
         }
+        print(stateController.postState)
     }
 
     @objc func handleFavouriteClick(sender: UIButton) {
@@ -115,7 +127,7 @@ class RedditPostCell: UITableViewCell {
     }
 
 
-    func createButtonsArray() -> [UIView] {
+    func createButtonsArray(target: Any) -> [UIView] {
 
 
         upvoteButton = UIButton()

@@ -8,6 +8,7 @@ import UIKit
 class HomeController: BaseViewController {
 
     var tableView: UITableView!
+    var stateController: StateController!
     var tableViewData: [PostAttributes] = []
     var seen = 0
     var currentAfter: String!
@@ -25,6 +26,7 @@ class HomeController: BaseViewController {
 
         view.backgroundColor = getUIColor(hex: "#A9A9A9")
         getRedditPostsAndReload()
+        stateController = StateController()
     }
 
     func setupTableView() {
@@ -99,11 +101,14 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let infoForCell = tableViewData[indexPath.row]
         let subreddit = infoForCell.subreddit.lowercased()
 
+        print(stateController.postState)
+        cell.stateController = stateController
         cell.subreddit = subreddit
         cell.titleLabel.text = infoForCell.title
         cell.scoreLabel.text = createPostPointsText(score: infoForCell.score)
         cell.commentsTotalLabel.text = createPostCommentsText(numComments: infoForCell.numComments)
         cell.rowNumber = indexPath.row
+        cell.postId = infoForCell.id
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
