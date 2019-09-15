@@ -202,14 +202,6 @@ class RedditPostCell: UITableViewCell {
 
     }
 
-    func createInterPunctLabel() -> UILabel {
-        let label = UILabel()
-        label.text = " · "
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.textColor = .black
-        return label
-    }
-
 
     func configureContentStack(view: UIView) {
 
