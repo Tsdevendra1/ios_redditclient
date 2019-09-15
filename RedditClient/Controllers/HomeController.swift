@@ -51,7 +51,7 @@ class HomeController: BaseViewController {
         ])
     }
 
-    override func createBasicNavItem() -> UINavigationItem {
+    override func createNavbarItem() -> UINavigationItem {
         let item = UINavigationItem()
         item.title = currentSubreddit.capitalizingFirstLetter()
         let button = UIButton()
@@ -101,14 +101,16 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
-
-        present(ProfileController(), animated: true)
+        let redditPostController = RedditPostController(subreddit: cell.subreddit)
+        present(redditPostController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
         let infoForCell = tableViewData[indexPath.row]
+        let subreddit = infoForCell.subreddit.lowercased()
 
+        cell.subreddit = subreddit
         cell.titleLabel.text = infoForCell.title
         cell.scoreLabel.text = cleanNumber(infoForCell.score) + " points"
         cell.commentsTotalLabel.text = cleanNumber(infoForCell.numComments) + " comments"
@@ -128,7 +130,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
         // Bolds the subreddit and makes it blue but keeps the rest of the text consistent
         let timeSincePost = NSAttributedString(string: " · \(hoursSincePost) hours ago ·")
-        let boldSubreddit = NSMutableAttributedString(string: " \(infoForCell.subreddit)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor.blue])
+        let boldSubreddit = NSMutableAttributedString(string: " \(subreddit)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold), NSAttributedString.Key.foregroundColor: UIColor.blue])
         let authorLabelText = NSMutableAttributedString(string: infoForCell.author)
         authorLabelText.append(timeSincePost)
         authorLabelText.append(boldSubreddit)

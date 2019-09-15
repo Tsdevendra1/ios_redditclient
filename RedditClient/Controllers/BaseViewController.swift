@@ -30,13 +30,11 @@ class BaseViewController: UIViewController {
         navBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         navBar.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         navBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        let item = createBasicNavItem()
-        if let navItem = item as? UINavigationItem {
-            navBar.items = [navItem]
-        }
+        let navItem = createNavbarItem()
+        navBar.items = [navItem]
     }
 
-    func createBasicNavItem() -> UINavigationItem {
+    func createNavbarItem() -> UINavigationItem {
         fatalError("Must override")
     }
 

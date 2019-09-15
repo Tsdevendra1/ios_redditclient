@@ -7,49 +7,43 @@ import Foundation
 
 import UIKit
 
-class RedditPostController: UIViewController {
+class RedditPostController: BaseViewController {
+
+    var subreddit: String
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        navigationController?.navigationBar.isHidden = true
-        placeNavigationBar()
     }
 
-    func placeNavigationBar() {
+    init(subreddit: String) {
+        self.subreddit = subreddit
+        super.init(nibName: nil, bundle: nil)
 
-        // create navigation bar
-        let navBar = UINavigationBar()
-        navBar.delegate = self
-        navBar.barTintColor = .white
-        navBar.isTranslucent = false
-
-        view.addSubview(navBar)
-        navBar.translatesAutoresizingMaskIntoConstraints = false
-        navBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        navBar.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        navBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func createNavbarItem() -> UINavigationItem {
         let item = UINavigationItem()
-        item.title = "HI"
+        item.title = subreddit
         let button = UIButton()
-        button.setTitle("ThiS iS  test", for: .normal)
+        button.setTitle("backbutton", for: .normal)
         button.setTitleColor(.red, for: .normal)
-        button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
+        button.addTarget(self, action: #selector(dismissPresentedView), for: .touchUpInside)
         let backBarButton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButton]
-        navBar.items = [item]
+        return item
     }
 
-    @objc func dismissView(for navBar: UINavigationItem){
-        self.navigationController?.popViewController(animated: true)
+
+    @objc func dismissPresentedView(){
+        self.dismiss(animated: true)
     }
+
 
 
 }
 
-
-extension RedditPostController: UINavigationBarDelegate {
-    func position(for bar: UIBarPositioning) -> UIBarPosition {
-        return .topAttached
-    }
-}

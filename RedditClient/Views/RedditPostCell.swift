@@ -7,14 +7,16 @@ import UIKit
 import Foundation
 
 class RedditPostCell: UITableViewCell {
-    static let identifier = "RedditPostCell"
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    static let identifier = "RedditPostCell"
     var upvoteButton: UIButton!
     var downvoteButton: UIButton!
+    var contentOverlay: UIView!
+    var subreddit: String!
 
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -47,14 +49,7 @@ class RedditPostCell: UITableViewCell {
     }()
 
 
-    func createBasicLabel() -> UILabel {
-        let label = UILabel()
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 16)
-        return label
-    }
 
-    var contentOverlay: UIView!
 
 
     override init(style: CellStyle, reuseIdentifier: String?) {
@@ -93,7 +88,6 @@ class RedditPostCell: UITableViewCell {
             scoreLabel.textColor = .orange
         }
     }
-
     @objc func handleDownvoteClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
         if (scoreLabel.textColor == .blue) {
@@ -111,6 +105,13 @@ class RedditPostCell: UITableViewCell {
     @objc func handleMoreClick(sender: UIButton) {
         sender.isSelected = !sender.isSelected
     }
+    func createBasicLabel() -> UILabel {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 16)
+        return label
+    }
+
 
     func createButtonsArray() -> [UIView] {
 
