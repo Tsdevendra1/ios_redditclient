@@ -93,6 +93,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
         let redditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        // can pass the labels here and manually set them orange and green etc...
         navigationController?.pushViewController(redditPostController, animated: true)
     }
 

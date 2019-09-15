@@ -127,7 +127,7 @@ class RedditPostCell: UITableViewCell {
     }
 
 
-    func createButtonsArray(target: Any) -> [UIView] {
+    func createButtonsArray() -> [UIButton] {
 
 
         upvoteButton = UIButton()
@@ -136,7 +136,6 @@ class RedditPostCell: UITableViewCell {
         upvoteButton.setImage(upvoteDefaultImage, for: .normal)
         upvoteButton.setImage(upvoteSelectedImage, for: .selected)
         upvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        upvoteButton.addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
 
         downvoteButton = UIButton()
         let downvoteDefaultImage = UIImage(named: "star")!
@@ -144,7 +143,6 @@ class RedditPostCell: UITableViewCell {
         downvoteButton.setImage(downvoteDefaultImage, for: .normal)
         downvoteButton.setImage(downvoteSelectedImage, for: .selected)
         downvoteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        downvoteButton.addTarget(self, action: #selector(handleDownvoteClick), for: .touchUpInside)
 
         let favouriteButton = UIButton()
         let favouriteDefaultImage = UIImage(named: "star")!
@@ -152,7 +150,6 @@ class RedditPostCell: UITableViewCell {
         favouriteButton.setImage(favouriteDefaultImage, for: .normal)
         favouriteButton.setImage(favouriteSelectedImage, for: .selected)
         favouriteButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        favouriteButton.addTarget(self, action: #selector(handleFavouriteClick), for: .touchUpInside)
 
         let moreButton = UIButton()
         let moreDefaultImage = UIImage(named: "star")!
@@ -160,12 +157,20 @@ class RedditPostCell: UITableViewCell {
         moreButton.setImage(moreDefaultImage, for: .normal)
         moreButton.setImage(moreSelectedImage, for: .selected)
         moreButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        moreButton.addTarget(self, action: #selector(handleMoreClick), for: .touchUpInside)
 
-        let buttonArray: [UIView] = [upvoteButton, downvoteButton, favouriteButton, moreButton]
+        let buttonArray: [UIButton] = [upvoteButton, downvoteButton, favouriteButton, moreButton]
 
         return buttonArray
 
+    }
+
+    func createButtonsArrayWithTarget() -> [UIButton] {
+        let buttonArray = createButtonsArray()
+        buttonArray[0].addTarget(self, action: #selector(handleUpvoteClick), for: .touchUpInside)
+        buttonArray[1].addTarget(self, action: #selector(handleDownvoteClick), for: .touchUpInside)
+        buttonArray[2].addTarget(self, action: #selector(handleFavouriteClick), for: .touchUpInside)
+        buttonArray[3].addTarget(self, action: #selector(handleMoreClick), for: .touchUpInside)
+        return buttonArray
     }
 
     func configureBottomRow() -> UIView {
@@ -181,7 +186,7 @@ class RedditPostCell: UITableViewCell {
         scoreAndCommentsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 
 
-        let cellButtons = createButtonsArray()
+        let cellButtons = createButtonsArrayWithTarget()
         let buttonStack = UIStackView(arrangedSubviews: cellButtons)
         // just an arbitrary number
         buttonStack.spacing = 7
