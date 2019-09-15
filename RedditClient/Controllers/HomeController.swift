@@ -102,7 +102,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     @objc func handleCellTap(sender: UITapGestureRecognizer){
         let cell = sender.view?.superview as! RedditPostCell
         let redditPostController = RedditPostController(subreddit: cell.subreddit)
-        present(redditPostController, animated: true)
+        navigationController?.pushViewController(redditPostController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

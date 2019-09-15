@@ -32,16 +32,13 @@ class RedditPostController: BaseViewController {
         let button = UIButton()
         button.setTitle("backbutton", for: .normal)
         button.setTitleColor(.red, for: .normal)
-        button.addTarget(self, action: #selector(dismissPresentedView), for: .touchUpInside)
+        button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
         let backBarButton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButton]
         return item
     }
 
 
-    @objc func dismissPresentedView(){
-        self.dismiss(animated: true)
-    }
 
 
 
