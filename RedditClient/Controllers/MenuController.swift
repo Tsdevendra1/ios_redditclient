@@ -6,25 +6,23 @@
 import UIKit
 
 protocol MenuViewDelegate: class {
-    var delegate: MenuControllerDelegate! {get set}
+    var delegate: MenuControllerDelegate! { get set }
 }
 
 class MenuModel {
     var lastY: CGFloat = 0
     var usernameHeight: CGFloat = 130
     var defaultHeight: CGFloat = 55
-    var menuWidth: CGFloat!
 }
 
 class MenuPresenter {
     private let menuModel = MenuModel()
     unowned var menuViewDelegate: MenuViewDelegate!
 
-    func calculateAndSetMenuWidth(screenWidth: CGFloat) -> CGFloat {
-        let percentageOfScreen: CGFloat = 0.85
-        menuModel.menuWidth = screenWidth * percentageOfScreen
-        return menuModel.menuWidth
+    func setMenuViewDelegate(_ delegate: MenuViewDelegate){
+        self.menuViewDelegate = delegate
     }
+
 
     func getHeightForRow(row: Int) -> CGFloat {
         let menuOption = MenuOptions(rawValue: row)
@@ -43,21 +41,31 @@ class MenuPresenter {
 }
 
 class MenuController: UITableViewController, MenuViewDelegate {
-    unowned var delegate: MenuControllerDelegate!
     private let presenter = MenuPresenter()
+    var menuWidth: CGFloat
+    var screenHeight: CGFloat
+    unowned var delegate: MenuControllerDelegate!
 
-
+    init(menuWidth: CGFloat, screenHeight: CGFloat){
+        self.menuWidth = menuWidth
+        self.screenHeight = screenHeight
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.setMenuViewDelegate(self)
         setupTableView()
     }
 
     func setupTableView() {
-        let bounds = UIScreen.main.bounds
-        let menuWidth = presenter.calculateAndSetMenuWidth(screenWidth: bounds.width)
         // Do any additional setup after loading the view.
         self.tableView.backgroundColor = .white
-        self.tableView.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
+        self.tableView.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: screenHeight)
         setViewSettingWithBgShade(view: self.tableView)
         self.tableView.register(MenuCellView.self, forCellReuseIdentifier: MenuCellView.identifier)
         self.tableView.register(HeaderMenuCellView.self, forCellReuseIdentifier: HeaderMenuCellView.identifier)
@@ -113,10 +121,11 @@ class MenuController: UITableViewController, MenuViewDelegate {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presenter.handleRowWasSelected(row:indexPath.row)
+        presenter.handleRowWasSelected(row: indexPath.row)
     }
 
     deinit {
         print("deinit menucontroller")
     }
 }
+
