@@ -153,12 +153,15 @@ class ContainerController: UIViewController {
         }
     }
 
+    deinit {
+        print("deinit container controller")
+    }
 
 }
 
 extension ContainerController: MenuControllerDelegate {
     func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
-        self.closeMenu(finishedAnimationFunction: { () in
+        self.closeMenu(finishedAnimationFunction: { [unowned self] in
             self.presentMenuOption(menuOptionSelected: menuOptionSelected)
         })
     }

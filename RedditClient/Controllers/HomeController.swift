@@ -96,6 +96,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         redditPostController.authorLabel.attributedText = cell.authorLabel.attributedText
         redditPostController.titleLabel.text = cell.titleLabel.text
         redditPostController.scoreLabel.text = cell.scoreLabel.text
+        redditPostController.associatedCell = cell
         redditPostController.commentsTotalLabel.text = cell.commentsTotalLabel.text
 
         // can pass the labels here and manually set them orange and green etc...

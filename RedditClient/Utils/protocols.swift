@@ -9,7 +9,7 @@ protocol HomeControllerDelegate {
     func handlePanGesture(recognizer: UIPanGestureRecognizer)
 }
 
-protocol MenuControllerDelegate {
+protocol MenuControllerDelegate: class {
     func handleMenuSelectOption(menuOptionSelected: MenuOptions)
 }
 

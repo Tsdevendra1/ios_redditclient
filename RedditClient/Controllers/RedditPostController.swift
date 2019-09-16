@@ -19,6 +19,7 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
     var moreButton: UIButton!
     var favouriteButton: UIButton!
     var contentStack: UIView!
+    var associatedCell: RedditPostCell!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +109,9 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
     }
 
 
+    deinit {
+        print("deinit redditPostController")
+    }
 
 }
 
