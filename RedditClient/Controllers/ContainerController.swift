@@ -8,11 +8,14 @@
 
 import UIKit
 
-class ContainerController: UIViewController {
+protocol ContainerViewDelegate: class {
+    func openMenu(maxAlpha: CGFloat)
+    func handleMenuMove()
+    func closeMenu(finishedAnimationFunction: (() -> Void)?)
+    func presentMenuOption(controller: UIViewController)
+}
 
-    var menuController: MenuController!
-    var homeController: HomeController!
-    var backgroundController: BackgroundController?
+class ContainerModel {
     var menuVisible = false
     var menuXDistance: CGFloat = 0
     let maxYForPan: CGFloat = 20
@@ -20,8 +23,69 @@ class ContainerController: UIViewController {
     let maxAlpha: CGFloat = 0.55
     let maxPanToOpen: CGFloat = 80
     var moved = false
-    var panGestureRecognizer: UIPanGestureRecognizer!
+}
 
+class ContainerPresenter {
+    private let containerModel: ContainerModel
+    weak private var containerViewDelegate: ContainerViewDelegate!
+
+    init(containerModel: ContainerModel) {
+        self.containerModel = containerModel
+    }
+
+    func panDidEnd(translation: CGPoint, menuWidth: CGFloat) {
+        if translation.x < containerModel.maxPanToOpen {
+            containerModel.menuXDistance = 0
+            self.containerViewDelegate.closeMenu(finishedAnimationFunction: nil)
+        } else {
+            containerModel.menuXDistance = menuWidth
+            self.containerViewDelegate.openMenu(maxAlpha: containerModel.maxAlpha)
+        }
+        containerModel.moved = false
+    }
+
+    func userHasPanned(translation: CGPoint, menuWidth: CGFloat) {
+        let menuMoveDistance = containerModel.menuXDistance + translation.x
+        if -containerModel.maxYForPan <= translation.y && translation.y <= containerModel.maxYForPan || containerModel.moved {
+            if menuMoveDistance <= menuWidth {
+                containerViewDelegate.handleMenuMove()
+                containerModel.moved = true
+            }
+        }
+
+    }
+
+    func getControllerToPush(menuOptionSelected: MenuOptions) {
+        var controller: UIViewController
+        switch menuOptionSelected {
+        case .Profile:
+            controller = ProfileController()
+            controller.modalPresentationStyle = .overCurrentContext
+        default:
+            controller = ProfileController()
+        }
+        containerViewDelegate.presentMenuOption(controller:controller)
+    }
+
+
+}
+
+extension ContainerPresenter: MenuControllerDelegate {
+    func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
+        containerViewDelegate.closeMenu(finishedAnimationFunction: { [unowned self] in
+            self.getControllerToPush(menuOptionSelected: menuOptionSelected)
+        })
+    }
+
+}
+
+class ContainerController: UIViewController {
+
+    var menuController: MenuController!
+    var homeController: HomeController!
+    var backgroundController: BackgroundController?
+    var panGestureRecognizer: UIPanGestureRecognizer!
+    private let containerPresenter = ContainerPresenter(containerModel: ContainerModel())
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,8 +95,6 @@ class ContainerController: UIViewController {
         configureMenuController()
         // todo: look into hidebaronswipe for swiping up to hide the nav bar
     }
-
-    // MARK: Setup
 
     func configureHomeController() {
         homeController = HomeController()
@@ -47,7 +109,7 @@ class ContainerController: UIViewController {
     func configureMenuController() {
         let currentWindow: UIWindow? = UIApplication.shared.keyWindow
         menuController = MenuController()
-        menuController.delegate = self
+        menuController.delegate = containerPresenter
         currentWindow?.addSubview(menuController.view)
     }
 
@@ -65,15 +127,16 @@ class ContainerController: UIViewController {
     }
 
     func removeBackgroundController() {
-        if backgroundController != nil {
-            backgroundController!.willMove(toParent: nil)
-            backgroundController!.view.removeFromSuperview()
-            backgroundController!.removeFromParent()
-            backgroundController = nil
+        guard let backgroundController = backgroundController else {
+            return
         }
+        backgroundController.willMove(toParent: nil)
+        backgroundController.view.removeFromSuperview()
+        backgroundController.removeFromParent()
+        self.backgroundController = nil
     }
 
-    func animateMenu(xPosition: CGFloat, alpha: CGFloat, finishedFunction: (() -> Void)?) {
+    func animateMenu(xPosition: CGFloat, alpha: CGFloat, menuAnimationLength: Double, finishedFunction: (() -> Void)?) {
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
             self.backgroundController!.view.backgroundColor = UIColor(white: 0.3, alpha: alpha)
@@ -84,21 +147,11 @@ class ContainerController: UIViewController {
         })
     }
 
-    func calculateAlpha(menuMoveDistance: CGFloat) -> CGFloat {
-        var percentageOfWidthMoved = menuMoveDistance / (self.menuController.menuWidth / self.maxAlpha)
-        if percentageOfWidthMoved > self.maxAlpha {
-            percentageOfWidthMoved = self.maxAlpha
-        } else if percentageOfWidthMoved < 0 {
-            percentageOfWidthMoved = 0
-        }
-        return percentageOfWidthMoved
-    }
 
-    func closeMenu(finishedAnimationFunction: (() -> Void)? = nil) {
-        self.menuXDistance = 0
-        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, finishedFunction: { () in
-            if finishedAnimationFunction != nil {
-                finishedAnimationFunction!()
+    func closeMenu(finishedAnimationFunction: (() -> Void)? = nil, menuAnimationLength: Double) {
+        self.animateMenu(xPosition: -self.menuController.menuWidth, alpha: 0, menuAnimationLength: menuAnimationLength, finishedFunction: { () in
+            if let finishedAnimationFunction = finishedAnimationFunction {
+                finishedAnimationFunction()
             }
             self.homeController.view.addGestureRecognizer(self.panGestureRecognizer)
             let currentWindow: UIWindow? = UIApplication.shared.keyWindow
@@ -108,9 +161,8 @@ class ContainerController: UIViewController {
         self.removeBackgroundController()
     }
 
-    func openMenu() {
-        self.menuXDistance = self.menuController.menuWidth
-        self.animateMenu(xPosition: 0, alpha: self.maxAlpha, finishedFunction: { () in
+    func openMenu(maxAlpha: CGFloat, menuAnimationLength: Double) {
+        self.animateMenu(xPosition: 0, alpha: maxAlpha, menuAnimationLength: menuAnimationLength, finishedFunction: { () in
             self.homeController.view.removeGestureRecognizer(self.panGestureRecognizer)
             let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             currentWindow?.addGestureRecognizer(self.panGestureRecognizer)
@@ -122,36 +174,21 @@ class ContainerController: UIViewController {
         if recognizer.state == UIGestureRecognizer.State.began && menuControllerViewIndex != nil && menuControllerViewIndex != 1 {
             view.bringSubviewToFront(menuController.view)
         }
+
         let translation = recognizer.translation(in: view)
-        let menuMoveDistance = self.menuXDistance + translation.x
 
-        if -maxYForPan <= translation.y && translation.y <= maxYForPan || recognizer.state == UIGestureRecognizer.State.ended || moved {
-            if recognizer.state == UIGestureRecognizer.State.ended {
-                if translation.x < self.maxPanToOpen {
-                    self.closeMenu(finishedAnimationFunction: nil)
-                } else {
-                    self.openMenu()
-                }
-                moved = false
-            } else if menuMoveDistance <= self.menuController.menuWidth {
-                self.addBackgroundController()
-                self.animateMenu(xPosition: -self.menuController.menuWidth + menuMoveDistance, alpha: calculateAlpha(menuMoveDistance: menuMoveDistance), finishedFunction: nil)
-                moved = true
-            }
+        if recognizer.state == UIGestureRecognizer.State.ended {
+            containerPresenter.panDidEnd(translation: translation, menuWidth: menuController.menuWidth)
+        } else {
+            containerPresenter.userHasPanned(translation: translation, menuWidth: menuController.menuWidth)
         }
     }
 
-    func presentMenuOption(menuOptionSelected: MenuOptions) {
-        switch menuOptionSelected {
-        case .Profile:
-            let controller = ProfileController()
-            controller.modalPresentationStyle = .overCurrentContext
-            navigationController?.pushViewController(controller, animated: true)
-        default:
-            let controller = ProfileController()
-            navigationController?.pushViewController(controller, animated: true)
-        }
+
+    func presentMenuOption(controller: UIViewController) {
+        navigationController?.pushViewController(controller, animated: true)
     }
+
 
     deinit {
         print("deinit container controller")
@@ -159,12 +196,5 @@ class ContainerController: UIViewController {
 
 }
 
-extension ContainerController: MenuControllerDelegate {
-    func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
-        self.closeMenu(finishedAnimationFunction: { [unowned self] in
-            self.presentMenuOption(menuOptionSelected: menuOptionSelected)
-        })
-    }
-}
 
 
