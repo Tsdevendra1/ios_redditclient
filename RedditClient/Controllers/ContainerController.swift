@@ -26,12 +26,8 @@ class ContainerModel {
 }
 
 class ContainerPresenter {
-    private let containerModel: ContainerModel
-    weak private var containerViewDelegate: ContainerViewDelegate!
-
-    init(containerModel: ContainerModel) {
-        self.containerModel = containerModel
-    }
+    private let containerModel = ContainerModel()
+    unowned private var containerViewDelegate: ContainerViewDelegate!
 
     func panDidEnd(translation: CGPoint, menuWidth: CGFloat) {
         if translation.x < containerModel.maxPanToOpen {
@@ -85,7 +81,7 @@ class ContainerController: UIViewController {
     var homeController: HomeController!
     var backgroundController: BackgroundController?
     var panGestureRecognizer: UIPanGestureRecognizer!
-    private let containerPresenter = ContainerPresenter(containerModel: ContainerModel())
+    private let presenter = ContainerPresenter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,17 +105,15 @@ class ContainerController: UIViewController {
     func configureMenuController() {
         let currentWindow: UIWindow? = UIApplication.shared.keyWindow
         menuController = MenuController()
-        menuController.delegate = containerPresenter
+        menuController.delegate = presenter
         currentWindow?.addSubview(menuController.view)
     }
 
 
-    // MARK: Menu
-
     func addBackgroundController() {
         if backgroundController == nil {
-            let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             backgroundController = BackgroundController()
+            let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             currentWindow?.insertSubview(backgroundController!.view!, belowSubview: menuController.view)
             addChild(backgroundController!)
             backgroundController?.didMove(toParent: self)
@@ -178,9 +172,9 @@ class ContainerController: UIViewController {
         let translation = recognizer.translation(in: view)
 
         if recognizer.state == UIGestureRecognizer.State.ended {
-            containerPresenter.panDidEnd(translation: translation, menuWidth: menuController.menuWidth)
+            presenter.panDidEnd(translation: translation, menuWidth: menuController.menuWidth)
         } else {
-            containerPresenter.userHasPanned(translation: translation, menuWidth: menuController.menuWidth)
+            presenter.userHasPanned(translation: translation, menuWidth: menuController.menuWidth)
         }
     }
 

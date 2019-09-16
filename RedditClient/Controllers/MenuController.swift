@@ -5,24 +5,58 @@
 
 import UIKit
 
-class MenuController: UITableViewController {
+protocol MenuViewDelegate: class {
+    var delegate: MenuControllerDelegate! {get set}
+}
+
+class MenuModel {
     var lastY: CGFloat = 0
     var usernameHeight: CGFloat = 130
     var defaultHeight: CGFloat = 55
+    var menuWidth: CGFloat!
+}
+
+class MenuPresenter {
+    private let menuModel = MenuModel()
+    unowned var menuViewDelegate: MenuViewDelegate!
+
+    func calculateAndSetMenuWidth(screenWidth: CGFloat) -> CGFloat {
+        let percentageOfScreen: CGFloat = 0.85
+        menuModel.menuWidth = screenWidth * percentageOfScreen
+        return menuModel.menuWidth
+    }
+
+    func getHeightForRow(row: Int) -> CGFloat {
+        let menuOption = MenuOptions(rawValue: row)
+        if menuOption == .UserName {
+            return menuModel.usernameHeight
+        }
+        return menuModel.defaultHeight
+    }
+
+    func handleRowWasSelected(row: Int) {
+        let menuOption = MenuOptions(rawValue: row)
+        if let menuOptionSelected = menuOption {
+            menuViewDelegate.delegate.handleMenuSelectOption(menuOptionSelected: menuOptionSelected)
+        }
+    }
+}
+
+class MenuController: UITableViewController, MenuViewDelegate {
     unowned var delegate: MenuControllerDelegate!
+    private let presenter = MenuPresenter()
 
-
-    let menuWidth: CGFloat = {
-        let bounds = UIScreen.main.bounds
-        let percentageOfScreen = 0.85
-        return CGFloat(bounds.width * CGFloat(percentageOfScreen))
-    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
+    }
+
+    func setupTableView() {
+        let bounds = UIScreen.main.bounds
+        let menuWidth = presenter.calculateAndSetMenuWidth(screenWidth: bounds.width)
         // Do any additional setup after loading the view.
         self.tableView.backgroundColor = .white
-        let bounds = UIScreen.main.bounds
         self.tableView.frame = CGRect(x: -menuWidth, y: 0, width: menuWidth, height: bounds.height)
         setViewSettingWithBgShade(view: self.tableView)
         self.tableView.register(MenuCellView.self, forCellReuseIdentifier: MenuCellView.identifier)
@@ -53,12 +87,7 @@ class MenuController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let menuOption = MenuOptions(rawValue: indexPath.row)
-        if menuOption == .UserName {
-            return usernameHeight
-        } else {
-            return defaultHeight
-        }
+        return presenter.getHeightForRow(row: indexPath.row)
     }
 
     // Provide a cell object for each row.
@@ -72,7 +101,7 @@ class MenuController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: HeaderMenuCellView.identifier, for: indexPath) as! HeaderMenuCellView
             cell.descriptionLabel.text = menuOption?.description
             let bottomBorder = CALayer()
-            bottomBorder.frame = CGRect(x: 0.0, y: cell.frame.maxY-1, width: cell.frame.width, height: 1.0)
+            bottomBorder.frame = CGRect(x: 0.0, y: cell.frame.maxY - 1, width: cell.frame.width, height: 1.0)
             bottomBorder.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
             cell.layer.addSublayer(bottomBorder)
             return cell
@@ -84,10 +113,7 @@ class MenuController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let menuOption = MenuOptions(rawValue: indexPath.row)
-        if let menuOptionSelected = menuOption {
-            delegate.handleMenuSelectOption(menuOptionSelected: menuOptionSelected)
-        }
+        presenter.handleRowWasSelected(row:indexPath.row)
     }
 
     deinit {
