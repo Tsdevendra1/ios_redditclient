@@ -120,6 +120,8 @@ func configureContentStack_<T:RedditPostLayout & HandlesPostButtonClicks>(target
     let authorLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.font = .systemFont(ofSize: 14)
         return label
     }()

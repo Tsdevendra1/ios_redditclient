@@ -23,12 +23,6 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-//        setupMainPostStack()
-//        let contentStack = configureContentStack_(target: self)
-//        scoreLabel.text = "ewq"
-//        commentsTotalLabel.text = "ewq"
-//        authorLabel.text = "ewq"
-//        titleLabel.text = "ewq"
         view.addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -38,35 +32,6 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
         ])
     }
 
-//    let titleLabel: UILabel = {
-//        let label = UILabel()
-//        label.textColor = .black
-//        label.font = .systemFont(ofSize: 20)
-//        label.numberOfLines = 0
-//        label.lineBreakMode = .byWordWrapping
-//        return label
-//    }()
-//
-//    let authorLabel: UILabel = {
-//        let label = UILabel()
-//        label.textColor = .black
-//        label.font = .systemFont(ofSize: 14)
-//        return label
-//    }()
-//
-//    let scoreLabel: UILabel = {
-//        let label = UILabel()
-//        label.textColor = .black
-//        label.font = .systemFont(ofSize: 14)
-//        return label
-//    }()
-//
-//    let commentsTotalLabel: UILabel = {
-//        let label = UILabel()
-//        label.textColor = .black
-//        label.font = .systemFont(ofSize: 14)
-//        return label
-//    }()
 
 
     func setupMainPostStack() {
@@ -93,7 +58,6 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
         self.postInfo = infoForPost
         super.init(nibName: nil, bundle: nil)
         contentStack = configureContentStack_(target: self)
-
     }
 
     required init?(coder aDecoder: NSCoder) {
