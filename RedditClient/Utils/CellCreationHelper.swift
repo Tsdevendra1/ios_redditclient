@@ -7,8 +7,8 @@ import Foundation
 
 import UIKit
 
-func createButtonsArray(target: RedditPostCell) -> [UIButton] {
-
+func createButtonsArray(target: RedditPostLayout) -> [UIButton] {
+    var target = target
 
     let upvoteButton = UIButton()
     let upvoteDefaultImage = UIImage(named: "star")!
@@ -50,7 +50,7 @@ func createButtonsArray(target: RedditPostCell) -> [UIButton] {
 
 }
 
-func createButtonsArrayWithTarget(target: RedditPostCell) -> [UIButton] {
+func createButtonsArrayWithTarget<T: RedditPostLayout & HandlesPostButtonClicks>(target: T) -> [UIButton] {
     let buttonArray = createButtonsArray(target: target)
     buttonArray[0].addTarget(target, action: #selector(target.handleUpvoteClick), for: .touchUpInside)
     buttonArray[1].addTarget(target, action: #selector(target.handleDownvoteClick), for: .touchUpInside)
@@ -59,10 +59,24 @@ func createButtonsArrayWithTarget(target: RedditPostCell) -> [UIButton] {
     return buttonArray
 }
 
-func configureBottomRow(target: RedditPostCell) -> UIView {
+func configureBottomRow<T: RedditPostLayout & HandlesPostButtonClicks>(target: T) -> UIView {
+    var target = target
 
     let view = UIView()
     view.backgroundColor = .white
+    let scoreLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 14)
+        return label
+    }()
+
+    let commentsTotalLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 14)
+        return label
+    }()
     let scoreAndCommentsStack = UIStackView(arrangedSubviews: [scoreLabel, commentsTotalLabel])
     scoreAndCommentsStack.axis = .vertical
     view.addSubview(scoreAndCommentsStack)
@@ -84,23 +98,37 @@ func configureBottomRow(target: RedditPostCell) -> UIView {
     buttonStack.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
     buttonStack.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
+    target.scoreLabel = scoreLabel
+    target.commentsTotalLabel = commentsTotalLabel
+
     return view
 
 }
-func configureContentStack(view: UIView) {
+func configureContentStack_<T:RedditPostLayout & HandlesPostButtonClicks>(target: T) -> UIView {
+    var target = target
 
-    let bottomRow = configureBottomRow()
+    let bottomRow = configureBottomRow(target: target)
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 20)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        return label
+    }()
+
+    let authorLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .systemFont(ofSize: 14)
+        return label
+    }()
+    target.authorLabel = authorLabel
+    target.titleLabel = titleLabel
     let stackedViews: [UIView] = [titleLabel, authorLabel, bottomRow]
 
     let contentStack = UIStackView(arrangedSubviews: stackedViews)
     contentStack.axis = .vertical
+    return contentStack
 
-    view.addSubview(contentStack)
-
-    contentStack.translatesAutoresizingMaskIntoConstraints = false
-    let padding: CGFloat = 12
-    contentStack.topAnchor.constraint(equalTo: view.topAnchor, constant: padding).isActive = true
-    contentStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -padding).isActive = true
-    contentStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding).isActive = true
-    contentStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding).isActive = true
 }

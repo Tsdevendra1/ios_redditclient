@@ -7,52 +7,69 @@ import Foundation
 
 import UIKit
 
-class RedditPostController: BaseViewController {
+class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostButtonClicks {
 
+    var titleLabel: UILabel!
+    var authorLabel: UILabel!
+    var commentsTotalLabel: UILabel!
+    var scoreLabel: UILabel!
     var postInfo: PostAttributes
     var upvoteButton: UIButton!
     var downvoteButton: UIButton!
     var moreButton: UIButton!
     var favouriteButton: UIButton!
+    var contentStack: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupMainPostStack()
+//        setupMainPostStack()
+//        let contentStack = configureContentStack_(target: self)
+//        scoreLabel.text = "ewq"
+//        commentsTotalLabel.text = "ewq"
+//        authorLabel.text = "ewq"
+//        titleLabel.text = "ewq"
+        view.addSubview(contentStack)
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentStack.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 10),
+            contentStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+            contentStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10)
+        ])
     }
 
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 20)
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        return label
-    }()
+//    let titleLabel: UILabel = {
+//        let label = UILabel()
+//        label.textColor = .black
+//        label.font = .systemFont(ofSize: 20)
+//        label.numberOfLines = 0
+//        label.lineBreakMode = .byWordWrapping
+//        return label
+//    }()
+//
+//    let authorLabel: UILabel = {
+//        let label = UILabel()
+//        label.textColor = .black
+//        label.font = .systemFont(ofSize: 14)
+//        return label
+//    }()
+//
+//    let scoreLabel: UILabel = {
+//        let label = UILabel()
+//        label.textColor = .black
+//        label.font = .systemFont(ofSize: 14)
+//        return label
+//    }()
+//
+//    let commentsTotalLabel: UILabel = {
+//        let label = UILabel()
+//        label.textColor = .black
+//        label.font = .systemFont(ofSize: 14)
+//        return label
+//    }()
 
-    let authorLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 14)
-        return label
-    }()
 
-    let scoreLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 14)
-        return label
-    }()
-
-    let commentsTotalLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.font = .systemFont(ofSize: 14)
-        return label
-    }()
-
-
-    func setupMainPostStack(){
+    func setupMainPostStack() {
 
         titleLabel.text = postInfo.title
         scoreLabel.text = createPostPointsText(score: postInfo.score)
@@ -75,13 +92,14 @@ class RedditPostController: BaseViewController {
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
         super.init(nibName: nil, bundle: nil)
+        contentStack = configureContentStack_(target: self)
 
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func createNavbarItem() -> UINavigationItem {
         let item = UINavigationItem()
         item.title = postInfo.subreddit
@@ -94,7 +112,36 @@ class RedditPostController: BaseViewController {
         return item
     }
 
+    func handleUpvoteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
 
+        if sender.isSelected {
+            downvoteButton.isSelected = false
+            scoreLabel.textColor = .orange
+        } else {
+            scoreLabel.textColor = .black
+        }
+
+    }
+
+    func handleDownvoteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+
+        if sender.isSelected {
+            upvoteButton.isSelected = false
+            scoreLabel.textColor = .blue
+        } else {
+            scoreLabel.textColor = .black
+        }
+    }
+
+    func handleFavouriteClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+    }
+
+    func handleMoreClick(sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+    }
 
 
 
