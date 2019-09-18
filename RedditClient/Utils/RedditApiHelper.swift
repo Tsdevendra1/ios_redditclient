@@ -7,10 +7,13 @@ import Foundation
 
 class RedditApiHelper {
 
-    static func getPosts(subreddit: String, completionHandler: @escaping ([PostAttributes], Int, String)->Void, after: String? = nil, count: Int? = nil) {
+    static func getPosts(subreddit: String,
+                         currentAfterId: String? = nil, numberOfPostsAlreadySeen: Int? = nil,
+                         completionHandler: @escaping ([PostAttributes], Int, String) -> Void) {
+
         var stringUrl = "https://reddit.com/r/\(subreddit).json"
-        if after != nil && count != nil {
-            stringUrl += "?after=\(after!)&count\(count!)"
+        if currentAfterId != nil && numberOfPostsAlreadySeen != nil {
+            stringUrl += "?after=\(currentAfterId!)&count\(numberOfPostsAlreadySeen!)"
         }
         let url = URL(string: stringUrl)!
         getUrl(url: url, completionHandler: { data in
@@ -23,7 +26,7 @@ class RedditApiHelper {
         })
     }
 
-    static func upvotePost(){
+    static func upvotePost() {
 
     }
 

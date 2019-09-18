@@ -35,26 +35,6 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
 
 
 
-    func setupMainPostStack() {
-
-        titleLabel.text = postInfo.title
-        scoreLabel.text = createPostPointsText(score: postInfo.score)
-        commentsTotalLabel.text = createPostCommentsText(numComments: postInfo.numComments)
-        let hoursSincePost = getTimeSincePostInHours(postInfo.createdUtc)
-        authorLabel.attributedText = createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost, subreddit: postInfo.subreddit, author: postInfo.author)
-        let contentStack = UIStackView(arrangedSubviews: [titleLabel, authorLabel, scoreLabel, commentsTotalLabel])
-        contentStack.backgroundColor = .white
-        contentStack.axis = .vertical
-
-        view.addSubview(contentStack)
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            contentStack.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 10),
-            contentStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-            contentStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10)
-        ])
-    }
-
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
         super.init(nibName: nil, bundle: nil)

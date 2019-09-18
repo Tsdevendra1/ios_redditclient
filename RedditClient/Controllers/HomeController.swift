@@ -5,31 +5,114 @@
 
 import UIKit
 
-class HomeController: BaseViewController {
+struct RedditPostTextData {
+    let authorText: NSMutableAttributedString
+    let scoreText: String
+    let commentsTotalText: String
+    let titleText: String
+}
+
+protocol HomeViewDelegate: class {
+    func showRedditPostFull(cellIndex: Int)
+    func setupTableView(padding: CGFloat)
+    func setTableViewData(data: [PostAttributes])
+    func createNavbarItemWithTitle(title: String)
+}
+
+class HomeModel {
+
+    var numberOfPostsSeen = 0
+    var currentAfterId: String!
+    static let cellPadding: CGFloat = 15
+    let cellHeight: CGFloat = 200
+    var isLoading: Bool = true
+    var currentSubreddit = "all"
+
+    func getRedditPosts(completionHandler: @escaping (([PostAttributes]) -> Void)) {
+
+        RedditApiHelper.getPosts(subreddit: currentSubreddit, currentAfterId: currentAfterId,
+                numberOfPostsAlreadySeen: numberOfPostsSeen, completionHandler: { [unowned self] (newData, seen, after) in
+            self.numberOfPostsSeen += seen
+            self.currentAfterId = after
+            // Update the UI on the main thread
+            DispatchQueue.main.async() {
+                completionHandler(newData)
+                self.isLoading = false
+            }
+        })
+    }
+
+}
+
+class HomePresenter {
+    private let homeModel = HomeModel()
+    unowned var homeViewDelegate: HomeViewDelegate
+
+    init(delegate: HomeViewDelegate) {
+        self.homeViewDelegate = delegate
+    }
+
+
+    func handleCellWasTapped(cellIndex: Int) {
+        homeViewDelegate.showRedditPostFull(cellIndex: cellIndex)
+    }
+
+    func setupTableView() {
+        homeViewDelegate.setupTableView(padding: HomeModel.cellPadding)
+    }
+
+    func getRedditPosts() {
+        homeModel.getRedditPosts(completionHandler: { [unowned self] data in
+            self.homeViewDelegate.setTableViewData(data: data)
+        })
+    }
+
+    func handleUserDidScroll(contentOffset: CGFloat, contentSizeHeight: CGFloat, frameSizeHeight: CGFloat) {
+        // contentSize is the entire thing and frame is the space on the screen, so the actual scrollable part is the stuff offscreen which is what this calculates
+        let maximumOffset = contentSizeHeight - frameSizeHeight
+        let userDidReachBottom = contentOffset > maximumOffset
+
+        if (userDidReachBottom && !homeModel.isLoading) {
+            homeModel.isLoading = true
+            getRedditPosts()
+        }
+    }
+
+    func setNavBarItem() {
+        homeViewDelegate.createNavbarItemWithTitle(title: homeModel.currentSubreddit.capitalizingFirstLetter())
+    }
+
+}
+
+class HomeController: BaseViewController, HomeViewDelegate {
+
 
     var tableView: UITableView!
     var stateController: StateController!
+    var customNavigationItem: UINavigationItem!
+    private var presenter: HomePresenter!
     var tableViewData: [PostAttributes] = []
-    var seen = 0
-    var currentAfter: String!
-    // when it loads it will be loading data
-    var isLoading: Bool = true
-    var currentSubreddit = "all"
-    static let cellPadding: CGFloat = 15
-    let cellHeight: CGFloat = 200
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        setupTableView()
+        presenter.setupTableView()
 
         view.backgroundColor = getUIColor(hex: "#A9A9A9")
-        getRedditPostsAndReload()
+        presenter.getRedditPosts()
         stateController = StateController()
     }
 
-    func setupTableView() {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        presenter = HomePresenter(delegate: self)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setupTableView(padding: CGFloat) {
         tableView = UITableView()
         tableView.showsVerticalScrollIndicator = false
         tableView.delegate = self
@@ -48,37 +131,57 @@ class HomeController: BaseViewController {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -HomeController.cellPadding),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: HomeController.cellPadding)
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding)
         ])
     }
 
-    override func createNavbarItem() -> UINavigationItem {
-        let item = UINavigationItem()
-        item.title = currentSubreddit.capitalizingFirstLetter()
+    func createRedditPostText(cellIndex: Int) -> RedditPostTextData {
+        let cellData = tableViewData[cellIndex]
+        let hoursSincePost = getTimeSincePostInHours(cellData.createdUtc)
+        return RedditPostTextData(
+                authorText: createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
+                        subreddit: cellData.subreddit.lowercased(), author: cellData.author),
+                scoreText: createPostPointsText(score: cellData.score),
+                commentsTotalText: createPostCommentsText(numComments: cellData.numComments),
+                titleText: cellData.title
+        )
+    }
+
+    func setTableViewData(data: [PostAttributes]) {
+        if self.tableViewData.count == 0 {
+            self.tableViewData = data
+        } else {
+            self.tableViewData += data
+        }
+        tableView.reloadData()
+    }
+
+    func createNavbarItemWithTitle(title: String) {
+        customNavigationItem = UINavigationItem()
+        customNavigationItem.title = title
         let button = UIButton()
         button.setTitle("ThiS iS  test", for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.addTarget(self, action: #selector(self.dismissView), for: .touchUpInside)
         let backBarButton = UIBarButtonItem(customView: button)
-        item.leftBarButtonItems = [backBarButton]
-        return item
+        customNavigationItem.leftBarButtonItems = [backBarButton]
     }
 
-    func getRedditPostsAndReload() {
-
-        RedditApiHelper.getPosts(subreddit: currentSubreddit, completionHandler: { (newData, seen, after) in
-            self.tableViewData += newData
-            self.seen += seen
-            self.currentAfter = after
-            // Update the UI on the main thread
-            DispatchQueue.main.async() {
-                self.tableView.reloadData()
-                self.isLoading = false;
-            }
-        }, after: currentAfter, count: self.seen)
+    override func createNavbarItem() -> UINavigationItem {
+        presenter.setNavBarItem()
+        return customNavigationItem
     }
 
+    func showRedditPostFull(cellIndex: Int) {
+        let postText = createRedditPostText(cellIndex: cellIndex)
+        let redditPostController = RedditPostController(infoForPost: tableViewData[cellIndex])
+        redditPostController.authorLabel.attributedText = postText.authorText
+        redditPostController.titleLabel.text = postText.titleText
+        redditPostController.scoreLabel.text = postText.scoreText
+        redditPostController.commentsTotalLabel.text = postText.commentsTotalText
+        navigationController?.pushViewController(redditPostController, animated: true)
+    }
 
 }
 
@@ -88,60 +191,31 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     }
 
 
-
-
-    @objc func handleCellTap(sender: UITapGestureRecognizer){
+    @objc func handleCellTap(sender: UITapGestureRecognizer) {
         let cell = sender.view?.superview as! RedditPostCell
-        let redditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
-        redditPostController.authorLabel.attributedText = cell.authorLabel.attributedText
-        redditPostController.titleLabel.text = cell.titleLabel.text
-        redditPostController.scoreLabel.text = cell.scoreLabel.text
-        redditPostController.associatedCell = cell
-        redditPostController.commentsTotalLabel.text = cell.commentsTotalLabel.text
-
-        // can pass the labels here and manually set them orange and green etc...
-        navigationController?.pushViewController(redditPostController, animated: true)
+        presenter.handleCellWasTapped(cellIndex: cell.rowNumber)
     }
+
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
-        let infoForCell = tableViewData[indexPath.row]
-        let subreddit = infoForCell.subreddit.lowercased()
-
-        cell.stateController = stateController
-        cell.subreddit = subreddit
-        cell.titleLabel.text = infoForCell.title
-        cell.scoreLabel.text = createPostPointsText(score: infoForCell.score)
-        cell.commentsTotalLabel.text = createPostCommentsText(numComments: infoForCell.numComments)
+        let postText = createRedditPostText(cellIndex: indexPath.row)
+        cell.titleLabel.text = postText.titleText
+        cell.scoreLabel.text = postText.scoreText
+        cell.commentsTotalLabel.text = postText.commentsTotalText
+        cell.authorLabel.attributedText = postText.authorText
         cell.rowNumber = indexPath.row
-        cell.postId = infoForCell.id
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
-
-        let hoursSincePost = getTimeSincePostInHours(infoForCell.createdUtc)
-        cell.authorLabel.text = infoForCell.author
-
-        if hoursSincePost > 24 {
-            return cell
-        }
-
-        cell.authorLabel.attributedText = createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost, subreddit: subreddit, author: infoForCell.author)
 
         return cell
     }
 
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset.y
-        // contentSize is the entire thing and frame is the space on the screen, so the actual scrollable part is the stuff offscreen which is what this calculates
-        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
-        let userDidReachBottom = contentOffset > maximumOffset
-
-        if (userDidReachBottom && !isLoading) {
-            isLoading = true;
-            getRedditPostsAndReload()
-        }
+        presenter.handleUserDidScroll(contentOffset: scrollView.contentOffset.y,
+                contentSizeHeight: scrollView.contentSize.height, frameSizeHeight: scrollView.frame.size.height)
     }
 }
 

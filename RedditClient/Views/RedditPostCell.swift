@@ -18,10 +18,7 @@ class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks
     var favouriteButton: UIButton!
     var moreButton: UIButton!
     var contentOverlay: UIView!
-    var subreddit: String!
     var rowNumber: Int!
-    var postId: String!
-    var stateController: StateController!
 
     var titleLabel: UILabel!
     var authorLabel: UILabel!
@@ -47,8 +44,8 @@ class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks
             contentOverlay.rightAnchor.constraint(equalTo: rightAnchor),
             // remember downward is positive and right is positive. need to divide by two because otherwise we are
             // padding each cell twice (one from the cell and then another from the cell below and above)
-            contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeController.cellPadding) / 2),
-            contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeController.cellPadding) / 2)
+            contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeModel.cellPadding) / 2),
+            contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeModel.cellPadding) / 2)
         ])
 
 //        configureContentStack(view: contentOverlay)
@@ -72,11 +69,9 @@ class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks
         sender.isSelected = !sender.isSelected
 
         if sender.isSelected {
-            stateController.postState[postId] = PostState.upvoted
             downvoteButton.isSelected = false
             scoreLabel.textColor = .orange
         } else {
-            stateController.postState[postId] = PostState.none
             scoreLabel.textColor = .black
         }
 
@@ -86,11 +81,9 @@ class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks
         sender.isSelected = !sender.isSelected
 
         if sender.isSelected {
-            stateController.postState[postId] = PostState.downvoted
             upvoteButton.isSelected = false
             scoreLabel.textColor = .blue
         } else {
-            stateController.postState[postId] = PostState.none
             scoreLabel.textColor = .black
         }
     }
