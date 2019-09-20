@@ -13,7 +13,6 @@ struct RedditPostTextData {
 }
 
 protocol HomeViewDelegate: class {
-    func showRedditPostFull(cellIndex: Int)
     func setupTableView(padding: CGFloat)
     func setTableViewData(data: [PostAttributes])
     func createNavbarItemWithTitle(title: String)
@@ -52,10 +51,6 @@ class HomePresenter {
         self.homeViewDelegate = delegate
     }
 
-
-    func handleCellWasTapped(cellIndex: Int) {
-        homeViewDelegate.showRedditPostFull(cellIndex: cellIndex)
-    }
 
     func setupTableView() {
         homeViewDelegate.setupTableView(padding: HomeModel.cellPadding)
@@ -107,11 +102,11 @@ class HomeController: BaseViewController, HomeViewDelegate {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         presenter = HomePresenter(delegate: self)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func setupTableView(padding: CGFloat) {
         tableView = UITableView()
         tableView.showsVerticalScrollIndicator = false
@@ -173,16 +168,6 @@ class HomeController: BaseViewController, HomeViewDelegate {
         return customNavigationItem
     }
 
-    func showRedditPostFull(cellIndex: Int) {
-        let postText = createRedditPostText(cellIndex: cellIndex)
-        let redditPostController = RedditPostController(infoForPost: tableViewData[cellIndex])
-        redditPostController.authorLabel.attributedText = postText.authorText
-        redditPostController.titleLabel.text = postText.titleText
-        redditPostController.scoreLabel.text = postText.scoreText
-        redditPostController.commentsTotalLabel.text = postText.commentsTotalText
-        navigationController?.pushViewController(redditPostController, animated: true)
-    }
-
 }
 
 extension HomeController: UITableViewDataSource, UITableViewDelegate {
@@ -193,7 +178,14 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     @objc func handleCellTap(sender: UITapGestureRecognizer) {
         let cell = sender.view?.superview as! RedditPostCell
-        presenter.handleCellWasTapped(cellIndex: cell.rowNumber)
+        let postText = createRedditPostText(cellIndex: cell.rowNumber)
+        let currentRedditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        currentRedditPostController.authorLabel.attributedText = postText.authorText
+        currentRedditPostController.titleLabel.text = postText.titleText
+        currentRedditPostController.scoreLabel.text = postText.scoreText
+        currentRedditPostController.commentsTotalLabel.text = postText.commentsTotalText
+        currentRedditPostController.delegate = cell
+        navigationController?.pushViewController(currentRedditPostController, animated: true)
     }
 
 

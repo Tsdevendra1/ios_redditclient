@@ -20,6 +20,7 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
     var favouriteButton: UIButton!
     var contentStack: UIView!
     var associatedCell: RedditPostCell!
+    unowned var delegate: HandlesPostButtonClicks!
 
     override func viewDidLoad() {
         super.viewDidLoad()
