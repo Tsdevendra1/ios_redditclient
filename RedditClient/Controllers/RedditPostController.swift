@@ -7,24 +7,46 @@ import Foundation
 
 import UIKit
 
-class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostButtonClicks {
+protocol RedditPostViewDelegate: class {
 
-    var titleLabel: UILabel!
-    var authorLabel: UILabel!
-    var commentsTotalLabel: UILabel!
-    var scoreLabel: UILabel!
+}
+
+class RedditPostPresenter {
+    unowned private var redditPostViewDelegate: RedditPostViewDelegate!
+
+    func setRedditPostViewDelegate(delegate: RedditPostViewDelegate) {
+        self.redditPostViewDelegate = delegate
+    }
+}
+
+extension RedditPostPresenter: HandlesPostButtonClickDelegate {
+
+    func handleUpvoteClick() {
+    }
+
+    func handleDownvoteClick() {
+    }
+
+    func handleFavouriteClick() {
+    }
+
+    func handleMoreClick() {
+    }
+
+}
+
+class RedditPostController: BaseViewController, RedditPostViewDelegate {
+
     var postInfo: PostAttributes
-    var upvoteButton: UIButton!
-    var downvoteButton: UIButton!
-    var moreButton: UIButton!
-    var favouriteButton: UIButton!
-    var contentStack: UIView!
-    var associatedCell: RedditPostCell!
-    unowned var delegate: HandlesPostButtonClicks!
+    private let presenter = RedditPostPresenter()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.setRedditPostViewDelegate(delegate: self)
         view.backgroundColor = .white
+        let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
+        let contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
+        contentStack.delegate = presenter
         view.addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -35,11 +57,9 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
     }
 
 
-
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
         super.init(nibName: nil, bundle: nil)
-        contentStack = configureContentStack_(target: self)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -56,37 +76,6 @@ class RedditPostController: BaseViewController, RedditPostLayout, HandlesPostBut
         let backBarButton = UIBarButtonItem(customView: button)
         item.leftBarButtonItems = [backBarButton]
         return item
-    }
-
-    func handleUpvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-
-        if sender.isSelected {
-            downvoteButton.isSelected = false
-            scoreLabel.textColor = .orange
-        } else {
-            scoreLabel.textColor = .black
-        }
-
-    }
-
-    func handleDownvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-
-        if sender.isSelected {
-            upvoteButton.isSelected = false
-            scoreLabel.textColor = .blue
-        } else {
-            scoreLabel.textColor = .black
-        }
-    }
-
-    func handleFavouriteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-    }
-
-    func handleMoreClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
     }
 
 

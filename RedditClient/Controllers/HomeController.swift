@@ -5,12 +5,6 @@
 
 import UIKit
 
-struct RedditPostTextData {
-    let authorText: NSMutableAttributedString
-    let scoreText: String
-    let commentsTotalText: String
-    let titleText: String
-}
 
 protocol HomeViewDelegate: class {
     func setupTableView(padding: CGFloat)
@@ -131,17 +125,6 @@ class HomeController: BaseViewController, HomeViewDelegate {
         ])
     }
 
-    func createRedditPostText(cellIndex: Int) -> RedditPostTextData {
-        let cellData = tableViewData[cellIndex]
-        let hoursSincePost = getTimeSincePostInHours(cellData.createdUtc)
-        return RedditPostTextData(
-                authorText: createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
-                        subreddit: cellData.subreddit.lowercased(), author: cellData.author),
-                scoreText: createPostPointsText(score: cellData.score),
-                commentsTotalText: createPostCommentsText(numComments: cellData.numComments),
-                titleText: cellData.title
-        )
-    }
 
     func setTableViewData(data: [PostAttributes]) {
         if self.tableViewData.count == 0 {
@@ -178,28 +161,18 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
     @objc func handleCellTap(sender: UITapGestureRecognizer) {
         let cell = sender.view?.superview as! RedditPostCell
-        let postText = createRedditPostText(cellIndex: cell.rowNumber)
         let currentRedditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
-        currentRedditPostController.authorLabel.attributedText = postText.authorText
-        currentRedditPostController.titleLabel.text = postText.titleText
-        currentRedditPostController.scoreLabel.text = postText.scoreText
-        currentRedditPostController.commentsTotalLabel.text = postText.commentsTotalText
-        currentRedditPostController.delegate = cell
         navigationController?.pushViewController(currentRedditPostController, animated: true)
     }
 
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
-        let postText = createRedditPostText(cellIndex: indexPath.row)
-        cell.titleLabel.text = postText.titleText
-        cell.scoreLabel.text = postText.scoreText
-        cell.commentsTotalLabel.text = postText.commentsTotalText
-        cell.authorLabel.attributedText = postText.authorText
-        cell.rowNumber = indexPath.row
-
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
+        cell.redditPostView.presenter.setPostAttributes(postAttributes: tableViewData[indexPath.row])
+        cell.redditPostView.presenter.setLabelAttributes()
+        cell.rowNumber = indexPath.row
 
         return cell
     }

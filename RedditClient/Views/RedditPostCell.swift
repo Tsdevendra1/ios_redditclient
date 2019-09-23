@@ -6,27 +6,53 @@
 import UIKit
 import Foundation
 
-class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks {
+protocol RedditPostCellDelegate: class {
 
+}
+
+
+class RedditPostCellPresenter {
+    unowned private var redditPostCellDelegate: RedditPostCellDelegate!
+
+    func setRedditPostCellDelegate(delegate: RedditPostCellDelegate) {
+        self.redditPostCellDelegate = delegate
+    }
+
+}
+
+extension RedditPostCellPresenter: HandlesPostButtonClickDelegate {
+
+    func handleUpvoteClick() {
+    }
+
+    func handleDownvoteClick() {
+    }
+
+    func handleFavouriteClick() {
+    }
+
+    func handleMoreClick() {
+    }
+
+}
+
+class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     static let identifier = "RedditPostCell"
-    var upvoteButton: UIButton!
-    var downvoteButton: UIButton!
-    var favouriteButton: UIButton!
-    var moreButton: UIButton!
+    var presenter = RedditPostCellPresenter()
     var contentOverlay: UIView!
     var rowNumber: Int!
-
-    var titleLabel: UILabel!
-    var authorLabel: UILabel!
-    var scoreLabel: UILabel!
-    var commentsTotalLabel: UILabel!
+    var redditPostView: RedditPostView
 
     override init(style: CellStyle, reuseIdentifier: String?) {
+        let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
+        redditPostView = RedditPostView(frame: rect)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        presenter.setRedditPostCellDelegate(delegate: self)
 
         // make the base layer transparent
         backgroundColor = UIColor(white: 1, alpha: 0)
@@ -47,53 +73,15 @@ class RedditPostCell: UITableViewCell, RedditPostLayout, HandlesPostButtonClicks
             contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeModel.cellPadding) / 2),
             contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeModel.cellPadding) / 2)
         ])
-
-//        configureContentStack(view: contentOverlay)
-        let contentStack = configureContentStack_(target: self)
-        scoreLabel.text = "ewq"
-        commentsTotalLabel.text = "ewq"
-        authorLabel.text = "ewq"
-        titleLabel.text = "ewq"
-
-        contentOverlay.addSubview(contentStack)
-
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        contentOverlay.addSubview(redditPostView)
+        redditPostView.delegate = presenter
+        redditPostView.translatesAutoresizingMaskIntoConstraints = false
         let padding: CGFloat = 12
-        contentStack.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
-        contentStack.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true
-        contentStack.rightAnchor.constraint(equalTo: contentOverlay.rightAnchor, constant: -padding).isActive = true
-        contentStack.leftAnchor.constraint(equalTo: contentOverlay.leftAnchor, constant: padding).isActive = true
-    }
+        redditPostView.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
+        redditPostView.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true
+        redditPostView.rightAnchor.constraint(equalTo: contentOverlay.rightAnchor, constant: -padding).isActive = true
+        redditPostView.leftAnchor.constraint(equalTo: contentOverlay.leftAnchor, constant: padding).isActive = true
 
-    func handleUpvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-
-        if sender.isSelected {
-            downvoteButton.isSelected = false
-            scoreLabel.textColor = .orange
-        } else {
-            scoreLabel.textColor = .black
-        }
-
-    }
-
-    func handleDownvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-
-        if sender.isSelected {
-            upvoteButton.isSelected = false
-            scoreLabel.textColor = .blue
-        } else {
-            scoreLabel.textColor = .black
-        }
-    }
-
-    func handleFavouriteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-    }
-
-    func handleMoreClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
     }
 
 
