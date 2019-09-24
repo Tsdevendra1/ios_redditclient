@@ -12,7 +12,7 @@ protocol ContainerViewDelegate: class {
     func openMenu(maxAlpha: CGFloat, menuAnimationLength: Double)
     func handleMenuMove(menuWidth: CGFloat, alpha: CGFloat, xPosition: CGFloat, menuAnimationLength: Double)
     func closeMenu(finishedAnimationFunction: (() -> Void)?, menuAnimationLength: Double, menuWidth: CGFloat)
-    func presentMenuOption(controller: UIViewController)
+    func presentMenuOption(menuOptionSelected: MenuOptions)
 }
 
 class ContainerModel {
@@ -74,17 +74,6 @@ class ContainerPresenter {
         return percentageOfWidthMoved
     }
 
-    func getControllerToPush(menuOptionSelected: MenuOptions) {
-        var controller: UIViewController
-        switch menuOptionSelected {
-        case .Profile:
-            controller = ProfileController()
-            controller.modalPresentationStyle = .overCurrentContext
-        default:
-            controller = ProfileController()
-        }
-        containerViewDelegate.presentMenuOption(controller: controller)
-    }
 
 
 }
@@ -92,7 +81,7 @@ class ContainerPresenter {
 extension ContainerPresenter: MenuControllerDelegate {
     func handleMenuSelectOption(menuOptionSelected: MenuOptions) {
         containerViewDelegate.closeMenu(finishedAnimationFunction: { [unowned self] in
-            self.getControllerToPush(menuOptionSelected: menuOptionSelected)
+            self.containerViewDelegate.presentMenuOption(menuOptionSelected: menuOptionSelected)
         }, menuAnimationLength: containerModel.menuAnimationLength, menuWidth: containerModel.menuWidth)
     }
 
@@ -144,6 +133,7 @@ class ContainerController: UIViewController, ContainerViewDelegate {
 
     func addBackgroundController() {
         if backgroundController == nil {
+            print("added background")
             backgroundController = BackgroundController()
             let currentWindow: UIWindow? = UIApplication.shared.keyWindow
             currentWindow?.insertSubview(backgroundController!.view!, belowSubview: menuController.view)
@@ -156,6 +146,7 @@ class ContainerController: UIViewController, ContainerViewDelegate {
         guard let backgroundController = backgroundController else {
             return
         }
+        print("removed background")
         backgroundController.willMove(toParent: nil)
         backgroundController.view.removeFromSuperview()
         backgroundController.removeFromParent()
@@ -211,7 +202,16 @@ class ContainerController: UIViewController, ContainerViewDelegate {
     }
 
 
-    func presentMenuOption(controller: UIViewController) {
+    func presentMenuOption(menuOptionSelected: MenuOptions) {
+        var controller: UIViewController
+        switch menuOptionSelected {
+        case .Profile:
+            controller = ProfileController()
+            controller.modalPresentationStyle = .overCurrentContext
+        default:
+            controller = ProfileController()
+            controller.modalPresentationStyle = .overCurrentContext
+        }
         navigationController?.pushViewController(controller, animated: true)
     }
 
