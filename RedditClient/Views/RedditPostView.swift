@@ -2,6 +2,11 @@
 // Created by Tharuka Devendra on 2019-09-20.
 // Copyright (c) 2019 Tharuka Devendra. All rights reserved.
 //
+
+import Foundation
+
+import UIKit
+
 @objc protocol HandlesPostButtonClickDelegate {
     func handleMoreClick()
     func handleUpvoteClick()
@@ -12,6 +17,10 @@
 protocol RedditViewDelegate: class {
     func configureContentStack()
     func setupLabelAttributes(postText: RedditPostTextData)
+    func turnOnUpvote()
+    func turnOnDownvote()
+    func turnOnMore()
+    func turnOnFavourite()
 }
 
 struct RedditPostTextData {
@@ -21,9 +30,6 @@ struct RedditPostTextData {
     let titleText: String
 }
 
-import Foundation
-
-import UIKit
 
 class RedditPostViewModel {
     var postAttributes: PostAttributes!
@@ -64,9 +70,28 @@ class RedditViewPresenter {
                 titleText: cellData.title
         )
     }
+
+    func configurePostIfButtonSelected(upvoteButtonIsSelected: Bool,
+                                       downvoteButtonIsSelected: Bool,
+                                       moreButtonIsSelected: Bool,
+                                       favouriteButtonIsSeelected: Bool) {
+
+        let buttonFunctions = [redditViewDelegate.turnOnUpvote, redditViewDelegate.turnOnDownvote, redditViewDelegate.turnOnMore, redditViewDelegate.turnOnFavourite]
+
+        for (index, buttonSelected) in [upvoteButtonIsSelected, downvoteButtonIsSelected, moreButtonIsSelected, favouriteButtonIsSeelected].enumerated() {
+            if buttonSelected {
+                let function = buttonFunctions[index]
+                function()
+            }
+
+        }
+
+
+    }
 }
 
 class RedditPostView: UIView, RedditViewDelegate {
+
 
     let upvoteButton = UIButton()
     let downvoteButton = UIButton()
@@ -95,12 +120,32 @@ class RedditPostView: UIView, RedditViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
+
+    func turnOnUpvote() {
+        downvoteButton.isSelected = false
+        scoreLabel.textColor = .orange
+        upvoteButton.isSelected = true
+    }
+
+    func turnOnDownvote() {
+        upvoteButton.isSelected = false
+        scoreLabel.textColor = .blue
+        downvoteButton.isSelected = true
+    }
+
+    func turnOnMore() {
+
+    }
+
+    func turnOnFavourite() {
+
+    }
+
     @objc func handleUpvoteClick() {
         upvoteButton.isSelected = !upvoteButton.isSelected
 
         if upvoteButton.isSelected {
-            downvoteButton.isSelected = false
-            scoreLabel.textColor = .orange
+            turnOnUpvote()
         } else {
             scoreLabel.textColor = .black
         }
@@ -111,8 +156,7 @@ class RedditPostView: UIView, RedditViewDelegate {
         downvoteButton.isSelected = !downvoteButton.isSelected
 
         if downvoteButton.isSelected {
-            upvoteButton.isSelected = false
-            scoreLabel.textColor = .blue
+            turnOnDownvote()
         } else {
             scoreLabel.textColor = .black
         }

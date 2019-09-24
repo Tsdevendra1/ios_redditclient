@@ -9,7 +9,7 @@ import UIKit
 
 
 protocol RedditPostViewDelegate: class {
-    var ownPostButtonClickedDelegate: HandlesPostButtonClickDelegate! { get set }
+    var ownPostButtonClickedDelegate: RedditPostCell! { get set }
 }
 
 class RedditPostPresenter {
@@ -25,7 +25,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
     var postInfo: PostAttributes
     private let presenter = RedditPostPresenter()
-    unowned var ownPostButtonClickedDelegate: HandlesPostButtonClickDelegate!
+    unowned var ownPostButtonClickedDelegate: RedditPostCell!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +33,12 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         view.backgroundColor = .white
         let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
         let contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
+
+        contentStack.presenter.configurePostIfButtonSelected(upvoteButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.upvoteButton.isSelected,
+                downvoteButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.downvoteButton.isSelected,
+                moreButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.moreButton.isSelected,
+                favouriteButtonIsSeelected: ownPostButtonClickedDelegate.redditPostView.downvoteButton.isSelected)
+
         contentStack.delegate = ownPostButtonClickedDelegate
         view.addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
