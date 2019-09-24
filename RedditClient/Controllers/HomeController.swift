@@ -77,7 +77,6 @@ class HomeController: BaseViewController, HomeViewDelegate {
 
 
     var tableView: UITableView!
-    var stateController: StateController!
     var customNavigationItem: UINavigationItem!
     private var presenter: HomePresenter!
     var tableViewData: [PostAttributes] = []
@@ -89,7 +88,6 @@ class HomeController: BaseViewController, HomeViewDelegate {
 
         view.backgroundColor = getUIColor(hex: "#A9A9A9")
         presenter.getRedditPosts()
-        stateController = StateController()
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -162,6 +160,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     @objc func handleCellTap(sender: UITapGestureRecognizer) {
         let cell = sender.view?.superview as! RedditPostCell
         let currentRedditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        currentRedditPostController.ownPostButtonClickedDelegate = cell
         navigationController?.pushViewController(currentRedditPostController, animated: true)
     }
 

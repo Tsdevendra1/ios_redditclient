@@ -32,6 +32,7 @@ extension RedditPostCellPresenter: HandlesPostButtonClickDelegate {
     }
 
     func handleMoreClick() {
+
     }
 
 }
@@ -74,7 +75,6 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
             contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeModel.cellPadding) / 2)
         ])
         contentOverlay.addSubview(redditPostView)
-        redditPostView.delegate = presenter
         redditPostView.translatesAutoresizingMaskIntoConstraints = false
         let padding: CGFloat = 12
         redditPostView.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
@@ -82,6 +82,28 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         redditPostView.rightAnchor.constraint(equalTo: contentOverlay.rightAnchor, constant: -padding).isActive = true
         redditPostView.leftAnchor.constraint(equalTo: contentOverlay.leftAnchor, constant: padding).isActive = true
 
+    }
+
+
+}
+
+extension RedditPostCell: HandlesPostButtonClickDelegate {
+
+    func handleUpvoteClick() {
+        redditPostView.handleUpvoteClick()
+    }
+
+    func handleDownvoteClick() {
+        redditPostView.handleDownvoteClick()
+    }
+
+
+    func handleFavouriteClick() {
+        redditPostView.handleFavouriteClick()
+    }
+
+    func handleMoreClick() {
+        redditPostView.handleMoreClick()
     }
 
 

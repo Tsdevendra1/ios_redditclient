@@ -72,7 +72,7 @@ class RedditPostView: UIView, RedditViewDelegate {
     let downvoteButton = UIButton()
     let favouriteButton = UIButton()
     let moreButton = UIButton()
-    var delegate: HandlesPostButtonClickDelegate!
+    var delegate: HandlesPostButtonClickDelegate?
     let titleLabel = UILabel()
     let authorLabel = UILabel()
     let scoreLabel = UILabel()
@@ -95,38 +95,38 @@ class RedditPostView: UIView, RedditViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc func handleUpvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
+    @objc func handleUpvoteClick() {
+        upvoteButton.isSelected = !upvoteButton.isSelected
 
-        if sender.isSelected {
+        if upvoteButton.isSelected {
             downvoteButton.isSelected = false
             scoreLabel.textColor = .orange
         } else {
             scoreLabel.textColor = .black
         }
-        delegate.handleUpvoteClick()
+        delegate?.handleUpvoteClick()
     }
 
-    @objc func handleDownvoteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
+    @objc func handleDownvoteClick() {
+        downvoteButton.isSelected = !downvoteButton.isSelected
 
-        if sender.isSelected {
+        if downvoteButton.isSelected {
             upvoteButton.isSelected = false
             scoreLabel.textColor = .blue
         } else {
             scoreLabel.textColor = .black
         }
-        delegate.handleDownvoteClick()
+        delegate?.handleDownvoteClick()
     }
 
-    @objc func handleFavouriteClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        delegate.handleFavouriteClick()
+    @objc func handleFavouriteClick() {
+        favouriteButton.isSelected = !favouriteButton.isSelected
+        delegate?.handleFavouriteClick()
     }
 
-    @objc func handleMoreClick(sender: UIButton) {
-        sender.isSelected = !sender.isSelected
-        delegate.handleMoreClick()
+    @objc func handleMoreClick() {
+        moreButton.isSelected = !moreButton.isSelected
+        delegate?.handleMoreClick()
     }
 
     func createButtonsArray() -> [UIButton] {

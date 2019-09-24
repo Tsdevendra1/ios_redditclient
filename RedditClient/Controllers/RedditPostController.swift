@@ -7,8 +7,9 @@ import Foundation
 
 import UIKit
 
-protocol RedditPostViewDelegate: class {
 
+protocol RedditPostViewDelegate: class {
+    var ownPostButtonClickedDelegate: HandlesPostButtonClickDelegate! { get set }
 }
 
 class RedditPostPresenter {
@@ -19,26 +20,12 @@ class RedditPostPresenter {
     }
 }
 
-extension RedditPostPresenter: HandlesPostButtonClickDelegate {
-
-    func handleUpvoteClick() {
-    }
-
-    func handleDownvoteClick() {
-    }
-
-    func handleFavouriteClick() {
-    }
-
-    func handleMoreClick() {
-    }
-
-}
 
 class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
     var postInfo: PostAttributes
     private let presenter = RedditPostPresenter()
+    unowned var ownPostButtonClickedDelegate: HandlesPostButtonClickDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +33,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         view.backgroundColor = .white
         let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
         let contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
-        contentStack.delegate = presenter
+        contentStack.delegate = ownPostButtonClickedDelegate
         view.addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
