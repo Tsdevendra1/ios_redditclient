@@ -21,6 +21,10 @@ protocol RedditViewDelegate: class {
     func turnOnDownvote()
     func turnOnMore()
     func turnOnFavourite()
+    var upvoteButton: UIButton {get}
+    var downvoteButton: UIButton {get}
+    var favouriteButton: UIButton {get}
+    var moreButton: UIButton {get}
 }
 
 struct RedditPostTextData {
@@ -71,19 +75,24 @@ class RedditViewPresenter {
         )
     }
 
-    func configurePostIfButtonSelected(upvoteButtonIsSelected: Bool,
-                                       downvoteButtonIsSelected: Bool,
-                                       moreButtonIsSelected: Bool,
-                                       favouriteButtonIsSeelected: Bool) {
+    func getButtonStates() -> [String: Bool] {
+        return ["upvote": redditViewDelegate.upvoteButton.isSelected,
+                "downvote": redditViewDelegate.downvoteButton.isSelected,
+                "more": redditViewDelegate.moreButton.isSelected,
+                "favorite": redditViewDelegate.favouriteButton.isSelected]
+    }
 
-        let buttonFunctions = [redditViewDelegate.turnOnUpvote, redditViewDelegate.turnOnDownvote, redditViewDelegate.turnOnMore, redditViewDelegate.turnOnFavourite]
+    func configurePostIfButtonSelected(buttonStates: [String: Bool]) {
 
-        for (index, buttonSelected) in [upvoteButtonIsSelected, downvoteButtonIsSelected, moreButtonIsSelected, favouriteButtonIsSeelected].enumerated() {
-            if buttonSelected {
-                let function = buttonFunctions[index]
-                function()
+        let buttonFunctions = ["upvote": redditViewDelegate.turnOnUpvote, "downvote": redditViewDelegate.turnOnDownvote, "more": redditViewDelegate.turnOnMore,
+                               "favorite": redditViewDelegate.turnOnFavourite]
+
+        for (buttonType, buttonIsSelected) in buttonStates {
+            if buttonIsSelected {
+                if let function = buttonFunctions[buttonType]{
+                    function()
+                }
             }
-
         }
 
 
@@ -134,11 +143,11 @@ class RedditPostView: UIView, RedditViewDelegate {
     }
 
     func turnOnMore() {
-
+        moreButton.isSelected = true
     }
 
     func turnOnFavourite() {
-
+        favouriteButton.isSelected = true
     }
 
     @objc func handleUpvoteClick() {

@@ -34,10 +34,8 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
         let contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
 
-        contentStack.presenter.configurePostIfButtonSelected(upvoteButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.upvoteButton.isSelected,
-                downvoteButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.downvoteButton.isSelected,
-                moreButtonIsSelected: ownPostButtonClickedDelegate.redditPostView.moreButton.isSelected,
-                favouriteButtonIsSeelected: ownPostButtonClickedDelegate.redditPostView.downvoteButton.isSelected)
+        let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
+        contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
 
         contentStack.delegate = ownPostButtonClickedDelegate
         view.addSubview(contentStack)
