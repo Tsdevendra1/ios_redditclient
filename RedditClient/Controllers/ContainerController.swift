@@ -19,7 +19,7 @@ class ContainerModel {
     var menuVisible = false
     var menuXDistance: CGFloat = 0
     let maxYForPan: CGFloat = 20
-    let menuAnimationLength = 0.4
+    let menuAnimationLength = 0.1
     let maxAlpha: CGFloat = 0.55
     let maxPanToOpen: CGFloat = 80
     var moved = false
@@ -153,7 +153,7 @@ class ContainerController: UIViewController, ContainerViewDelegate {
         self.backgroundController = nil
     }
 
-    func animateMenu(xPosition: CGFloat, alpha: CGFloat, menuAnimationLength: Double, finishedFunction: (() -> Void)?) {
+      func animateMenu(xPosition: CGFloat, alpha: CGFloat, menuAnimationLength: Double, finishedFunction: (() -> Void)?) {
         UIView.animate(withDuration: menuAnimationLength, animations: {
             self.menuController.view.frame.origin.x = xPosition
             self.backgroundController!.view.backgroundColor = UIColor(white: 0.3, alpha: alpha)
