@@ -7,15 +7,48 @@ import Foundation
 
 import UIKit
 
+class TestClass {
+    var isCollapsed: Bool
+    var text: [String]
+
+    init(text: [String], isCollapsed: Bool) {
+        self.text = text
+        self.isCollapsed = isCollapsed
+    }
+}
+
+protocol commentHeader {
+    var isCollapsed: Bool { get set }
+    var rowCount: Int { get set }
+}
+
+extension commentHeader {
+    var isCollapsed: Bool {
+        return true
+    }
+}
+
+protocol HeaderViewDelegate: class {
+    func toggleSection(header: RedditPostHeaderView, section: Int)
+}
 
 protocol RedditPostViewDelegate: class {
     var ownPostButtonClickedDelegate: RedditPostCell! { get set }
+    var redditCommentsData: [Int: TestClass] { get set }
     func setupCommentsTableView()
+}
+
+class RedditPostModel {
+
 }
 
 class RedditPostPresenter {
 
+    private let redditPostModel = RedditPostModel()
     unowned private var redditPostViewDelegate: RedditPostViewDelegate!
+
+    var reloadSections: ((_ section: Int) -> Void)?
+
 
     func setRedditPostViewDelegate(delegate: RedditPostViewDelegate) {
         self.redditPostViewDelegate = delegate
@@ -26,6 +59,15 @@ class RedditPostPresenter {
     }
 }
 
+extension RedditPostPresenter: HeaderViewDelegate {
+    func toggleSection(header: RedditPostHeaderView, section: Int) {
+        // toggle section
+
+        let item: TestClass = redditPostViewDelegate.redditCommentsData[section]!
+        item.isCollapsed = !item.isCollapsed
+        reloadSections?(header.section)
+    }
+}
 
 class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
@@ -34,13 +76,18 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
     private var contentStack: RedditPostView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
-    var redditCommentsData: [Int: [String]] = [0: ["hi", "random"], 1: ["hi", "e", "qq"]]
+    var redditCommentsData: [Int: TestClass] = [1: TestClass(text: ["hi", "ran"], isCollapsed: false), 2: TestClass(text: ["hi", "ewqeq"], isCollapsed: false)]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.setRedditPostViewDelegate(delegate: self)
         view.backgroundColor = .white
 
+        presenter.reloadSections = { [unowned self] (section: Int) in
+            self.tableView.beginUpdates()
+            self.tableView.reloadSections([section], with: .fade)
+            self.tableView.endUpdates()
+        }
         presenter.setupCommentsView()
 
     }
@@ -54,6 +101,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         // Do any additional setup after loading the view.
         tableView.backgroundColor = .white
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
+        tableView.register(RedditPostHeaderView.self, forHeaderFooterViewReuseIdentifier: RedditPostHeaderView.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -96,43 +144,26 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 }
 
 extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0
-    }
 
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
-//            let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
-//            contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
-//
-//            let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
-//            contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
-//
-//            contentStack.delegate = ownPostButtonClickedDelegate
-//            view.addSubview(contentStack)
-////        contentStack.translatesAutoresizingMaskIntoConstraints = false
-////        NSLayoutConstraint.activate([
-////            contentStack.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 10),
-////            contentStack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-////            contentStack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10)
-////        ])
-//            return contentStack
-            let view = UIView()
-//        view.addSubview()
-            view.backgroundColor = UIColor.yellow
-            return view
+            let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
+            contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
+            let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
+            contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
+            contentStack.delegate = ownPostButtonClickedDelegate
+            return contentStack
         }
-
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RedditPostHeaderView.identifier) as! RedditPostHeaderView
+        print("hi")
         let view = UIView()
-//        view.addSubview()
-        if section == 1 {
-            view.backgroundColor = UIColor.red
-            return view
-        } else {
-
-            view.backgroundColor = UIColor.black
-            return view
-        }
+        view.backgroundColor = UIColor.black
+        headerView.backgroundView = view
+        headerView.item = redditCommentsData[section]!
+        headerView.delegate = presenter // don't forget this line!!!      return headerView
+        headerView.section = section
+        headerView.addGestureRecognizer(UITapGestureRecognizer(target: headerView, action: #selector(headerView.didTapHeader)))
+        return headerView
     }
 
     public func numberOfSections(in tableView: UITableView) -> Int {
@@ -140,11 +171,15 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if let sectionData = redditCommentsData[section] {
-//            let dataAmount = sectionData.count
-//            return dataAmount
-//        }
-        return 3
+        if section == 0 {
+            return 0
+        } else {
+            let itemCollapsed = redditCommentsData[section]?.isCollapsed
+            if itemCollapsed != nil && itemCollapsed! {
+                return 0
+            }
+            return 3
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
