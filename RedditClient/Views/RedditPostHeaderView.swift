@@ -8,7 +8,7 @@ import UIKit
 
 class RedditPostHeaderView: UITableViewHeaderFooterView {
     static let identifier = "RedditPostHeaderView"
-    var item: TestClass!
+    var commentTree: TopComment!
     var section: Int!
     unowned var delegate: HeaderViewDelegate!
 

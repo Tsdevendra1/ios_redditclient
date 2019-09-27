@@ -21,10 +21,10 @@ protocol RedditViewDelegate: class {
     func turnOnDownvote()
     func turnOnMore()
     func turnOnFavourite()
-    var upvoteButton: UIButton {get}
-    var downvoteButton: UIButton {get}
-    var favouriteButton: UIButton {get}
-    var moreButton: UIButton {get}
+    var upvoteButton: UIButton { get }
+    var downvoteButton: UIButton { get }
+    var favouriteButton: UIButton { get }
+    var moreButton: UIButton { get }
 }
 
 struct RedditPostTextData {
@@ -35,12 +35,12 @@ struct RedditPostTextData {
 }
 
 
-class RedditPostViewModel {
+class RedditViewModel {
     var postAttributes: PostAttributes!
 }
 
 class RedditViewPresenter {
-    private let redditPostViewModel = RedditPostViewModel()
+    private let redditPostViewModel = RedditViewModel()
     unowned private var redditViewDelegate: RedditViewDelegate!
 
     func setRedditViewDelegate(delegate: RedditViewDelegate) {
@@ -76,7 +76,7 @@ class RedditViewPresenter {
     }
 
     func getButtonStates() -> [String: Bool] {
-        return ["upvote": redditViewDelegate.upvoteButton.isSelected,
+        ["upvote": redditViewDelegate.upvoteButton.isSelected,
                 "downvote": redditViewDelegate.downvoteButton.isSelected,
                 "more": redditViewDelegate.moreButton.isSelected,
                 "favorite": redditViewDelegate.favouriteButton.isSelected]
@@ -89,7 +89,7 @@ class RedditViewPresenter {
 
         for (buttonType, buttonIsSelected) in buttonStates {
             if buttonIsSelected {
-                if let function = buttonFunctions[buttonType]{
+                if let function = buttonFunctions[buttonType] {
                     function()
                 }
             }
@@ -117,6 +117,7 @@ class RedditPostView: UIView, RedditViewDelegate {
     init(postAttributes: PostAttributes? = nil, frame: CGRect) {
         super.init(frame: frame)
         presenter.setRedditViewDelegate(delegate: self)
+        backgroundColor = .white
         if let postAttributes = postAttributes {
             presenter.setPostAttributes(postAttributes: postAttributes)
             presenter.setLabelAttributes()

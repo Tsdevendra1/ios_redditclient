@@ -7,15 +7,6 @@ import Foundation
 
 import UIKit
 
-class TestClass {
-    var isCollapsed: Bool
-    var text: [String]
-
-    init(text: [String], isCollapsed: Bool) {
-        self.text = text
-        self.isCollapsed = isCollapsed
-    }
-}
 
 protocol commentHeader {
     var isCollapsed: Bool { get set }
@@ -24,7 +15,7 @@ protocol commentHeader {
 
 extension commentHeader {
     var isCollapsed: Bool {
-        return true
+        return false
     }
 }
 
@@ -34,8 +25,18 @@ protocol HeaderViewDelegate: class {
 
 protocol RedditPostViewDelegate: class {
     var ownPostButtonClickedDelegate: RedditPostCell! { get set }
-    var redditCommentsData: [Int: TestClass] { get set }
+    var redditCommentsData: [Int: TopComment] { get set }
     func setupCommentsTableView()
+}
+
+class TopComment {
+    var isCollapsed: Bool
+    var comments: [String]
+
+    init(text: [String], isCollapsed: Bool) {
+        self.comments = text
+        self.isCollapsed = isCollapsed
+    }
 }
 
 class RedditPostModel {
@@ -63,7 +64,7 @@ extension RedditPostPresenter: HeaderViewDelegate {
     func toggleSection(header: RedditPostHeaderView, section: Int) {
         // toggle section
 
-        let item: TestClass = redditPostViewDelegate.redditCommentsData[section]!
+        let item: TopComment = redditPostViewDelegate.redditCommentsData[section]!
         item.isCollapsed = !item.isCollapsed
         reloadSections?(header.section)
     }
@@ -76,7 +77,12 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
     private var contentStack: RedditPostView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
-    var redditCommentsData: [Int: TestClass] = [1: TestClass(text: ["hi", "ran"], isCollapsed: false), 2: TestClass(text: ["hi", "ewqeq"], isCollapsed: false)]
+    var redditCommentsData: [Int: TopComment] = [1: TopComment(text: ["hi", "ran"], isCollapsed: false), 2: TopComment(text: ["hi", "ewqeq"], isCollapsed: false)]
+
+    init(infoForPost: PostAttributes) {
+        self.postInfo = infoForPost
+        super.init(nibName: nil, bundle: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +91,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
         presenter.reloadSections = { [unowned self] (section: Int) in
             self.tableView.beginUpdates()
-            self.tableView.reloadSections([section], with: .fade)
+            self.tableView.reloadSections([section], with: .bottom)
             self.tableView.endUpdates()
         }
         presenter.setupCommentsView()
@@ -99,7 +105,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .red
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
         tableView.register(RedditPostHeaderView.self, forHeaderFooterViewReuseIdentifier: RedditPostHeaderView.identifier)
         tableView.showsVerticalScrollIndicator = true
@@ -114,11 +120,6 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         ])
     }
 
-
-    init(infoForPost: PostAttributes) {
-        self.postInfo = infoForPost
-        super.init(nibName: nil, bundle: nil)
-    }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -155,11 +156,10 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
             return contentStack
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RedditPostHeaderView.identifier) as! RedditPostHeaderView
-        print("hi")
         let view = UIView()
         view.backgroundColor = UIColor.black
         headerView.backgroundView = view
-        headerView.item = redditCommentsData[section]!
+        headerView.commentTree = redditCommentsData[section]!
         headerView.delegate = presenter // don't forget this line!!!      return headerView
         headerView.section = section
         headerView.addGestureRecognizer(UITapGestureRecognizer(target: headerView, action: #selector(headerView.didTapHeader)))
@@ -167,7 +167,8 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     }
 
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        // plus 1 is for the post inforation header
+        redditCommentsData.count + 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -178,20 +179,25 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
             if itemCollapsed != nil && itemCollapsed! {
                 return 0
             }
-            return 3
+            // Minus 1 because one of the rows is taken by the header
+            return redditCommentsData[section]!.comments.count - 1
         }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 20
+        20
     }
 
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print(indexPath.section, "section")
-        print(indexPath.row, "row")
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditCommentCell.identifier, for: indexPath) as! RedditCommentCell
-        cell.descriptionLabel.text = "hi"
+        guard let topCommentForSection = redditCommentsData[indexPath.section] else {
+            return cell
+        }
+
+        // we do plus one because index 0 of the comments is used for the headerview so row 0 is actuall the first child comment of the top comment
+        let commentForRow = topCommentForSection.comments[indexPath.row + 1]
+        cell.descriptionLabel.text = commentForRow
         return cell
     }
 
