@@ -91,7 +91,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
         presenter.reloadSections = { [unowned self] (section: Int) in
             self.tableView.beginUpdates()
-            self.tableView.reloadSections([section], with: .bottom)
+            self.tableView.reloadSections([section], with: .fade)
             self.tableView.endUpdates()
         }
         presenter.setupCommentsView()
@@ -100,14 +100,13 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
     func setupCommentsTableView() {
         tableView = UITableView(frame: .zero, style: .grouped)
-//        tableView.sectionHeaderHeight = 100
-        tableView.sectionFooterHeight = 0
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
         tableView.backgroundColor = .red
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
         tableView.register(RedditPostHeaderView.self, forHeaderFooterViewReuseIdentifier: RedditPostHeaderView.identifier)
+        tableView.register(RedditPostFooterView.self, forHeaderFooterViewReuseIdentifier: RedditPostFooterView.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -145,6 +144,20 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 }
 
 extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 10
+        }
+        return 0
+    }
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        200
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RedditPostFooterView.identifier) as! RedditPostFooterView
+        return footerView
+    }
 
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
