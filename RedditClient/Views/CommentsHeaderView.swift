@@ -6,7 +6,7 @@
 import Foundation
 import UIKit
 
-class RedditPostHeaderView: UITableViewHeaderFooterView {
+class CommentsHeaderView: UITableViewHeaderFooterView {
     static let identifier = "RedditPostHeaderView"
     var commentTree: TopComment!
     var section: Int!

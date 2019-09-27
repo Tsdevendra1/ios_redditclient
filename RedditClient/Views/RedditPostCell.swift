@@ -46,11 +46,11 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
     var presenter = RedditPostCellPresenter()
     var contentOverlay: UIView!
     var rowNumber: Int!
-    var redditPostView: RedditPostView
+    var redditPostView: RedditPostInfoView
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
-        redditPostView = RedditPostView(frame: rect)
+        redditPostView = RedditPostInfoView(frame: rect)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         presenter.setRedditPostCellDelegate(delegate: self)

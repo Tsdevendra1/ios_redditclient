@@ -99,7 +99,7 @@ class RedditViewPresenter {
     }
 }
 
-class RedditPostView: UIView, RedditViewDelegate {
+class RedditPostInfoView: UIView, RedditViewDelegate {
 
 
     let upvoteButton = UIButton()

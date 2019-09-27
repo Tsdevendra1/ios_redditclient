@@ -6,7 +6,7 @@
 import Foundation
 import UIKit
 
-class RedditPostFooterView: UITableViewHeaderFooterView {
+class CommentsFooterView: UITableViewHeaderFooterView {
     static let identifier = "RedditPostFooterView"
 
     override init(reuseIdentifier: String?) {

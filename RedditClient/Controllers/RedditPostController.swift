@@ -20,7 +20,7 @@ extension commentHeader {
 }
 
 protocol HeaderViewDelegate: class {
-    func toggleSection(header: RedditPostHeaderView, section: Int)
+    func toggleSection(header: CommentsHeaderView, section: Int)
 }
 
 protocol RedditPostViewDelegate: class {
@@ -61,7 +61,7 @@ class RedditPostPresenter {
 }
 
 extension RedditPostPresenter: HeaderViewDelegate {
-    func toggleSection(header: RedditPostHeaderView, section: Int) {
+    func toggleSection(header: CommentsHeaderView, section: Int) {
         // toggle section
 
         let item: TopComment = redditPostViewDelegate.redditCommentsData[section]!
@@ -74,7 +74,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
     var tableView: UITableView!
     private var postInfo: PostAttributes
-    private var contentStack: RedditPostView!
+    private var contentStack: RedditPostInfoView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
     var redditCommentsData: [Int: TopComment] = [1: TopComment(text: ["hi", "ran"], isCollapsed: false), 2: TopComment(text: ["hi", "ewqeq"], isCollapsed: false)]
@@ -105,8 +105,8 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         // Do any additional setup after loading the view.
         tableView.backgroundColor = .red
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
-        tableView.register(RedditPostHeaderView.self, forHeaderFooterViewReuseIdentifier: RedditPostHeaderView.identifier)
-        tableView.register(RedditPostFooterView.self, forHeaderFooterViewReuseIdentifier: RedditPostFooterView.identifier)
+        tableView.register(CommentsHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsHeaderView.identifier)
+        tableView.register(CommentsFooterView.self, forHeaderFooterViewReuseIdentifier: CommentsFooterView.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -150,25 +150,22 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
         }
         return 0
     }
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        200
-    }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RedditPostFooterView.identifier) as! RedditPostFooterView
+        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsFooterView.identifier) as! CommentsFooterView
         return footerView
     }
 
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
             let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
-            contentStack = RedditPostView(postAttributes: postInfo, frame: rect)
+            contentStack = RedditPostInfoView(postAttributes: postInfo, frame: rect)
             let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
             contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
             contentStack.delegate = ownPostButtonClickedDelegate
             return contentStack
         }
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RedditPostHeaderView.identifier) as! RedditPostHeaderView
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsHeaderView.identifier) as! CommentsHeaderView
         let view = UIView()
         view.backgroundColor = UIColor.black
         headerView.backgroundView = view
