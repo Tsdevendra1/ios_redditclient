@@ -65,18 +65,15 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         contentOverlay.layer.cornerRadius = 10
         contentOverlay.layer.masksToBounds = true
 
+
         contentOverlay.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             contentOverlay.leftAnchor.constraint(equalTo: leftAnchor),
             contentOverlay.rightAnchor.constraint(equalTo: rightAnchor),
-            // remember downward is positive and right is positive. need to divide by two because otherwise we are
-            // padding each cell twice (one from the cell and then another from the cell below and above)
-            contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(HomeModel.cellPadding) / 2),
-            contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeModel.cellPadding) / 2)
         ])
         contentOverlay.addSubview(redditPostView)
+
         redditPostView.translatesAutoresizingMaskIntoConstraints = false
-        // todo: Completely remove padding instead of setting to 0
         let padding: CGFloat = 0
         redditPostView.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
         redditPostView.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true

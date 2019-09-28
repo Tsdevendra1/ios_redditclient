@@ -103,7 +103,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
-        tableView.backgroundColor = getUIColor(hex: "#A9A9A9")
+        tableView.backgroundColor = GlobalConfig.GREY
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
         tableView.register(CommentsHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsHeaderView.identifier)
         tableView.register(CommentsFooterView.self, forHeaderFooterViewReuseIdentifier: CommentsFooterView.identifier)
@@ -112,7 +112,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             // Need the one to see the line seperator of the navbar
-            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 1),
+            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 3),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)

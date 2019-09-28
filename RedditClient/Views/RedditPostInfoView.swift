@@ -118,6 +118,7 @@ class RedditPostInfoView: UIView, RedditViewDelegate {
         super.init(frame: frame)
         presenter.setRedditViewDelegate(delegate: self)
         backgroundColor = .white
+
         if let postAttributes = postAttributes {
             presenter.setPostAttributes(postAttributes: postAttributes)
             presenter.setLabelAttributes()
