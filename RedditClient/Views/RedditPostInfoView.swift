@@ -273,10 +273,11 @@ class RedditPostInfoView: UIView, RedditViewDelegate {
         contentStack.axis = .vertical
         addSubview(contentStack)
         contentStack.translatesAutoresizingMaskIntoConstraints = false
-        contentStack.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        contentStack.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        contentStack.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        contentStack.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        let padding: CGFloat = 10
+        contentStack.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
+        contentStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
+        contentStack.rightAnchor.constraint(equalTo: rightAnchor, constant: -padding).isActive = true
+        contentStack.leftAnchor.constraint(equalTo: leftAnchor, constant: padding).isActive = true
 
     }
 }

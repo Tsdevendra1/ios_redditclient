@@ -103,7 +103,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         // Do any additional setup after loading the view.
-        tableView.backgroundColor = .red
+        tableView.backgroundColor = getUIColor(hex: "#A9A9A9")
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
         tableView.register(CommentsHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsHeaderView.identifier)
         tableView.register(CommentsFooterView.self, forHeaderFooterViewReuseIdentifier: CommentsFooterView.identifier)
@@ -146,7 +146,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
-            return 10
+            return 20
         }
         return 0
     }
@@ -160,6 +160,10 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
         if section == 0 {
             let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
             contentStack = RedditPostInfoView(postAttributes: postInfo, frame: rect)
+            contentStack.layer.shadowOpacity = 0.5
+            contentStack.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
+            contentStack.layer.shadowRadius = 1.0
+            contentStack.layer.shadowColor = UIColor.black.cgColor
             let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
             contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
             contentStack.delegate = ownPostButtonClickedDelegate

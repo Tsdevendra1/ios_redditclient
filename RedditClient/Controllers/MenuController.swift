@@ -91,11 +91,11 @@ class MenuController: UITableViewController, MenuViewDelegate {
 
     // Return the number of rows for the table.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        20
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return presenter.getHeightForRow(row: indexPath.row)
+        presenter.getHeightForRow(row: indexPath.row)
     }
 
     // Provide a cell object for each row.

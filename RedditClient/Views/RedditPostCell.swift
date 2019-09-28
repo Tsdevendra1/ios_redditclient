@@ -76,7 +76,7 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         ])
         contentOverlay.addSubview(redditPostView)
         redditPostView.translatesAutoresizingMaskIntoConstraints = false
-        let padding: CGFloat = 12
+        let padding: CGFloat = 0
         redditPostView.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
         redditPostView.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true
         redditPostView.rightAnchor.constraint(equalTo: contentOverlay.rightAnchor, constant: -padding).isActive = true

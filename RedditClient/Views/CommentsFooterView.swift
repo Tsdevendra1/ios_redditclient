@@ -12,7 +12,7 @@ class CommentsFooterView: UITableViewHeaderFooterView {
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         let view = UIView()
-        view.backgroundColor = .yellow
+        view.backgroundColor = .clear
         backgroundView = view
     }
 
