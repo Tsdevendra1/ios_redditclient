@@ -176,17 +176,6 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         cell.redditPostView.presenter.setLabelAttributes()
         cell.rowNumber = indexPath.row
 
-        // remember downward is positive and right is positive. need to divide by two because otherwise we are
-        // padding each cell twice (one from the cell and then another from the cell below and above)
-        var divisionBy: CGFloat
-        if indexPath.row == 0 {
-            // We don't divide by 2 for the first row since there is no cell above it to provide the extra padding
-            divisionBy = 1
-        } else {
-            divisionBy = 2
-        }
-        cell.contentOverlay.topAnchor.constraint(equalTo: cell.topAnchor, constant: (HomeModel.cellPadding) / divisionBy).isActive = true
-        cell.contentOverlay.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -(HomeModel.cellPadding) / 2).isActive = true
 
         return cell
     }

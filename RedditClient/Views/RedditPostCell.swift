@@ -73,6 +73,10 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         NSLayoutConstraint.activate([
             contentOverlay.leftAnchor.constraint(equalTo: leftAnchor, constant: HomeModel.cellPadding),
             contentOverlay.rightAnchor.constraint(equalTo: rightAnchor, constant: -HomeModel.cellPadding),
+            // remember downward is positive and right is positive. need to divide by two because otherwise we are
+            // padding each cell twice (one from the cell and then another from the cell below and above)
+            contentOverlay.topAnchor.constraint(equalTo: topAnchor, constant: (HomeModel.cellPadding)),
+            contentOverlay.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         contentOverlay.addSubview(redditPostView)
 
