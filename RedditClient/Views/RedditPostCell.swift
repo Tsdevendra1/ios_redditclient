@@ -61,15 +61,18 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         // This is the white background of the cell
         contentOverlay = UIView()
         addSubview(contentOverlay)
-        contentOverlay.backgroundColor = .white
-        contentOverlay.layer.cornerRadius = 10
-        contentOverlay.layer.masksToBounds = true
+        contentOverlay.backgroundColor = .clear
+        contentOverlay.layer.cornerRadius = 7.0;
+        contentOverlay.layer.shadowColor = UIColor.black.cgColor
+        contentOverlay.layer.shadowOpacity = 0.5;
+        contentOverlay.layer.shadowRadius = 3.0;
+        contentOverlay.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
 
 
         contentOverlay.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentOverlay.leftAnchor.constraint(equalTo: leftAnchor),
-            contentOverlay.rightAnchor.constraint(equalTo: rightAnchor),
+            contentOverlay.leftAnchor.constraint(equalTo: leftAnchor, constant: HomeModel.cellPadding),
+            contentOverlay.rightAnchor.constraint(equalTo: rightAnchor, constant: -HomeModel.cellPadding),
         ])
         contentOverlay.addSubview(redditPostView)
 
@@ -79,6 +82,9 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         redditPostView.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true
         redditPostView.rightAnchor.constraint(equalTo: contentOverlay.rightAnchor, constant: -padding).isActive = true
         redditPostView.leftAnchor.constraint(equalTo: contentOverlay.leftAnchor, constant: padding).isActive = true
+        redditPostView.layer.cornerRadius = contentOverlay.layer.cornerRadius
+
+        redditPostView.layer.masksToBounds = true
 
     }
 

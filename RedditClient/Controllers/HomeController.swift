@@ -16,7 +16,7 @@ class HomeModel {
 
     var numberOfPostsSeen = 0
     var currentAfterId: String!
-    static let cellPadding: CGFloat = 15
+    static let cellPadding: CGFloat = 18
     let cellHeight: CGFloat = 200
     var isLoading: Bool = true
     var currentSubreddit = "all"
@@ -118,8 +118,8 @@ class HomeController: BaseViewController, HomeViewDelegate {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -padding),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: padding)
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor)
         ])
     }
 
