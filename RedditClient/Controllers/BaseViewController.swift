@@ -21,6 +21,10 @@ class BaseViewController: UIViewController {
     func createBasicNavBar() {
         // create navigation bar
         navBar = UINavigationBar()
+        navBar.layer.shadowOpacity = 0.5
+        navBar.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
+        navBar.layer.shadowRadius = 1.5
+        navBar.layer.shadowColor = UIColor.black.cgColor
         navBar.delegate = self
         navBar.barTintColor = .white
         navBar.isTranslucent = false

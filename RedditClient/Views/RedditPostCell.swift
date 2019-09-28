@@ -76,6 +76,7 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
         ])
         contentOverlay.addSubview(redditPostView)
         redditPostView.translatesAutoresizingMaskIntoConstraints = false
+        // todo: Completely remove padding instead of setting to 0
         let padding: CGFloat = 0
         redditPostView.topAnchor.constraint(equalTo: contentOverlay.topAnchor, constant: padding).isActive = true
         redditPostView.bottomAnchor.constraint(equalTo: contentOverlay.bottomAnchor, constant: -padding).isActive = true
