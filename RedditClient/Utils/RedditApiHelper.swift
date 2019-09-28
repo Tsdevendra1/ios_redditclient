@@ -15,6 +15,7 @@ class RedditApiHelper {
         if currentAfterId != nil && numberOfPostsAlreadySeen != nil {
             stringUrl += "?after=\(currentAfterId!)&count\(numberOfPostsAlreadySeen!)"
         }
+
         let url = URL(string: stringUrl)!
         getUrl(url: url, completionHandler: { data in
             let responseData = decodeData(model: RedditResponse.self, data: data)
@@ -28,6 +29,19 @@ class RedditApiHelper {
 
     static func upvotePost() {
 
+    }
+
+    static func getCommentsForPost(subreddit: String, postId: String, completionHandler: @escaping (([PostAttributes]) -> Void)) {
+        var stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json"
+        let url = URL(string: stringUrl)!
+        getUrl(url: url, completionHandler: { data in
+            let responseData = decodeData(model: RedditResponse.self, data: data)
+            var cleanedData: [PostAttributes] = []
+            for post in responseData!.data.children {
+                cleanedData.append(post.data)
+            }
+            completionHandler(cleanedData)
+        })
     }
 
 }

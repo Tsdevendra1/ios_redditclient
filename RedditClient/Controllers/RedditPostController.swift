@@ -15,7 +15,7 @@ protocol commentHeader {
 
 extension commentHeader {
     var isCollapsed: Bool {
-        return false
+        false
     }
 }
 
@@ -25,16 +25,16 @@ protocol HeaderViewDelegate: class {
 
 protocol RedditPostViewDelegate: class {
     var ownPostButtonClickedDelegate: RedditPostCell! { get set }
-    var redditCommentsData: [Int: TopComment] { get set }
+    var redditCommentsData: [Int: CommentChain] { get set }
     func setupCommentsTableView()
 }
 
-class TopComment {
+class CommentChain {
     var isCollapsed: Bool
     var comments: [String]
 
-    init(text: [String], isCollapsed: Bool) {
-        self.comments = text
+    init(comments: [String], isCollapsed: Bool) {
+        self.comments = comments
         self.isCollapsed = isCollapsed
     }
 }
@@ -64,7 +64,7 @@ extension RedditPostPresenter: HeaderViewDelegate {
     func toggleSection(header: CommentsHeaderView, section: Int) {
         // toggle section
 
-        let item: TopComment = redditPostViewDelegate.redditCommentsData[section]!
+        let item: CommentChain = redditPostViewDelegate.redditCommentsData[section]!
         item.isCollapsed = !item.isCollapsed
         reloadSections?(header.section)
     }
@@ -77,7 +77,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
     private var contentStack: RedditPostInfoView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
-    var redditCommentsData: [Int: TopComment] = [1: TopComment(text: ["hi", "ran"], isCollapsed: false), 2: TopComment(text: ["hi", "ewqeq"], isCollapsed: false)]
+    var redditCommentsData: [Int: CommentChain] = [1: CommentChain(comments: ["hi", "ran"], isCollapsed: false), 2: CommentChain(comments: ["hi", "ewqeq"], isCollapsed: false)]
 
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
