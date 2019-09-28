@@ -32,8 +32,9 @@ class RedditApiHelper {
     }
 
     static func getCommentsForPost(subreddit: String, postId: String, completionHandler: @escaping (([PostAttributes]) -> Void)) {
-        var stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json"
+        let stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json"
         let url = URL(string: stringUrl)!
+
         getUrl(url: url, completionHandler: { data in
             let responseData = decodeData(model: RedditResponse.self, data: data)
             var cleanedData: [PostAttributes] = []

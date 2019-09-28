@@ -42,11 +42,11 @@ func getTimeSincePostInHours(_ unixTimeSincePost: Int) -> Int {
 }
 
 func createPostPointsText(score: Int) -> String {
-    return cleanNumber(score) + " points"
+    cleanNumber(score) + " points"
 }
 
 func createPostCommentsText(numComments: Int) -> String {
-    return cleanNumber(numComments) + " comments"
+    cleanNumber(numComments) + " comments"
 }
 
 

@@ -66,20 +66,24 @@ class RedditViewPresenter {
 
     func createRedditPostText(cellData: PostAttributes) -> RedditPostTextData {
         let hoursSincePost = getTimeSincePostInHours(cellData.createdUtc)
+        let authorText = createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
+                subreddit: cellData.subreddit.lowercased(), author: cellData.author)
+        let scoreText = createPostPointsText(score: cellData.score)
+        let commentsTotalText = createPostCommentsText(numComments: cellData.numComments)
+
         return RedditPostTextData(
-                authorText: createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
-                        subreddit: cellData.subreddit.lowercased(), author: cellData.author),
-                scoreText: createPostPointsText(score: cellData.score),
-                commentsTotalText: createPostCommentsText(numComments: cellData.numComments),
+                authorText: authorText,
+                scoreText: scoreText,
+                commentsTotalText: commentsTotalText,
                 titleText: cellData.title
         )
     }
 
     func getButtonStates() -> [String: Bool] {
         ["upvote": redditViewDelegate.upvoteButton.isSelected,
-                "downvote": redditViewDelegate.downvoteButton.isSelected,
-                "more": redditViewDelegate.moreButton.isSelected,
-                "favorite": redditViewDelegate.favouriteButton.isSelected]
+         "downvote": redditViewDelegate.downvoteButton.isSelected,
+         "more": redditViewDelegate.moreButton.isSelected,
+         "favorite": redditViewDelegate.favouriteButton.isSelected]
     }
 
     func configurePostIfButtonSelected(buttonStates: [String: Bool]) {

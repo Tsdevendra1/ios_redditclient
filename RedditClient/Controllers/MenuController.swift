@@ -4,6 +4,9 @@
 //
 
 import UIKit
+protocol MenuControllerDelegate: class {
+    func handleMenuSelectOption(menuOptionSelected: MenuOptions)
+}
 
 protocol MenuViewDelegate: class {
     var delegate: MenuControllerDelegate! { get set }

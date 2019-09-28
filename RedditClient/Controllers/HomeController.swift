@@ -5,6 +5,9 @@
 
 import UIKit
 
+protocol HomeControllerDelegate {
+    func handlePanGesture(recognizer: UIPanGestureRecognizer)
+}
 
 protocol HomeViewDelegate: class {
     func setupTableView(padding: CGFloat)
