@@ -6,4 +6,4 @@
 import Foundation
 
 class GlobalConfig {
-    static let GREY = getUIColor(hex: "#A9A9A9")}
+    static let GREY = getUIColor(hex: "#D8D8D8")}
