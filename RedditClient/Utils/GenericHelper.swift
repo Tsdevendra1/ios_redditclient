@@ -62,3 +62,18 @@ func createAuthorLabelWithTimeAndSubredditText(hoursSincePost: Int, subreddit: S
 }
 
 
+func dfsvisit(currentReplies: RedditResponseComments, commentsTracker: inout [String: (Int, String)], level: Int) {
+    let replyComments = currentReplies.data.children
+    let currentLevel = level + 1
+    for comment in replyComments {
+        let commentData = comment.data
+        if let id = commentData.id {
+            if let commentBody = commentData.body {
+                commentsTracker[id] = (currentLevel, commentBody)
+            }
+        }
+        if let replies = commentData.replies {
+            dfsvisit(currentReplies: replies, commentsTracker: &commentsTracker, level: currentLevel)
+        }
+    }
+}

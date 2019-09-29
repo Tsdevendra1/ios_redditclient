@@ -31,17 +31,30 @@ class RedditApiHelper {
 
     }
 
-    static func getCommentsForPost(subreddit: String, postId: String, completionHandler: @escaping (([PostAttributes]) -> Void)) {
+    static func getCommentsForPost(subreddit: String, postId: String, completionHandler: @escaping (([CommentChain]) -> Void)) {
         let stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json"
         let url = URL(string: stringUrl)!
 
         getUrl(url: url, completionHandler: { data in
-            let responseData = decodeData(model: RedditResponse.self, data: data)
-            var cleanedData: [PostAttributes] = []
-            for post in responseData!.data.children {
-                cleanedData.append(post.data)
+            print("inside")
+            let responseData = decodeData(model: Array<RedditResponseComments>.self, data: data)
+            let postCommentsData = responseData?[1].data.children
+            guard let commentsData = postCommentsData else {
+                return
             }
-            completionHandler(cleanedData)
+
+            var commentsTracker: [String: (Int, String)] = [:]
+            for comment in commentsData {
+                let data: CommentAttributes = comment.data
+                if let commentBody = data.body {
+                    if let commentId = data.id {
+                        commentsTracker[commentId] = (0, commentBody)
+                    }
+                }
+                if let replies = data.replies {
+                    dfsvisit(currentReplies: replies, commentsTracker: &commentsTracker, level: 0)
+                }
+            }
         })
     }
 

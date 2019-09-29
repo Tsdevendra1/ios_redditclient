@@ -8,17 +8,6 @@ import Foundation
 import UIKit
 
 
-protocol commentHeader {
-    var isCollapsed: Bool { get set }
-    var rowCount: Int { get set }
-}
-
-extension commentHeader {
-    var isCollapsed: Bool {
-        false
-    }
-}
-
 protocol HeaderViewDelegate: class {
     func toggleSection(header: CommentsHeaderView, section: Int)
 }
@@ -33,14 +22,19 @@ class CommentChain {
     var isCollapsed: Bool
     var comments: [String]
 
-    init(comments: [String], isCollapsed: Bool) {
+    init(comments: [String]) {
         self.comments = comments
-        self.isCollapsed = isCollapsed
+        self.isCollapsed = false
     }
 }
 
 class RedditPostModel {
-
+    func getPostComments() {
+        print("getting comments")
+        RedditApiHelper.getCommentsForPost(subreddit: "swift", postId: "dayxrf", completionHandler: { data in
+            print(data)
+        })
+    }
 }
 
 class RedditPostPresenter {
@@ -52,6 +46,7 @@ class RedditPostPresenter {
 
 
     func setRedditPostViewDelegate(delegate: RedditPostViewDelegate) {
+        redditPostModel.getPostComments()
         self.redditPostViewDelegate = delegate
     }
 
@@ -77,7 +72,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
     private var contentStack: RedditPostInfoView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
-    var redditCommentsData: [Int: CommentChain] = [1: CommentChain(comments: ["hi", "ran"], isCollapsed: false), 2: CommentChain(comments: ["hi", "ewqeq"], isCollapsed: false)]
+    var redditCommentsData: [Int: CommentChain] = [1: CommentChain(comments: ["hi", "ran"]), 2: CommentChain(comments: ["hi", "ewqeq"])]
 
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
