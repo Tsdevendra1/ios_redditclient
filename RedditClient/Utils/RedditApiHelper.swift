@@ -5,6 +5,13 @@
 
 import Foundation
 
+struct CommentInfo {
+    var parentId: String?
+    var level: Int
+    var id: String
+    var body: String
+}
+
 class RedditApiHelper {
 
     static func getPosts(subreddit: String,
@@ -31,8 +38,8 @@ class RedditApiHelper {
 
     }
 
-    static func getCommentsForPost(subreddit: String, postId: String, completionHandler: @escaping (([CommentChain]) -> Void)) {
-        let stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json"
+    static func getCommentsForPost(subreddit: String, postId: String, sortBy: SortComments, completionHandler: @escaping (([CommentChain]) -> Void)) {
+        let stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json?sort=\(sortBy.rawValue)"
         let url = URL(string: stringUrl)!
 
         getUrl(url: url, completionHandler: { data in
@@ -43,17 +50,22 @@ class RedditApiHelper {
                 return
             }
 
-            var commentsTracker: [String: (Int, String)] = [:]
+            var commentsTracker: [[String]] = []
             for comment in commentsData {
+
+                var currentCommentChain: [String] = []
                 let data: CommentAttributes = comment.data
                 if let commentBody = data.body {
                     if let commentId = data.id {
-                        commentsTracker[commentId] = (0, commentBody)
+//                        commentsTracker[commentId] = CommentInfo(parentId: nil, level: 0, id: commentId, body: commentBody)
+                        currentCommentChain.append(commentBody)
                     }
                 }
                 if let replies = data.replies {
-                    dfsvisit(currentReplies: replies, commentsTracker: &commentsTracker, level: 0)
+                    dfsvisit(currentReplies: replies, currentCommentChain: &currentCommentChain, level: 0, parentId: data.id)
                 }
+                commentsTracker.append(currentCommentChain)
+                print(currentCommentChain)
             }
         })
     }

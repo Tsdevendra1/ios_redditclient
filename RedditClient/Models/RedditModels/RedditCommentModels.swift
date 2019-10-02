@@ -27,8 +27,7 @@ struct CommentAttributes: Codable {
     let body: String?
     let replies: RedditResponseComments?
 
-    enum CodeKeys: CodingKey
-    {
+    enum CodeKeys: CodingKey {
         case id
         case body
         case replies

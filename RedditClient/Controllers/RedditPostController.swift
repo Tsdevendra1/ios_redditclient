@@ -31,7 +31,7 @@ class CommentChain {
 class RedditPostModel {
     func getPostComments() {
         print("getting comments")
-        RedditApiHelper.getCommentsForPost(subreddit: "swift", postId: "dayxrf", completionHandler: { data in
+        RedditApiHelper.getCommentsForPost(subreddit: "swift", postId: "dayxrf", sortBy: SortComments.top, completionHandler: { data in
             print(data)
         })
     }
