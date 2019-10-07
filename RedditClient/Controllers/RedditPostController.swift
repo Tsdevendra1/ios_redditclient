@@ -30,6 +30,10 @@ class CommentChain {
 }
 
 class RedditPostModel {
+    var currentSorting = SortComments.top
+    var subreddit: String!
+    var postId: String!
+
     func getPostComments(subreddit: String, postId: String, sortBy: SortComments, completionHandler: @escaping (([Int: CommentChain]) -> Void)) {
         RedditApiHelper.getCommentsForPost(subreddit: subreddit, postId: postId, sortBy: sortBy, completionHandler: { data in
             DispatchQueue.main.async() {
@@ -51,12 +55,12 @@ class RedditPostPresenter {
         self.redditPostViewDelegate = delegate
     }
 
-    func getCommentsForPost(sortBy: SortComments, subreddit: String, postId: String) {
+    func getCommentsForPost(subreddit: String, postId: String) {
         redditPostModel.getPostComments(subreddit: subreddit,
                 postId: postId,
-                sortBy: sortBy,
-                completionHandler: { data in
-                    redditPostViewDelegate.setTableViewData(data: data)
+                sortBy: redditPostModel.currentSorting,
+                completionHandler: { [unowned self] data in
+                    self.redditPostViewDelegate.setTableViewData(data: data)
                 })
     }
 
@@ -82,7 +86,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
     private var contentStack: RedditPostInfoView!
     private let presenter = RedditPostPresenter()
     unowned var ownPostButtonClickedDelegate: RedditPostCell!
-    var redditCommentsData: [Int: CommentChain] = [1: CommentChain(comments: ["hi", "ran"]), 2: CommentChain(comments: ["hi", "ewqeq"])]
+    var redditCommentsData: [Int: CommentChain] = [:]
 
     init(infoForPost: PostAttributes) {
         self.postInfo = infoForPost
@@ -100,6 +104,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
             self.tableView.endUpdates()
         }
         presenter.setupCommentsView()
+        presenter.getCommentsForPost(subreddit: postInfo.subreddit, postId: postInfo.id)
 
     }
 
@@ -181,7 +186,19 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsHeaderView.identifier) as! CommentsHeaderView
         let view = UIView()
-        view.backgroundColor = UIColor.black
+        let textLabel = UILabel()
+        let commentForSection = redditCommentsData[section-1]!.comments[0].body
+        textLabel.text = commentForSection
+        textLabel.textColor = .black
+        view.addSubview(textLabel)
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            textLabel.topAnchor.constraint(equalTo:view.topAnchor),
+            textLabel.bottomAnchor.constraint(equalTo:view.bottomAnchor),
+            textLabel.rightAnchor.constraint(equalTo: view.rightAnchor),
+            textLabel.leftAnchor.constraint(equalTo: view.leftAnchor)
+        ])
+        textLabel.backgroundColor = UIColor.white
         headerView.backgroundView = view
         headerView.commentTree = redditCommentsData[section]!
         headerView.delegate = presenter // don't forget this line!!!      return headerView
@@ -196,15 +213,16 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        if section == 0 || redditCommentsData.count == 0 {
             return 0
         } else {
             let itemCollapsed = redditCommentsData[section]?.isCollapsed
             if itemCollapsed != nil && itemCollapsed! {
                 return 0
             }
-            // Minus 1 because one of the rows is taken by the header
-            return redditCommentsData[section]!.comments.count - 1
+            // Minus 1 for the comment count because one of the rows is taken by the header and minus one for the section number
+            // because of the indexing (the comments start at 0) and since we added an extra sectoin for the post info header
+            return redditCommentsData[section-1]!.comments.count - 1
         }
     }
 
@@ -215,11 +233,11 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditCommentCell.identifier, for: indexPath) as! RedditCommentCell
-        guard let commentsForSection = redditCommentsData[indexPath.section] else {
+        // minus 1 because of the indexing since we added an extra section for the post info header
+        guard let commentsForSection = redditCommentsData[indexPath.section-1] else {
             return cell
         }
-        // we do plus one because index 0 of the comments is used for the headerview so row 0 is actuall the first child comment of the top comment
-        let commentForRow = commentsForSection.comments[indexPath.row + 1]
+        let commentForRow = commentsForSection.comments[indexPath.row+1]
         cell.descriptionLabel.text = commentForRow.body
         return cell
     }
