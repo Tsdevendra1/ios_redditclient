@@ -16,23 +16,25 @@ protocol RedditPostViewDelegate: class {
     var ownPostButtonClickedDelegate: RedditPostCell! { get set }
     var redditCommentsData: [Int: CommentChain] { get set }
     func setupCommentsTableView()
+    func setTableViewData(data: [Int: CommentChain])
 }
 
 class CommentChain {
     var isCollapsed: Bool
-    var comments: [String]
+    var comments: [Comment]
 
-    init(comments: [String]) {
+    init(comments: [Comment]) {
         self.comments = comments
         self.isCollapsed = false
     }
 }
 
 class RedditPostModel {
-    func getPostComments() {
-        print("getting comments")
-        RedditApiHelper.getCommentsForPost(subreddit: "swift", postId: "dayxrf", sortBy: SortComments.top, completionHandler: { data in
-            print(data)
+    func getPostComments(subreddit: String, postId: String, sortBy: SortComments, completionHandler: @escaping (([Int: CommentChain]) -> Void)) {
+        RedditApiHelper.getCommentsForPost(subreddit: subreddit, postId: postId, sortBy: sortBy, completionHandler: { data in
+            DispatchQueue.main.async() {
+                completionHandler(data)
+            }
         })
     }
 }
@@ -46,8 +48,16 @@ class RedditPostPresenter {
 
 
     func setRedditPostViewDelegate(delegate: RedditPostViewDelegate) {
-        redditPostModel.getPostComments()
         self.redditPostViewDelegate = delegate
+    }
+
+    func getCommentsForPost(sortBy: SortComments, subreddit: String, postId: String) {
+        redditPostModel.getPostComments(subreddit: subreddit,
+                postId: postId,
+                sortBy: sortBy,
+                completionHandler: { data in
+                    redditPostViewDelegate.setTableViewData(data: data)
+                })
     }
 
     func setupCommentsView() {
@@ -91,6 +101,11 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         }
         presenter.setupCommentsView()
 
+    }
+
+    func setTableViewData(data: [Int: CommentChain]) {
+        self.redditCommentsData = data
+        tableView.reloadData()
     }
 
     func setupCommentsTableView() {
@@ -200,13 +215,12 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RedditCommentCell.identifier, for: indexPath) as! RedditCommentCell
-        guard let topCommentForSection = redditCommentsData[indexPath.section] else {
+        guard let commentsForSection = redditCommentsData[indexPath.section] else {
             return cell
         }
-
         // we do plus one because index 0 of the comments is used for the headerview so row 0 is actuall the first child comment of the top comment
-        let commentForRow = topCommentForSection.comments[indexPath.row + 1]
-        cell.descriptionLabel.text = commentForRow
+        let commentForRow = commentsForSection.comments[indexPath.row + 1]
+        cell.descriptionLabel.text = commentForRow.body
         return cell
     }
 

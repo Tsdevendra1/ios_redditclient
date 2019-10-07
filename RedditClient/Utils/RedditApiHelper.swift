@@ -5,11 +5,9 @@
 
 import Foundation
 
-struct CommentInfo {
-    var parentId: String?
-    var level: Int
-    var id: String
+struct Comment {
     var body: String
+    var level: Int
 }
 
 class RedditApiHelper {
@@ -38,35 +36,33 @@ class RedditApiHelper {
 
     }
 
-    static func getCommentsForPost(subreddit: String, postId: String, sortBy: SortComments, completionHandler: @escaping (([CommentChain]) -> Void)) {
+    static func getCommentsForPost(subreddit: String, postId: String, sortBy: SortComments, completionHandler: @escaping (([Int: CommentChain]) -> Void)) {
         let stringUrl = "https://reddit.com/r/\(subreddit)/comments/\(postId).json?sort=\(sortBy.rawValue)"
         let url = URL(string: stringUrl)!
 
         getUrl(url: url, completionHandler: { data in
-            print("inside")
             let responseData = decodeData(model: Array<RedditResponseComments>.self, data: data)
             let postCommentsData = responseData?[1].data.children
             guard let commentsData = postCommentsData else {
                 return
             }
 
-            var commentsTracker: [[String]] = []
-            for comment in commentsData {
+            var commentsTracker: [Int: CommentChain] = [:]
+            for (index, comment) in commentsData.enumerated() {
 
-                var currentCommentChain: [String] = []
+                var currentCommentChain: [Comment] = []
                 let data: CommentAttributes = comment.data
                 if let commentBody = data.body {
-                    if let commentId = data.id {
-//                        commentsTracker[commentId] = CommentInfo(parentId: nil, level: 0, id: commentId, body: commentBody)
-                        currentCommentChain.append(commentBody)
-                    }
+                    currentCommentChain.append(Comment(body: commentBody, level: 0))
                 }
                 if let replies = data.replies {
                     dfsvisit(currentReplies: replies, currentCommentChain: &currentCommentChain, level: 0, parentId: data.id)
                 }
-                commentsTracker.append(currentCommentChain)
-                print(currentCommentChain)
+                commentsTracker[index] = CommentChain(comments: currentCommentChain)
             }
+
+
+            completionHandler(commentsTracker)
         })
     }
 

@@ -8,9 +8,17 @@ import UIKit
 class RedditCommentCell: UITableViewCell {
     static let identifier = "RedditCommentCell"
 
+    // todo: use layoutsubviews or something when the margins change?
+    var topInset: CGFloat = 0
+    var leftInset: CGFloat = 0
+    var bottomInset: CGFloat = 0
+    var rightInset: CGFloat = 0
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+
 
     let descriptionLabel: UILabel = {
         let label = UILabel()
