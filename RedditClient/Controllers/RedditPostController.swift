@@ -237,8 +237,11 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
         guard let commentsForSection = redditCommentsData[indexPath.section-1] else {
             return cell
         }
+        // plus 1 because the first comment is used for the header of the section (i.e. parent comment)
         let commentForRow = commentsForSection.comments[indexPath.row+1]
         cell.descriptionLabel.text = commentForRow.body
+
+        cell.indentationLevel = indexPath.row;
         return cell
     }
 

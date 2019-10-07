@@ -13,11 +13,11 @@ class RedditCommentCell: UITableViewCell {
     var leftInset: CGFloat = 0
     var bottomInset: CGFloat = 0
     var rightInset: CGFloat = 0
+    var leftAnchorConstraint: NSLayoutConstraint!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 
 
     let descriptionLabel: UILabel = {
@@ -28,11 +28,20 @@ class RedditCommentCell: UITableViewCell {
         return label
     }()
 
+    override var indentationLevel: Int {
+        didSet {
+            leftAnchorConstraint.constant = 100
+            super.layoutSubviews()
+        }
+    }
+
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addSubview(descriptionLabel)
+
+        contentView.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
+        leftAnchorConstraint = descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor)
+        leftAnchorConstraint.isActive = true
         descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
 }
