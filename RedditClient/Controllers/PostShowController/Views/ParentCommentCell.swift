@@ -31,12 +31,26 @@ class ParentCommentCell: UITableViewHeaderFooterView {
         view.backgroundColor = .white
         view.addSubview(descriptionLabel)
 
+        let seperator = view.addCustomSeparator(color: .red)
+
+        let contentView = UIView()
+        view.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: seperator.topAnchor),
+            contentView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            contentView.rightAnchor.constraint(equalTo: view.rightAnchor),
+        ])
+
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        descriptionLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        descriptionLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
+        descriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+
         backgroundView = view
+
         view.translatesAutoresizingMaskIntoConstraints = false
         view.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         view.rightAnchor.constraint(equalTo: rightAnchor).isActive = true

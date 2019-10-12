@@ -52,17 +52,7 @@ class ChildCommentCell: UITableViewCell {
         customContentView.backgroundColor = .white
         customContentView.translatesAutoresizingMaskIntoConstraints = false
 
-        let seperator = UIView()
-        customContentView.addSubview(seperator)
-        seperator.backgroundColor = .red
-        seperator.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            seperator.topAnchor.constraint(equalTo: customContentView.bottomAnchor, constant: -2),
-            seperator.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor),
-            seperator.leftAnchor.constraint(equalTo: customContentView.leftAnchor),
-            seperator.rightAnchor.constraint(equalTo: customContentView.rightAnchor),
-        ])
+        let seperator = customContentView.addCustomSeparator(color: .red)
 
         let actualContentView = UIView()
         actualContentView.translatesAutoresizingMaskIntoConstraints = false
