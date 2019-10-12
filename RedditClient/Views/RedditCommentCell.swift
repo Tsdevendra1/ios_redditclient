@@ -7,13 +7,9 @@ import UIKit
 
 class RedditCommentCell: UITableViewCell {
     static let identifier = "RedditCommentCell"
-
-    // todo: use layoutsubviews or something when the margins change?
-    var topInset: CGFloat = 0
-    var leftInset: CGFloat = 0
-    var bottomInset: CGFloat = 0
-    var rightInset: CGFloat = 0
-    var leftAnchorConstraint: NSLayoutConstraint!
+    private var leftAnchorConstraint: NSLayoutConstraint!
+    private var customContentView: UIView!
+    private var leftContentConstaint: NSLayoutConstraint!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -30,19 +26,33 @@ class RedditCommentCell: UITableViewCell {
 
     override var indentationLevel: Int {
         didSet {
-            leftAnchorConstraint.constant = 100
-            super.layoutSubviews()
+            print("did set")
+            leftContentConstaint.constant = CGFloat(indentationLevel) * indentationWidth
         }
     }
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        contentView.addSubview(descriptionLabel)
+        customContentView = UIView()
+        customContentView.translatesAutoresizingMaskIntoConstraints = false
+        customContentView.addSubview(descriptionLabel)
+
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        leftAnchorConstraint = descriptionLabel.leftAnchor.constraint(equalTo: leftAnchor)
-        leftAnchorConstraint.isActive = true
-        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        descriptionLabel.centerYAnchor.constraint(equalTo: customContentView.centerYAnchor).isActive = true
+
+        contentView.addSubview(customContentView)
+
+        leftContentConstaint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
+        leftContentConstaint.isActive = true
+
+        NSLayoutConstraint.activate([
+            customContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            customContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            customContentView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+        ])
+
+
     }
 }
 
