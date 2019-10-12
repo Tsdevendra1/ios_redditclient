@@ -37,6 +37,7 @@ class RedditCommentCell: UITableViewCell {
         contentView.backgroundColor = .clear
 
         customContentView = UIView()
+        customContentView.backgroundColor = .white
         customContentView.translatesAutoresizingMaskIntoConstraints = false
         customContentView.addSubview(descriptionLabel)
 

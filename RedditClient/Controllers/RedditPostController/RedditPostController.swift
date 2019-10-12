@@ -122,7 +122,6 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView.backgroundColor = GlobalConfig.GREY
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
         tableView.register(CommentsHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsHeaderView.identifier)
-        tableView.register(CommentsFooterView.self, forHeaderFooterViewReuseIdentifier: CommentsFooterView.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -168,7 +167,10 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsFooterView.identifier) as! CommentsFooterView
+        let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "FooterView")
+        let view = UIView()
+        view.backgroundColor = .clear
+        footerView?.backgroundView = view
         return footerView
     }
 
@@ -186,22 +188,9 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
             return contentStack
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsHeaderView.identifier) as! CommentsHeaderView
-        let view = UIView()
-        let textLabel = UILabel()
         let commentForSection = redditCommentsData[section-1]!.comments[0].body
-        textLabel.text = commentForSection
-        textLabel.textColor = .black
-        view.addSubview(textLabel)
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            textLabel.topAnchor.constraint(equalTo:view.topAnchor),
-            textLabel.bottomAnchor.constraint(equalTo:view.bottomAnchor),
-            textLabel.rightAnchor.constraint(equalTo: view.rightAnchor),
-            textLabel.leftAnchor.constraint(equalTo: view.leftAnchor)
-        ])
-        textLabel.backgroundColor = UIColor.white
-        headerView.backgroundView = view
-        headerView.commentTree = redditCommentsData[section]!
+
+        headerView.descriptionLabel.text = commentForSection
         headerView.delegate = presenter // don't forget this line!!!      return headerView
         headerView.section = section
         headerView.addGestureRecognizer(UITapGestureRecognizer(target: headerView, action: #selector(headerView.didTapHeader)))
