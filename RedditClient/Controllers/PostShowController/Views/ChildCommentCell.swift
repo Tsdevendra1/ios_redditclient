@@ -19,6 +19,8 @@ class ChildCommentCell: UITableViewCell {
     let descriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.font = .systemFont(ofSize: 16)
         label.text = "Testing"
         return label
@@ -37,17 +39,7 @@ class ChildCommentCell: UITableViewCell {
         contentView.backgroundColor = .clear
 
         customContentView = UIView()
-        customContentView.backgroundColor = .white
-        customContentView.translatesAutoresizingMaskIntoConstraints = false
-        customContentView.addSubview(descriptionLabel)
-
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.centerYAnchor.constraint(equalTo: customContentView.centerYAnchor).isActive = true
-
         contentView.addSubview(customContentView)
-
-        leftContentConstraint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
-        leftContentConstraint.isActive = true
 
         NSLayoutConstraint.activate([
             customContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -55,6 +47,17 @@ class ChildCommentCell: UITableViewCell {
             customContentView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
         ])
 
+        leftContentConstraint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
+        leftContentConstraint.isActive = true
+        customContentView.backgroundColor = .white
+        customContentView.translatesAutoresizingMaskIntoConstraints = false
+        customContentView.addSubview(descriptionLabel)
+
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.leftAnchor.constraint(equalTo: customContentView.leftAnchor).isActive = true
+        descriptionLabel.rightAnchor.constraint(equalTo: customContentView.rightAnchor).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: customContentView.topAnchor).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor).isActive = true
 
     }
 }

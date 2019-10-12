@@ -128,6 +128,10 @@ class PostShowController: BaseViewController, PostShowViewDelegate {
         tableView.register(ParentCommentCell.self, forHeaderFooterViewReuseIdentifier: ParentCommentCell.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 60
+
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             // Need the one to see the line seperator of the navbar
@@ -218,10 +222,6 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
             // because of the indexing (the comments start at 0) and since we added an extra sectoin for the post info header
             return redditCommentsData[section-1]!.comments.count - 1
         }
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        20
     }
 
 
