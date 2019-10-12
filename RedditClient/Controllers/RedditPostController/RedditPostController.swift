@@ -117,6 +117,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorStyle = .none
         // Do any additional setup after loading the view.
         tableView.backgroundColor = GlobalConfig.GREY
         tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
@@ -238,10 +239,10 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
             return cell
         }
         // plus 1 because the first comment is used for the header of the section (i.e. parent comment)
-        let commentForRow = commentsForSection.comments[indexPath.row+1]
+        let commentForRow = commentsForSection.comments[indexPath.row+1] as Comment
         cell.descriptionLabel.text = commentForRow.body
 
-        cell.indentationLevel = indexPath.row;
+        cell.indentationLevel = commentForRow.level
         return cell
     }
 

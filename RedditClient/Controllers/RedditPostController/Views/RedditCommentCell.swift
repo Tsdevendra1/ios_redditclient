@@ -9,7 +9,7 @@ class RedditCommentCell: UITableViewCell {
     static let identifier = "RedditCommentCell"
     private var leftAnchorConstraint: NSLayoutConstraint!
     private var customContentView: UIView!
-    private var leftContentConstaint: NSLayoutConstraint!
+    private var leftContentConstraint: NSLayoutConstraint!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -26,13 +26,15 @@ class RedditCommentCell: UITableViewCell {
 
     override var indentationLevel: Int {
         didSet {
-            print("did set")
-            leftContentConstaint.constant = CGFloat(indentationLevel) * indentationWidth
+            leftContentConstraint.constant = CGFloat(indentationLevel) * indentationWidth
         }
     }
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
 
         customContentView = UIView()
         customContentView.translatesAutoresizingMaskIntoConstraints = false
@@ -43,8 +45,8 @@ class RedditCommentCell: UITableViewCell {
 
         contentView.addSubview(customContentView)
 
-        leftContentConstaint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
-        leftContentConstaint.isActive = true
+        leftContentConstraint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
+        leftContentConstraint.isActive = true
 
         NSLayoutConstraint.activate([
             customContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
