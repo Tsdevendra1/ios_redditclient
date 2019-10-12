@@ -51,14 +51,35 @@ class ChildCommentCell: UITableViewCell {
         leftContentConstraint.isActive = true
         customContentView.backgroundColor = .white
         customContentView.translatesAutoresizingMaskIntoConstraints = false
-        customContentView.addSubview(descriptionLabel)
 
+        let seperator = UIView()
+        customContentView.addSubview(seperator)
+        seperator.backgroundColor = .red
+        seperator.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            seperator.topAnchor.constraint(equalTo: customContentView.bottomAnchor, constant: -2),
+            seperator.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor),
+            seperator.leftAnchor.constraint(equalTo: customContentView.leftAnchor),
+            seperator.rightAnchor.constraint(equalTo: customContentView.rightAnchor),
+        ])
+
+        let actualContentView = UIView()
+        actualContentView.translatesAutoresizingMaskIntoConstraints = false
+        customContentView.addSubview(actualContentView)
+        NSLayoutConstraint.activate([
+            actualContentView.topAnchor.constraint(equalTo: customContentView.topAnchor),
+            actualContentView.bottomAnchor.constraint(equalTo: seperator.topAnchor),
+            actualContentView.leftAnchor.constraint(equalTo: customContentView.leftAnchor),
+            actualContentView.rightAnchor.constraint(equalTo: customContentView.rightAnchor),
+        ])
+
+        actualContentView.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leftAnchor.constraint(equalTo: customContentView.leftAnchor).isActive = true
-        descriptionLabel.rightAnchor.constraint(equalTo: customContentView.rightAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: customContentView.topAnchor).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor).isActive = true
-
+        descriptionLabel.leftAnchor.constraint(equalTo: actualContentView.leftAnchor).isActive = true
+        descriptionLabel.rightAnchor.constraint(equalTo: actualContentView.rightAnchor).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: actualContentView.topAnchor).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: actualContentView.bottomAnchor).isActive = true
     }
 }
 
