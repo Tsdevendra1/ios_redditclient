@@ -6,10 +6,10 @@
 import Foundation
 import UIKit
 
-class CommentsHeaderView: UITableViewHeaderFooterView {
+class ParentCommentCell: UITableViewHeaderFooterView {
     static let identifier = "RedditPostHeaderView"
     var section: Int!
-    unowned var delegate: HeaderViewDelegate!
+    unowned var delegate: ParentCommentDelegate!
 
     let descriptionLabel: UILabel = {
         let label = UILabel()

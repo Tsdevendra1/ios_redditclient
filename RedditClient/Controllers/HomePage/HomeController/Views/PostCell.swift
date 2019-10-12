@@ -6,21 +6,21 @@
 import UIKit
 import Foundation
 
-protocol RedditPostCellDelegate: class {
+protocol PostCellDelegate: class {
 
 }
 
 
-class RedditPostCellPresenter {
-    unowned private var redditPostCellDelegate: RedditPostCellDelegate!
+class PostCellPresenter {
+    unowned private var redditPostCellDelegate: PostCellDelegate!
 
-    func setRedditPostCellDelegate(delegate: RedditPostCellDelegate) {
+    func setRedditPostCellDelegate(delegate: PostCellDelegate) {
         self.redditPostCellDelegate = delegate
     }
 
 }
 
-extension RedditPostCellPresenter: HandlesPostButtonClickDelegate {
+extension PostCellPresenter: HandlesPostButtonClickDelegate {
 
     func handleUpvoteClick() {
     }
@@ -37,20 +37,20 @@ extension RedditPostCellPresenter: HandlesPostButtonClickDelegate {
 
 }
 
-class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
+class PostCell: UITableViewCell, PostCellDelegate {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     static let identifier = "RedditPostCell"
-    var presenter = RedditPostCellPresenter()
+    var presenter = PostCellPresenter()
     var contentOverlay: UIView!
     var rowNumber: Int!
-    var redditPostView: RedditPostInfoView
+    var redditPostView: PostSummaryView
 
     override init(style: CellStyle, reuseIdentifier: String?) {
         let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
-        redditPostView = RedditPostInfoView(frame: rect)
+        redditPostView = PostSummaryView(frame: rect)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         presenter.setRedditPostCellDelegate(delegate: self)
@@ -95,7 +95,7 @@ class RedditPostCell: UITableViewCell, RedditPostCellDelegate {
 
 }
 
-extension RedditPostCell: HandlesPostButtonClickDelegate {
+extension PostCell: HandlesPostButtonClickDelegate {
 
     func handleUpvoteClick() {
         redditPostView.handleUpvoteClick()

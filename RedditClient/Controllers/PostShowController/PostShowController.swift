@@ -8,12 +8,12 @@ import Foundation
 import UIKit
 
 
-protocol HeaderViewDelegate: class {
-    func toggleSection(header: CommentsHeaderView, section: Int)
+protocol ParentCommentDelegate: class {
+    func toggleSection(header: ParentCommentCell, section: Int)
 }
 
-protocol RedditPostViewDelegate: class {
-    var ownPostButtonClickedDelegate: RedditPostCell! { get set }
+protocol PostShowViewDelegate: class {
+    var ownPostButtonClickedDelegate: PostCell! { get set }
     var redditCommentsData: [Int: CommentChain] { get set }
     func setupCommentsTableView()
     func setTableViewData(data: [Int: CommentChain])
@@ -43,15 +43,15 @@ class RedditPostModel {
     }
 }
 
-class RedditPostPresenter {
+class PostShowPresenter {
 
     private let redditPostModel = RedditPostModel()
-    unowned private var redditPostViewDelegate: RedditPostViewDelegate!
+    unowned private var redditPostViewDelegate: PostShowViewDelegate!
 
     var reloadSections: ((_ section: Int) -> Void)?
 
 
-    func setRedditPostViewDelegate(delegate: RedditPostViewDelegate) {
+    func setRedditPostViewDelegate(delegate: PostShowViewDelegate) {
         self.redditPostViewDelegate = delegate
     }
 
@@ -69,8 +69,8 @@ class RedditPostPresenter {
     }
 }
 
-extension RedditPostPresenter: HeaderViewDelegate {
-    func toggleSection(header: CommentsHeaderView, section: Int) {
+extension PostShowPresenter: ParentCommentDelegate {
+    func toggleSection(header: ParentCommentCell, section: Int) {
         // toggle section
 
         let item: CommentChain = redditPostViewDelegate.redditCommentsData[section]!
@@ -79,13 +79,13 @@ extension RedditPostPresenter: HeaderViewDelegate {
     }
 }
 
-class RedditPostController: BaseViewController, RedditPostViewDelegate {
+class PostShowController: BaseViewController, PostShowViewDelegate {
 
     var tableView: UITableView!
     private var postInfo: PostAttributes
-    private var contentStack: RedditPostInfoView!
-    private let presenter = RedditPostPresenter()
-    unowned var ownPostButtonClickedDelegate: RedditPostCell!
+    private var contentStack: PostSummaryView!
+    private let presenter = PostShowPresenter()
+    unowned var ownPostButtonClickedDelegate: PostCell!
     var redditCommentsData: [Int: CommentChain] = [:]
 
     init(infoForPost: PostAttributes) {
@@ -120,8 +120,8 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
         tableView.separatorStyle = .none
         // Do any additional setup after loading the view.
         tableView.backgroundColor = GlobalConfig.GREY
-        tableView.register(RedditCommentCell.self, forCellReuseIdentifier: RedditCommentCell.identifier)
-        tableView.register(CommentsHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsHeaderView.identifier)
+        tableView.register(ChildCommentCell.self, forCellReuseIdentifier: ChildCommentCell.identifier)
+        tableView.register(ParentCommentCell.self, forHeaderFooterViewReuseIdentifier: ParentCommentCell.identifier)
         tableView.showsVerticalScrollIndicator = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -158,7 +158,7 @@ class RedditPostController: BaseViewController, RedditPostViewDelegate {
 
 }
 
-extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
+extension PostShowController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
             return 20
@@ -177,7 +177,7 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
             let rect = CGRect(x: 0, y: 0, width: 10, height: 10)
-            contentStack = RedditPostInfoView(postAttributes: postInfo, frame: rect)
+            contentStack = PostSummaryView(postAttributes: postInfo, frame: rect)
             contentStack.layer.shadowOpacity = 0.5
             contentStack.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
             contentStack.layer.shadowRadius = 1.0
@@ -187,7 +187,7 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
             contentStack.delegate = ownPostButtonClickedDelegate
             return contentStack
         }
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsHeaderView.identifier) as! CommentsHeaderView
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ParentCommentCell.identifier) as! ParentCommentCell
         let commentForSection = redditCommentsData[section-1]!.comments[0].body
 
         headerView.descriptionLabel.text = commentForSection
@@ -222,7 +222,7 @@ extension RedditPostController: UITableViewDataSource, UITableViewDelegate {
 
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: RedditCommentCell.identifier, for: indexPath) as! RedditCommentCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ChildCommentCell.identifier, for: indexPath) as! ChildCommentCell
         // minus 1 because of the indexing since we added an extra section for the post info header
         guard let commentsForSection = redditCommentsData[indexPath.section-1] else {
             return cell

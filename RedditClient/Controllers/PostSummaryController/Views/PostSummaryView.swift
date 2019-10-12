@@ -1,4 +1,16 @@
 //
+// Created by Tharuka Devendra on 2019-10-12.
+// Copyright (c) 2019 Tharuka Devendra. All rights reserved.
+//
+
+import Foundation
+//
+// Created by Tharuka Devendra on 2019-10-12.
+// Copyright (c) 2019 Tharuka Devendra. All rights reserved.
+//
+
+import Foundation
+//
 // Created by Tharuka Devendra on 2019-09-20.
 // Copyright (c) 2019 Tharuka Devendra. All rights reserved.
 //
@@ -14,9 +26,9 @@ import UIKit
     func handleFavouriteClick()
 }
 
-protocol RedditViewDelegate: class {
+protocol PostSummaryViewDelegate: class {
     func configureContentStack()
-    func setupLabelAttributes(postText: RedditPostTextData)
+    func setupLabelAttributes(postText: PostTextData)
     func turnOnUpvote()
     func turnOnDownvote()
     func turnOnMore()
@@ -27,7 +39,7 @@ protocol RedditViewDelegate: class {
     var moreButton: UIButton { get }
 }
 
-struct RedditPostTextData {
+struct PostTextData {
     let authorText: NSMutableAttributedString
     let scoreText: String
     let commentsTotalText: String
@@ -35,15 +47,15 @@ struct RedditPostTextData {
 }
 
 
-class RedditViewModel {
+class PostSummaryModel {
     var postAttributes: PostAttributes!
 }
 
-class RedditViewPresenter {
-    private let redditPostViewModel = RedditViewModel()
-    unowned private var redditViewDelegate: RedditViewDelegate!
+class PostSummaryPresenter {
+    private let redditPostViewModel = PostSummaryModel()
+    unowned private var redditViewDelegate: PostSummaryViewDelegate!
 
-    func setRedditViewDelegate(delegate: RedditViewDelegate) {
+    func setRedditViewDelegate(delegate: PostSummaryViewDelegate) {
         self.redditViewDelegate = delegate
     }
 
@@ -64,14 +76,14 @@ class RedditViewPresenter {
         redditViewDelegate.configureContentStack()
     }
 
-    func createRedditPostText(cellData: PostAttributes) -> RedditPostTextData {
+    func createRedditPostText(cellData: PostAttributes) -> PostTextData {
         let hoursSincePost = getTimeSincePostInHours(cellData.createdUtc)
         let authorText = createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
                 subreddit: cellData.subreddit.lowercased(), author: cellData.author)
         let scoreText = createPostPointsText(score: cellData.score)
         let commentsTotalText = createPostCommentsText(numComments: cellData.numComments)
 
-        return RedditPostTextData(
+        return PostTextData(
                 authorText: authorText,
                 scoreText: scoreText,
                 commentsTotalText: commentsTotalText,
@@ -103,7 +115,7 @@ class RedditViewPresenter {
     }
 }
 
-class RedditPostInfoView: UIView, RedditViewDelegate {
+class PostSummaryView: UIView, PostSummaryViewDelegate {
 
 
     let upvoteButton = UIButton()
@@ -115,7 +127,7 @@ class RedditPostInfoView: UIView, RedditViewDelegate {
     let authorLabel = UILabel()
     let scoreLabel = UILabel()
     let commentsTotalLabel = UILabel()
-    var presenter = RedditViewPresenter()
+    var presenter = PostSummaryPresenter()
 
 
     init(postAttributes: PostAttributes? = nil, frame: CGRect) {
@@ -237,9 +249,9 @@ class RedditPostInfoView: UIView, RedditViewDelegate {
     }
 
 
-    func createRedditPostText(cellData: PostAttributes) -> RedditPostTextData {
+    func createRedditPostText(cellData: PostAttributes) -> PostTextData {
         let hoursSincePost = getTimeSincePostInHours(cellData.createdUtc)
-        return RedditPostTextData(
+        return PostTextData(
                 authorText: createAuthorLabelWithTimeAndSubredditText(hoursSincePost: hoursSincePost,
                         subreddit: cellData.subreddit.lowercased(), author: cellData.author),
                 scoreText: createPostPointsText(score: cellData.score),
@@ -248,7 +260,7 @@ class RedditPostInfoView: UIView, RedditViewDelegate {
         )
     }
 
-    func setupLabelAttributes(postText: RedditPostTextData) {
+    func setupLabelAttributes(postText: PostTextData) {
         titleLabel.text = postText.titleText
         authorLabel.attributedText = postText.authorText
         scoreLabel.text = postText.scoreText

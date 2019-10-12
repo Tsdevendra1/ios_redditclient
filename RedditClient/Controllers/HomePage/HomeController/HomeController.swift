@@ -108,7 +108,7 @@ class HomeController: BaseViewController, HomeViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor(white: 1, alpha: 0)
-        tableView.register(RedditPostCell.self, forCellReuseIdentifier: RedditPostCell.identifier)
+        tableView.register(PostCell.self, forCellReuseIdentifier: PostCell.identifier)
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
         view.addSubview(tableView)
@@ -161,15 +161,15 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
 
 
     @objc func handleCellTap(sender: UITapGestureRecognizer) {
-        let cell = sender.view?.superview as! RedditPostCell
-        let currentRedditPostController = RedditPostController(infoForPost: tableViewData[cell.rowNumber])
+        let cell = sender.view?.superview as! PostCell
+        let currentRedditPostController = PostShowController(infoForPost: tableViewData[cell.rowNumber])
         currentRedditPostController.ownPostButtonClickedDelegate = cell
         navigationController?.pushViewController(currentRedditPostController, animated: true)
     }
 
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: RedditPostCell.identifier, for: indexPath) as! RedditPostCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: PostCell.identifier, for: indexPath) as! PostCell
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleCellTap))
         cell.contentOverlay.addGestureRecognizer(tapGestureRecognizer)
         cell.redditPostView.presenter.setPostAttributes(postAttributes: tableViewData[indexPath.row])

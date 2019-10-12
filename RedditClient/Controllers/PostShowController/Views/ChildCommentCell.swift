@@ -5,7 +5,7 @@
 
 import UIKit
 
-class RedditCommentCell: UITableViewCell {
+class ChildCommentCell: UITableViewCell {
     static let identifier = "RedditCommentCell"
     private var leftAnchorConstraint: NSLayoutConstraint!
     private var customContentView: UIView!
