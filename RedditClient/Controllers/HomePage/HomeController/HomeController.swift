@@ -156,7 +156,7 @@ class HomeController: BaseViewController, HomeViewDelegate {
 
 extension HomeController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableViewData.count
+        tableViewData.count
     }
 
 

@@ -7,6 +7,10 @@ import Foundation
 
 import UIKit
 
+enum SortComments: String {
+    case top
+    case confidence
+}
 
 protocol ParentCommentDelegate: class {
     func toggleSection(header: ParentCommentCell, section: Int)
