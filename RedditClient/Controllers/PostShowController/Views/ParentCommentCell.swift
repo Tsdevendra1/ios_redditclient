@@ -9,6 +9,7 @@ import UIKit
 class ParentCommentCell: UITableViewHeaderFooterView {
     static let identifier = "RedditPostHeaderView"
     var section: Int!
+    var commentIdentifierColor: UIView!
     unowned var delegate: ParentCommentDelegate!
 
     let descriptionLabel: UILabel = {
@@ -33,7 +34,7 @@ class ParentCommentCell: UITableViewHeaderFooterView {
 
         let seperator = view.addCustomSeparator(color: .red)
 
-        let commentIdentifierColor = UIView()
+        commentIdentifierColor = UIView()
         view.addSubview(commentIdentifierColor)
         commentIdentifierColor.backgroundColor = .blue
         commentIdentifierColor.translatesAutoresizingMaskIntoConstraints = false

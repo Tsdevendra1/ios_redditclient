@@ -234,6 +234,8 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
         // plus 1 because the first comment is used for the header of the section (i.e. parent comment)
         let commentForRow = commentsForSection.comments[indexPath.row+1] as Comment
         cell.descriptionLabel.text = commentForRow.body
+        cell.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[commentForRow.level] ?? .red
+
 
         cell.indentationLevel = commentForRow.level
         return cell

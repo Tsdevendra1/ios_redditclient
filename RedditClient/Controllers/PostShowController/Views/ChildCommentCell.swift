@@ -10,6 +10,7 @@ class ChildCommentCell: UITableViewCell {
     private var leftAnchorConstraint: NSLayoutConstraint!
     private var customContentView: UIView!
     private var leftContentConstraint: NSLayoutConstraint!
+    var commentIdentifierColor: UIView!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -55,7 +56,7 @@ class ChildCommentCell: UITableViewCell {
 
         let seperator = customContentView.addCustomSeparator(color: .red)
 
-        let commentIdentifierColor = UIView()
+        commentIdentifierColor = UIView()
         customContentView.addSubview(commentIdentifierColor)
         commentIdentifierColor.backgroundColor = .blue
         commentIdentifierColor.translatesAutoresizingMaskIntoConstraints = false
