@@ -9,6 +9,6 @@ import UIKit
 class GlobalConfig {
     static let GREY = getUIColor(hex: "#D8D8D8")
     static let colorsForCommentLevels = [0: UIColor.white, 1: UIColor.blue, 2: UIColor.purple, 3: UIColor.orange]
-    static let commentSeparatorColor = getUIColor(hex: "#F0F0F0")
+    static let commentSeparatorColor = getUIColor(hex: "#D8D8D8")
 }
 

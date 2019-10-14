@@ -40,7 +40,7 @@ class CommentView: UIView {
 
         actualContentView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(actualContentView)
-        let padding: CGFloat = 5
+        let padding: CGFloat = 6
         NSLayoutConstraint.activate([
             actualContentView.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             actualContentView.bottomAnchor.constraint(equalTo: seperator.topAnchor, constant: -padding),
