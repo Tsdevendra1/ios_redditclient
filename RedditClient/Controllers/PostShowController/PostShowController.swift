@@ -104,7 +104,7 @@ class PostShowController: BaseViewController, PostShowViewDelegate {
 
         presenter.reloadSections = { [unowned self] (section: Int) in
             self.tableView.beginUpdates()
-            self.tableView.reloadSections([section], with: .fade)
+            self.tableView.reloadSections([section], with: .automatic)
             self.tableView.endUpdates()
         }
         presenter.setupCommentsView()
@@ -196,9 +196,10 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
             return contentStack
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ParentCommentCell.identifier) as! ParentCommentCell
-        let commentForSection = redditCommentsData[section-1]!.comments[0].body
+        let commentForSection = redditCommentsData[section-1]!.comments[0] as Comment
 
-        headerView.descriptionLabel.text = commentForSection
+        headerView.descriptionLabel.text = commentForSection.body
+        headerView.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[0]!
         headerView.delegate = presenter // don't forget this line!!!      return headerView
         headerView.section = section
         headerView.addGestureRecognizer(UITapGestureRecognizer(target: headerView, action: #selector(headerView.didTapHeader)))

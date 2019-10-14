@@ -32,7 +32,7 @@ class ParentCommentCell: UITableViewHeaderFooterView {
         view.backgroundColor = .white
         view.addSubview(descriptionLabel)
 
-        let seperator = view.addCustomSeparator(color: .red)
+        let seperator = view.addCustomSeparator(color: GlobalConfig.commentSeparatorColor!)
 
         commentIdentifierColor = UIView()
         view.addSubview(commentIdentifierColor)
@@ -41,7 +41,7 @@ class ParentCommentCell: UITableViewHeaderFooterView {
         NSLayoutConstraint.activate([
             commentIdentifierColor.topAnchor.constraint(equalTo: view.topAnchor),
             commentIdentifierColor.leftAnchor.constraint(equalTo: view.leftAnchor),
-            commentIdentifierColor.rightAnchor.constraint(equalTo: view.leftAnchor, constant: 3),
+            commentIdentifierColor.rightAnchor.constraint(equalTo: view.leftAnchor, constant: 4),
             commentIdentifierColor.bottomAnchor.constraint(equalTo: seperator.topAnchor),
         ])
 

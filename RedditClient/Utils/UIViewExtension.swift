@@ -14,7 +14,7 @@ extension UIView {
         seperator.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            seperator.topAnchor.constraint(equalTo: self.bottomAnchor, constant: -1),
+            seperator.topAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
             seperator.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             seperator.leftAnchor.constraint(equalTo: self.leftAnchor),
             seperator.rightAnchor.constraint(equalTo: self.rightAnchor),
