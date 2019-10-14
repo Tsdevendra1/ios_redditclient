@@ -163,7 +163,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
     @objc func handleCellTap(sender: UITapGestureRecognizer) {
         let cell = sender.view?.superview as! PostCell
         let currentRedditPostController = PostShowController(infoForPost: tableViewData[cell.rowNumber])
-        currentRedditPostController.ownPostButtonClickedDelegate = cell
+        currentRedditPostController.delegate = cell
         navigationController?.pushViewController(currentRedditPostController, animated: true)
     }
 

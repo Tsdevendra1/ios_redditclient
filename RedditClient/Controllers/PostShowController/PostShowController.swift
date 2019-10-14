@@ -17,7 +17,7 @@ protocol ParentCommentDelegate: class {
 }
 
 protocol PostShowViewDelegate: class {
-    var ownPostButtonClickedDelegate: PostCell! { get set }
+    var delegate: PostCell! { get set }
     var redditCommentsData: [Int: CommentChain] { get set }
     func setupCommentsTableView()
     func setTableViewData(data: [Int: CommentChain])
@@ -49,27 +49,27 @@ class RedditPostModel {
 
 class PostShowPresenter {
 
-    private let redditPostModel = RedditPostModel()
-    unowned private var redditPostViewDelegate: PostShowViewDelegate!
+    private let model = RedditPostModel()
+    unowned private var delegate: PostShowViewDelegate!
 
     var reloadSections: ((_ section: Int) -> Void)?
 
 
     func setRedditPostViewDelegate(delegate: PostShowViewDelegate) {
-        self.redditPostViewDelegate = delegate
+        self.delegate = delegate
     }
 
     func getCommentsForPost(subreddit: String, postId: String) {
-        redditPostModel.getPostComments(subreddit: subreddit,
+        model.getPostComments(subreddit: subreddit,
                 postId: postId,
-                sortBy: redditPostModel.currentSorting,
+                sortBy: model.currentSorting,
                 completionHandler: { [unowned self] data in
-                    self.redditPostViewDelegate.setTableViewData(data: data)
+                    self.delegate.setTableViewData(data: data)
                 })
     }
 
     func setupCommentsView() {
-        redditPostViewDelegate.setupCommentsTableView()
+        delegate.setupCommentsTableView()
     }
 }
 
@@ -77,7 +77,7 @@ extension PostShowPresenter: ParentCommentDelegate {
     func toggleSection(header: ParentCommentCell, section: Int) {
         // toggle section
 
-        let item: CommentChain = redditPostViewDelegate.redditCommentsData[section]!
+        let item: CommentChain = delegate.redditCommentsData[section]!
         item.isCollapsed = !item.isCollapsed
         reloadSections?(header.section)
     }
@@ -89,7 +89,7 @@ class PostShowController: BaseViewController, PostShowViewDelegate {
     private var postInfo: PostAttributes
     private var contentStack: PostSummaryView!
     private let presenter = PostShowPresenter()
-    unowned var ownPostButtonClickedDelegate: PostCell!
+    unowned var delegate: PostCell!
     var redditCommentsData: [Int: CommentChain] = [:]
 
     init(infoForPost: PostAttributes) {
@@ -190,9 +190,9 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
             contentStack.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
             contentStack.layer.shadowRadius = 1.0
             contentStack.layer.shadowColor = UIColor.black.cgColor
-            let buttonStates = ownPostButtonClickedDelegate.redditPostView.presenter.getButtonStates()
+            let buttonStates = delegate.redditPostView.presenter.getButtonStates()
             contentStack.presenter.configurePostIfButtonSelected(buttonStates: buttonStates)
-            contentStack.delegate = ownPostButtonClickedDelegate
+            contentStack.delegate = delegate
             return contentStack
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ParentCommentCell.identifier) as! ParentCommentCell
