@@ -7,25 +7,13 @@ import UIKit
 
 class ChildCommentCell: UITableViewCell {
     static let identifier = "RedditCommentCell"
-    private var leftAnchorConstraint: NSLayoutConstraint!
-    private var customContentView: UIView!
     private var leftContentConstraint: NSLayoutConstraint!
-    var commentIdentifierColor: UIView!
+    var commentView: CommentView!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-
-    let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.font = .systemFont(ofSize: 16)
-        label.text = "Testing"
-        return label
-    }()
 
     override var indentationLevel: Int {
         didSet {
@@ -39,50 +27,20 @@ class ChildCommentCell: UITableViewCell {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
 
-        customContentView = UIView()
-        contentView.addSubview(customContentView)
+        commentView = CommentView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        contentView.addSubview(commentView)
+        commentView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            customContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            customContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            customContentView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            commentView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            commentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            commentView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
         ])
 
-        leftContentConstraint = customContentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
+        leftContentConstraint = commentView.leftAnchor.constraint(equalTo: contentView.leftAnchor)
         leftContentConstraint.isActive = true
-        customContentView.backgroundColor = .white
-        customContentView.translatesAutoresizingMaskIntoConstraints = false
 
 
-        let seperator = customContentView.addCustomSeparator(color: GlobalConfig.commentSeparatorColor!)
-
-        commentIdentifierColor = UIView()
-        customContentView.addSubview(commentIdentifierColor)
-        commentIdentifierColor.backgroundColor = .blue
-        commentIdentifierColor.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            commentIdentifierColor.topAnchor.constraint(equalTo: customContentView.topAnchor),
-            commentIdentifierColor.leftAnchor.constraint(equalTo: customContentView.leftAnchor),
-            commentIdentifierColor.rightAnchor.constraint(equalTo: customContentView.leftAnchor, constant: 4),
-            commentIdentifierColor.bottomAnchor.constraint(equalTo: seperator.topAnchor),
-        ])
-
-        let actualContentView = UIView()
-        actualContentView.translatesAutoresizingMaskIntoConstraints = false
-        customContentView.addSubview(actualContentView)
-        NSLayoutConstraint.activate([
-            actualContentView.topAnchor.constraint(equalTo: customContentView.topAnchor),
-            actualContentView.bottomAnchor.constraint(equalTo: seperator.topAnchor),
-            actualContentView.leftAnchor.constraint(equalTo: commentIdentifierColor.rightAnchor),
-            actualContentView.rightAnchor.constraint(equalTo: customContentView.rightAnchor),
-        ])
-
-        actualContentView.addSubview(descriptionLabel)
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leftAnchor.constraint(equalTo: actualContentView.leftAnchor).isActive = true
-        descriptionLabel.rightAnchor.constraint(equalTo: actualContentView.rightAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: actualContentView.topAnchor).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: actualContentView.bottomAnchor).isActive = true
     }
 }
 
