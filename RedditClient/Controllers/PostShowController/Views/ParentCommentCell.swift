@@ -9,18 +9,8 @@ import UIKit
 class ParentCommentCell: UITableViewHeaderFooterView {
     static let identifier = "RedditPostHeaderView"
     var section: Int!
-    var commentIdentifierColor: UIView!
+    var commentView: CommentView!
     unowned var delegate: ParentCommentDelegate!
-
-    let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.font = .systemFont(ofSize: 16)
-        label.text = "Testing"
-        return label
-    }()
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -28,46 +18,15 @@ class ParentCommentCell: UITableViewHeaderFooterView {
     }
 
     func setupBackgroundView() {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.addSubview(descriptionLabel)
+        commentView = CommentView(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
 
-        let seperator = view.addCustomSeparator(color: GlobalConfig.commentSeparatorColor!)
+        backgroundView = commentView
 
-        commentIdentifierColor = UIView()
-        view.addSubview(commentIdentifierColor)
-        commentIdentifierColor.backgroundColor = .blue
-        commentIdentifierColor.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            commentIdentifierColor.topAnchor.constraint(equalTo: view.topAnchor),
-            commentIdentifierColor.leftAnchor.constraint(equalTo: view.leftAnchor),
-            commentIdentifierColor.rightAnchor.constraint(equalTo: view.leftAnchor, constant: 4),
-            commentIdentifierColor.bottomAnchor.constraint(equalTo: seperator.topAnchor),
-        ])
-
-        let contentView = UIView()
-        view.addSubview(contentView)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: seperator.topAnchor),
-            contentView.leftAnchor.constraint(equalTo: commentIdentifierColor.rightAnchor),
-            contentView.rightAnchor.constraint(equalTo: view.rightAnchor),
-        ])
-
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
-        descriptionLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-
-        backgroundView = view
-
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
-        view.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-        view.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        commentView.translatesAutoresizingMaskIntoConstraints = false
+        commentView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        commentView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        commentView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        commentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 
     required init?(coder: NSCoder) {

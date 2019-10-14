@@ -198,8 +198,8 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ParentCommentCell.identifier) as! ParentCommentCell
         let commentForSection = redditCommentsData[section-1]!.comments[0] as Comment
 
-        headerView.descriptionLabel.text = commentForSection.body
-        headerView.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[0]!
+        headerView.commentView.commentLabel.text = commentForSection.body
+        headerView.commentView.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[0]!
         headerView.delegate = presenter // don't forget this line!!!      return headerView
         headerView.section = section
         headerView.addGestureRecognizer(UITapGestureRecognizer(target: headerView, action: #selector(headerView.didTapHeader)))
