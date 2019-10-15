@@ -12,7 +12,6 @@ protocol HomeControllerDelegate {
 protocol HomeViewDelegate: class {
     func setupTableView(padding: CGFloat)
     func setTableViewData(data: [PostAttributes])
-    func createNavbarItemWithTitle(title: String)
 }
 
 class HomeModel {
@@ -71,24 +70,21 @@ class HomePresenter {
     }
 
     func setNavBarItem() {
-        homeViewDelegate.createNavbarItemWithTitle(title: homeModel.currentSubreddit.capitalizingFirstLetter())
+        // todo: set title here
+//        homeViewDelegate.createNavbarItemWithTitle(title: homeModel.currentSubreddit.capitalizingFirstLetter())
     }
 
 }
 
-class HomeController: BaseViewController, HomeViewDelegate {
-
+class HomeController: UIViewController, HomeViewDelegate {
 
     var tableView: UITableView!
-    var customNavigationItem: UINavigationItem!
     private var presenter: HomePresenter!
     var tableViewData: [PostAttributes] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         presenter.setupTableView()
-
         view.backgroundColor = GlobalConfig.GREY
         presenter.getRedditPosts()
     }
@@ -119,7 +115,7 @@ class HomeController: BaseViewController, HomeViewDelegate {
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor)
@@ -136,21 +132,6 @@ class HomeController: BaseViewController, HomeViewDelegate {
         tableView.reloadData()
     }
 
-    func createNavbarItemWithTitle(title: String) {
-        customNavigationItem = UINavigationItem()
-        customNavigationItem.title = title
-        let button = UIButton()
-        button.setTitle("ThiS iS  test", for: .normal)
-        button.setTitleColor(.red, for: .normal)
-        button.addTarget(self, action: #selector(self.dismissView), for: .touchUpInside)
-        let backBarButton = UIBarButtonItem(customView: button)
-        customNavigationItem.leftBarButtonItems = [backBarButton]
-    }
-
-    override func createNavbarItem() -> UINavigationItem {
-        presenter.setNavBarItem()
-        return customNavigationItem
-    }
 
 }
 
@@ -164,7 +145,7 @@ extension HomeController: UITableViewDataSource, UITableViewDelegate {
         let cell = sender.view?.superview as! PostCell
         let currentRedditPostController = PostShowController(infoForPost: tableViewData[cell.rowNumber])
         currentRedditPostController.delegate = cell
-        navigationController?.pushViewController(currentRedditPostController, animated: true)
+        navigationController!.pushViewController(currentRedditPostController, animated: true)
     }
 
 

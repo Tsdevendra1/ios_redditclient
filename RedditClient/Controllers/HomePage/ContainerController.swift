@@ -91,7 +91,7 @@ class ContainerController: UIViewController, ContainerViewDelegate {
 
 
     var menuController: MenuController!
-    var homeController: HomeController!
+    var homeController: UINavigationController!
     var backgroundController: BackgroundController?
     var panGestureRecognizer: UIPanGestureRecognizer!
     private let presenter = ContainerPresenter()
@@ -109,7 +109,7 @@ class ContainerController: UIViewController, ContainerViewDelegate {
     }
 
     func configureHomeController() {
-        homeController = HomeController()
+        homeController = UINavigationController(rootViewController: HomeController())
         view.addSubview(homeController.view)
         addChild(homeController)
         homeController.didMove(toParent: self)
