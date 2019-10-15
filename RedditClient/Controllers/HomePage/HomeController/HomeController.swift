@@ -101,7 +101,7 @@ class HomeController: UIViewController, HomeViewDelegate {
     }
 
     func setTitle(title: String){
-        self.title = title
+        self.title = title.prefix(1).uppercased() + title.dropFirst()
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {

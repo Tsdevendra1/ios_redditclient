@@ -83,7 +83,7 @@ extension PostShowPresenter: ParentCommentDelegate {
     }
 }
 
-class PostShowController: BaseViewController, PostShowViewDelegate {
+class PostShowController: UIViewController, PostShowViewDelegate {
 
     var tableView: UITableView!
     private var postInfo: PostAttributes
@@ -134,8 +134,7 @@ class PostShowController: BaseViewController, PostShowViewDelegate {
 
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
-            // Need the one to see the line seperator of the navbar
-            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 3),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -145,18 +144,6 @@ class PostShowController: BaseViewController, PostShowViewDelegate {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func createNavbarItem() -> UINavigationItem {
-        let item = UINavigationItem()
-        item.title = postInfo.subreddit
-        let button = UIButton()
-        button.setTitle("backbutton", for: .normal)
-        button.setTitleColor(.red, for: .normal)
-        button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
-        let backBarButton = UIBarButtonItem(customView: button)
-        item.leftBarButtonItems = [backBarButton]
-        return item
     }
 
 
@@ -196,7 +183,7 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
             return contentStack
         }
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ParentCommentCell.identifier) as! ParentCommentCell
-        let commentForSection = redditCommentsData[section-1]!.comments[0] as Comment
+        let commentForSection = redditCommentsData[section - 1]!.comments[0] as Comment
 
         headerView.commentView.commentLabel.text = commentForSection.body
         headerView.commentView.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[0]!
@@ -221,7 +208,7 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
             }
             // Minus 1 for the comment count because one of the rows is taken by the header and minus one for the section number
             // because of the indexing (the comments start at 0) and since we added an extra sectoin for the post info header
-            return redditCommentsData[section-1]!.comments.count - 1
+            return redditCommentsData[section - 1]!.comments.count - 1
         }
     }
 
@@ -229,11 +216,11 @@ extension PostShowController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ChildCommentCell.identifier, for: indexPath) as! ChildCommentCell
         // minus 1 because of the indexing since we added an extra section for the post info header
-        guard let commentsForSection = redditCommentsData[indexPath.section-1] else {
+        guard let commentsForSection = redditCommentsData[indexPath.section - 1] else {
             return cell
         }
         // plus 1 because the first comment is used for the header of the section (i.e. parent comment)
-        let commentForRow = commentsForSection.comments[indexPath.row+1] as Comment
+        let commentForRow = commentsForSection.comments[indexPath.row + 1] as Comment
         cell.commentView.commentLabel.text = commentForRow.body
         cell.commentView.commentIdentifierColor.backgroundColor = GlobalConfig.colorsForCommentLevels[commentForRow.level] ?? .red
 
