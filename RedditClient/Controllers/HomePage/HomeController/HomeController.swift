@@ -12,6 +12,7 @@ protocol HomeControllerDelegate {
 protocol HomeViewDelegate: class {
     func setupTableView(padding: CGFloat)
     func setTableViewData(data: [PostAttributes])
+    func setTitle(title: String)
 }
 
 class HomeModel {
@@ -40,21 +41,21 @@ class HomeModel {
 }
 
 class HomePresenter {
-    private let homeModel = HomeModel()
-    unowned var homeViewDelegate: HomeViewDelegate
+    private let model = HomeModel()
+    unowned var delegate: HomeViewDelegate
 
     init(delegate: HomeViewDelegate) {
-        self.homeViewDelegate = delegate
+        self.delegate = delegate
     }
 
 
     func setupTableView() {
-        homeViewDelegate.setupTableView(padding: HomeModel.cellPadding)
+        delegate.setupTableView(padding: HomeModel.cellPadding)
     }
 
     func getRedditPosts() {
-        homeModel.getRedditPosts(completionHandler: { [unowned self] data in
-            self.homeViewDelegate.setTableViewData(data: data)
+        model.getRedditPosts(completionHandler: { [unowned self] data in
+            self.delegate.setTableViewData(data: data)
         })
     }
 
@@ -63,10 +64,20 @@ class HomePresenter {
         let maximumOffset = contentSizeHeight - frameSizeHeight
         let userDidReachBottom = contentOffset > maximumOffset
 
-        if (userDidReachBottom && !homeModel.isLoading) {
-            homeModel.isLoading = true
+        if (userDidReachBottom && !model.isLoading) {
+            model.isLoading = true
             getRedditPosts()
         }
+    }
+
+    func setTitleAndGetPosts(subreddit:String){
+        setNavBarTitle(title:subreddit)
+        model.currentSubreddit = subreddit
+        getRedditPosts()
+    }
+
+    func setNavBarTitle(title:String){
+        delegate.setTitle(title: model.currentSubreddit)
     }
 
     func setNavBarItem() {
@@ -86,7 +97,11 @@ class HomeController: UIViewController, HomeViewDelegate {
         super.viewDidLoad()
         presenter.setupTableView()
         view.backgroundColor = GlobalConfig.GREY
-        presenter.getRedditPosts()
+        presenter.setTitleAndGetPosts(subreddit: "all")
+    }
+
+    func setTitle(title: String){
+        self.title = title
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
