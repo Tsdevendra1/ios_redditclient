@@ -70,13 +70,13 @@ class HomePresenter {
         }
     }
 
-    func setTitleAndGetPosts(subreddit:String){
-        setNavBarTitle(title:subreddit)
+    func setTitleAndGetPosts(subreddit: String) {
+        setNavBarTitle(title: subreddit)
         model.currentSubreddit = subreddit
         getRedditPosts()
     }
 
-    func setNavBarTitle(title:String){
+    func setNavBarTitle(title: String) {
         delegate.setTitle(title: model.currentSubreddit)
     }
 
@@ -100,7 +100,7 @@ class HomeController: UIViewController, HomeViewDelegate {
         presenter.setTitleAndGetPosts(subreddit: "all")
     }
 
-    func setTitle(title: String){
+    func setTitle(title: String) {
         self.title = title.prefix(1).uppercased() + title.dropFirst()
     }
 
