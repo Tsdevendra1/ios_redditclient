@@ -10,6 +10,8 @@ import UIKit
 
 class BaseViewController: UIViewController {
 
+    var navBar: UINavigationBar!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.createBasicNavBar()
@@ -18,7 +20,11 @@ class BaseViewController: UIViewController {
 
     func createBasicNavBar() {
         // create navigation bar
-        let navBar = UINavigationBar()
+        navBar = UINavigationBar()
+        navBar.layer.shadowOpacity = 0.5
+        navBar.layer.shadowOffset = CGSize(width: 1.0, height: 1.0)
+        navBar.layer.shadowRadius = 1.5
+        navBar.layer.shadowColor = UIColor.black.cgColor
         navBar.delegate = self
         navBar.barTintColor = .white
         navBar.isTranslucent = false
@@ -28,13 +34,11 @@ class BaseViewController: UIViewController {
         navBar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         navBar.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         navBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        let item = createBasicNavItem()
-        if let navItem = item as? UINavigationItem {
-            navBar.items = [navItem]
-        }
+        let navItem = createNavbarItem()
+        navBar.items = [navItem]
     }
 
-    func createBasicNavItem() -> UINavigationItem {
+    func createNavbarItem() -> UINavigationItem {
         fatalError("Must override")
     }
 

@@ -1,11 +1,10 @@
 //
-// Created by Tharuka Devendra on 2019-08-09.
+// Created by Tharuka Devendra on 2019-10-12.
 // Copyright (c) 2019 Tharuka Devendra. All rights reserved.
 //
 
 import Foundation
 import UIKit
-
 enum MenuOptions: Int, CustomStringConvertible {
     case UserName
     case Profile
